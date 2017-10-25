@@ -32,9 +32,6 @@ struct action_forwarding_params {// sugar@33
 struct action_set_multicast_params {// sugar@33
     FIELD(grp, 16);// sugar@35
 };// sugar@36
-struct action_set_multicast_params {// sugar@33
-    FIELD(grp, 16);// sugar@35
-};// sugar@36
 struct mac_learning_action {// sugar@39
     int action_id;// sugar@40
     union {// sugar@41
