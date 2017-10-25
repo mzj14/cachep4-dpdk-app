@@ -1,0 +1,91 @@
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags: 
+
+The output was:
+1
+/usr/bin/ld: final link failed: Operation not supported
+collect2: error: ld returned 1 exit status
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags: -c
+
+The output was:
+1
+/tmp/ccrEZute.s: Assembler messages:
+/tmp/ccrEZute.s: Fatal error: can't write 137 bytes to section .text of CMakeCCompilerId.o because: 'Operation not supported'
+/tmp/ccrEZute.s: Fatal error: can't close CMakeCCompilerId.o: Operation not supported
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags: -Aa
+
+The output was:
+1
+<command-line>:0:1: error: missing '(' after predicate
+
+
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags: -D__CLASSIC_C__
+
+The output was:
+1
+/usr/bin/ld: final link failed: Operation not supported
+collect2: error: ld returned 1 exit status
+
+
+Checking whether the C compiler is IAR using "" did not match "IAR .+ Compiler":
+cc: fatal error: no input files
+compilation terminated.
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/c++ 
+Build flags: 
+Id flags: 
+
+The output was:
+1
+/usr/bin/ld: final link failed: Operation not supported
+collect2: error: ld returned 1 exit status
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/c++ 
+Build flags: 
+Id flags: -c
+
+The output was:
+1
+/tmp/cc8BrW5u.s: Assembler messages:
+/tmp/cc8BrW5u.s: Fatal error: can't write 113 bytes to section .text of CMakeCXXCompilerId.o because: 'Operation not supported'
+/tmp/cc8BrW5u.s: Fatal error: can't close CMakeCXXCompilerId.o: Operation not supported
+
+
+Checking whether the CXX compiler is IAR using "" did not match "IAR .+ Compiler":
+c++: fatal error: no input files
+compilation terminated.
+Determining if the C compiler works failed with the following output:
+Change Dir: /run/user/1000/gvfs/smb-share:server=101.6.30.201,share=netarchlab/cachep4-dpdk/case0/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b1487/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b1487.dir/build.make CMakeFiles/cmTC_b1487.dir/build
+make[1]: Entering directory '/run/user/1000/gvfs/smb-share:server=101.6.30.201,share=netarchlab/cachep4-dpdk/case0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b1487.dir/testCCompiler.c.o
+/usr/bin/cc     -o CMakeFiles/cmTC_b1487.dir/testCCompiler.c.o   -c /run/user/1000/gvfs/smb-share:server=101.6.30.201,share=netarchlab/cachep4-dpdk/case0/cmake-build-debug/CMakeFiles/CMakeTmp/testCCompiler.c
+/tmp/ccGdKTih.s: Assembler messages:
+/tmp/ccGdKTih.s: Fatal error: can't write 19 bytes to section .text of CMakeFiles/cmTC_b1487.dir/testCCompiler.c.o because: 'Operation not supported'
+/tmp/ccGdKTih.s: Fatal error: can't close CMakeFiles/cmTC_b1487.dir/testCCompiler.c.o: Operation not supported
+CMakeFiles/cmTC_b1487.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_b1487.dir/testCCompiler.c.o' failed
+make[1]: *** [CMakeFiles/cmTC_b1487.dir/testCCompiler.c.o] Error 1
+make[1]: Leaving directory '/run/user/1000/gvfs/smb-share:server=101.6.30.201,share=netarchlab/cachep4-dpdk/case0/cmake-build-debug/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_b1487/fast' failed
+make: *** [cmTC_b1487/fast] Error 2
+
+
