@@ -1,4 +1,5 @@
 #! /bin/bash
+
 sudo ip netns add h1
 sudo ip netns add h2
 
@@ -19,4 +20,3 @@ sudo ip netns exec h2 route add default gw 192.168.1.1
 
 sudo ip netns exec h1 arp -s 192.168.0.1 80:00:00:00:00:01
 sudo ip netns exec h2 arp -s 192.168.1.1 80:00:00:00:00:11
-
