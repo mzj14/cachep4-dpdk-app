@@ -113,10 +113,10 @@ void action_code_set_nhop_with_vlan(packet_descriptor_t *pd, lookup_table_t **ta
     } else {// sugar@193
         MODIFY_BYTEBUF_BYTEBUF(pd, field_instance_ethernet_dst_mac,
                                parameters.dst_mac + (6 - field_desc(pd, field_instance_ethernet_dst_mac).bytewidth),
-                               field_desc(pd, field_instance_ethernet_dst_mac).bytewidth)// sugar@194
+                               field_desc(pd, field_instance_ethernet_dst_mac).bytewidth);// sugar@194
     }// sugar@195
 // sugar@447
-    MODIFY_INT32_BYTEBUF(pd, field_instance_vlan_vid, parameters.vid, 2)// sugar@187
+    MODIFY_INT32_BYTEBUF(pd, field_instance_vlan_vid, parameters.vid, 2);// sugar@187
 // sugar@447
 }// sugar@451
 
@@ -126,7 +126,9 @@ void action_code_forwarding(packet_descriptor_t *pd, lookup_table_t **tables,
     (void) value32;
     (void) res32;
     (void) mask32;// sugar@441
-    MODIFY_INT32_BYTEBUF(pd, field_instance_standard_metadata_egress_spec, parameters.port, 2)// sugar@187
+    debug("parameters.port[0] = %x.\n", *(parameters.port));
+    debug("parameters.port[1] = %x.\n", *(parameters.port + 1));
+    MODIFY_INT32_BYTEBUF(pd, field_instance_standard_metadata_egress_spec, parameters.port, 2);// sugar@187
 // sugar@447
 }// sugar@451
 

@@ -339,7 +339,7 @@ set_metadata_inport(packet_descriptor_t *packet_desc, uint32_t inport) {
 
 void
 packet_received(packet_descriptor_t *pd, packet *p, unsigned portid, struct lcore_conf *conf) {
-    printf("enter packet_received function.\n");
+    // printf("enter packet_received function.\n");
     pd->data = rte_pktmbuf_mtod(p, uint8_t * );
     pd->wrapper = p;
     reset_headers(pd);

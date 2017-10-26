@@ -91,6 +91,14 @@
                                         ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)))) :\
     (rte_be_to_cpu_32(FIELD_MASKED_BYTES(pd, field)) >> (32 - FIELD_BITCOUNT(pd, field))))
 
+/*
+ * debug("FIELD_BYTES = %x.\n", FIELD_BYTES(pd, field)); \
+ *         debug("I am in the bytecount == 2 condition.\n"); \
+        debug("BITS_MASK1 = %x.\n", BITS_MASK1(pd, field)); \
+        debug("BITS_MASK3 = %x.\n", BITS_MASK3(pd, field)); \
+        debug("bitwidth = %d.\n", field_desc(pd, field).bitwidth); \
+ */
+
 // Extracts a field to the given uint32_t variable (no byteorder conversion) [MAX 4 BYTES]
 #define EXTRACT_INT32_BITS(pd, field, dst) { \
     if(field_desc(pd, field).bytecount == 1) \
@@ -103,6 +111,7 @@
              ((FIELD_BYTES(pd, field) & BITS_MASK2(pd, field)) >> field_desc(pd, field).bitoffset) | \
              ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)); \
 }
+
 
 // Extracts a field to the given uint32_t variable with byte conversion (always) [MAX 4 BYTES]
 #define EXTRACT_INT32_NTOH(pd, field, dst) { \

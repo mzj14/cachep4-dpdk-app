@@ -253,5 +253,6 @@ static void parse_state_parse_udp(packet_descriptor_t *pd, uint8_t *buf, lookup_
 }// sugar@189
 
 void parse_packet(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@192
+    // debug("enter parse_packet function.\n");
     parse_state_start(pd, pd->data, tables);// sugar@193
 }// sugar@194

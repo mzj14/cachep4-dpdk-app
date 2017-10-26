@@ -76,6 +76,7 @@
 
 // Extracts a field to the given uint32_t variable (no byteorder conversion) [MAX 4 BYTES]
 #define EXTRACT_INT32_BITS(pd, field, dst) { \
+    debug("I am in the EXTRACT_INT32_BITS of freescale_primitives.\n"); \
     if(field_desc(field).bytecount == 1) \
         dst = (FIELD_BYTES(pd, field) & field_desc(field).mask) >> (8 - FIELD_BITCOUNT(field)); \
     else if(field_desc(field).bytecount == 2) \

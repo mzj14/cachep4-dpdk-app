@@ -257,11 +257,21 @@ table_setdefault(lookup_table_t *t, uint8_t *value) {
 // ----------------------------------------------------------------------------
 // LOOKUP
 
+/*
+if (strcmp(t->name, "routable") == 0) {
+debug("it is routable table lookup.\n");
+for (int i = 0; i < 14; i++)
+debug("%dth element of key is %x.\n", i, *(key + i));
+}
+*/
+
 uint8_t *
 exact_lookup(lookup_table_t *t, uint8_t *key) {
+    debug("enter the exact_lookup function.\n");
     if (t->key_size == 0) return t->default_val;
     extended_table_t *ext = (extended_table_t *) t->table;
     int ret = rte_hash_lookup(ext->rte_table, key);
+    debug("exact_lookup is %d.\n", ret);
     return (ret < 0) ? t->default_val : ext->content[ret % 256];
 }
 
