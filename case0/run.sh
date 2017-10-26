@@ -8,6 +8,7 @@ CTRL_PLANE_DIR=${CTRL_PLANE_DIR-./src/hardware_dep/shared/ctrl_plane}
 declare -A controller_for_example
 controller_for_example["l3_routing_test"]="dpdk_l3_controller"
 controller_for_example["case0"]="dpdk_case0_controller"
+controller_for_example["case0-cache"]="dpdk_case0_cache_controller"
 
 print_usage_and_exit() {
     (>&2 echo "Usage: $0 <switch executable> [controller name] [controller params file] -- <options for compiled switch>")

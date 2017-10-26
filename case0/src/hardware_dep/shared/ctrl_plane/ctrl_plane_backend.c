@@ -221,10 +221,12 @@ void launch_backend(backend bg) {
     backend_t *bgt = (backend_t *) bg;
 
     if (connect(bgt->controller_sock, (struct sockaddr *) &(bgt->controller_addr), sizeof(struct sockaddr_in)) == -1) {
+        printf("I am here +1 !\n");
         fprintf(stdout, "Connecting stream socket\n");
         return;
     }
 
+    printf("I am here !\n");
     /* !!!!!!!!!!! Launch the client thread connecting to the controller  */
 
     dispatch(bgt->tpool, backend_processor, (void *) bgt);
@@ -232,6 +234,7 @@ void launch_backend(backend bg) {
     dispatch(bgt->tpool, input_processor, (void *) bgt);
     sleep(1);
     dispatch(bgt->tpool, output_processor, (void *) bgt);
+    printf("backend launch over!\n");
 }
 
 void stop_backend(backend bg) {

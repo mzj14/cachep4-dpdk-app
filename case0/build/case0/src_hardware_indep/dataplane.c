@@ -141,8 +141,7 @@ void apply_table_routable(packet_descriptor_t *pd, lookup_table_t **tables)// su
                         if ((GET_INT32_AUTO(pd, field_instance_route_metadata_lan)) !=
                             (1)) { return apply_table_unicast_routing(pd, tables); }
                         else { return apply_table_switching(pd, tables); }
-                    }
-                    else {}
+                    } else {}
                 }// sugar@114
                 break;// sugar@115
             case action_mcast:// sugar@113
@@ -153,8 +152,7 @@ void apply_table_routable(packet_descriptor_t *pd, lookup_table_t **tables)// su
                         if ((GET_INT32_AUTO(pd, field_instance_route_metadata_lan)) !=
                             (1)) { return apply_table_unicast_routing(pd, tables); }
                         else { return apply_table_switching(pd, tables); }
-                    }
-                    else {}
+                    } else {}
                 }// sugar@114
                 break;// sugar@115
         }// sugar@116
