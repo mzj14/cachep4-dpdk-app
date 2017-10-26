@@ -126,8 +126,8 @@ void action_code_forwarding(packet_descriptor_t *pd, lookup_table_t **tables,
     (void) value32;
     (void) res32;
     (void) mask32;// sugar@441
-    debug("parameters.port[0] = %x.\n", *(parameters.port));
-    debug("parameters.port[1] = %x.\n", *(parameters.port + 1));
+    // debug("parameters.port[0] = %x.\n", *(parameters.port));
+    // debug("parameters.port[1] = %x.\n", *(parameters.port + 1));
     MODIFY_INT32_BYTEBUF(pd, field_instance_standard_metadata_egress_spec, parameters.port, 2);// sugar@187
 // sugar@447
 }// sugar@451

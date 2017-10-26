@@ -301,7 +301,7 @@ dpdk_bcast_packet(struct rte_mbuf *m, uint8_t ingress_port, uint32_t lcore_id) {
 
 }
 
-#define EXTRACT_EGRESSPORT(p) GET_INT32_AUTO(p, field_instance_standard_metadata_egress_port)
+#define EXTRACT_EGRESSPORT(p) GET_INT32_AUTO(p, field_instance_standard_metadata_egress_spec)
 
 
 #define EXTRACT_INGRESSPORT(p) GET_INT32_AUTO(p, field_instance_standard_metadata_ingress_port)
@@ -316,11 +316,14 @@ send_packet(packet_descriptor_t *pd) {
         int port = EXTRACT_EGRESSPORT(pd);
         int inport = EXTRACT_INGRESSPORT(pd);
 
+        // int ans = FIELD_BYTES(pd, field_instance_standard_metadata_egress_port);
+
         uint32_t lcore_id = rte_lcore_id();
 
         debug("  :::: EGRESSING\n");
         debug("    :: deparsing headers\n");
         debug("    :: sending packet on port %d (lcore %d)\n", port, lcore_id);
+        // debug("    :: ans = %d\n", ans);
 
         if (port == 100)
             dpdk_bcast_packet((struct rte_mbuf *) pd->wrapper, inport, lcore_id);
@@ -382,7 +385,7 @@ dpdk_main_loop(void) {
     init_dataplane(&pd, qconf->state.tables);
 
     while (1) {
-        rte_delay_ms(5000);
+        // rte_delay_ms(5000);
 
         cur_tsc = rte_rdtsc();
 
@@ -390,7 +393,7 @@ dpdk_main_loop(void) {
          * TX burst queue drain
          */
         diff_tsc = cur_tsc - prev_tsc;
-        printf("the diff_tsc is %ld.\n", diff_tsc);
+        // printf("the diff_tsc is %ld.\n", diff_tsc);
 
         if (unlikely(diff_tsc > drain_tsc)) {
 
@@ -400,7 +403,7 @@ dpdk_main_loop(void) {
                 nb_tx = send_burst(qconf,
                                    qconf->tx_mbufs[portid].len,
                                    (uint8_t) portid);
-                printf("sent %d packets from port %d.\n", nb_tx, portid);
+                // printf("sent %d packets from port %d.\n", nb_tx, portid);
                 qconf->tx_mbufs[portid].len = 0;
             }
 
@@ -416,7 +419,7 @@ dpdk_main_loop(void) {
             queueid = qconf->rx_queue_list[i].queue_id;
             nb_rx = rte_eth_rx_burst((uint8_t) portid, queueid,
                                      pkts_burst, MAX_PKT_BURST);
-            printf("received %d packets from port %d.\n", nb_rx, portid);
+            // printf("received %d packets from port %d.\n", nb_rx, portid);
 
             for (j = 0; j < nb_rx; j++) {
                 p = pkts_burst[j];

@@ -140,7 +140,7 @@ void fill_unicast_routing_table(uint8_t dip[4], uint8_t smac[6], uint8_t dmac[6]
     send_p4_msg(c, buffer, 2048);
 }
 
-void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint8_t port) {
+void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint16_t port) {
     char buffer[2048]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
@@ -167,8 +167,7 @@ void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint8_t port) {
 
     ap = add_p4_action_parameter(h, a, 2048);
     strcpy(ap->name, "port");
-    ap->bitmap[0] = 0;
-    ap->bitmap[1] = port;
+    memcpy(ap->bitmap, &port, 2);
     ap->length = 2 * 8 + 0;
 
     netconv_p4_header(h);
