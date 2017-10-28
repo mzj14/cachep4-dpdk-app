@@ -147,7 +147,7 @@ void fill_unicast_routing_table(uint8_t dip[4], uint8_t smac[6], uint8_t dmac[6]
     send_p4_msg(c, buffer, 4096);
 }
 
-void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint16_t port) {
+void fill_switching_table(uint8_t dmac[6], uint16_t vid, uint16_t port) {
     char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
