@@ -17,9 +17,15 @@ void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar
 // FIXME: In the key construction function, the offset of key does not strictly equals to the actual header byte width.
 uint8_t reverse_buffer[14];// sugar@34
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    // debug("table_mac_learning_key, begin EXTRACT_BYTEBUF");
+    debug("table_mac_learning_key, begin EXTRACT_BYTEBUF");
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key);// sugar@53
-    // debug("table_mac_learning_key, end EXTRACT_BYTEBUF");
+    debug("table_mac_learning_key, end EXTRACT_BYTEBUF");
+    debug("key[0] = %x.\n", *key);
+    debug("key[1] = %x.\n", *(key + 1));
+    debug("key[2] = %x.\n", *(key + 2));
+    debug("key[3] = %x.\n", *(key + 3));
+    debug("key[4] = %x.\n", *(key + 4));
+    debug("key[5] = %x.\n", *(key + 5));
     key += 6;// sugar@54
     // debug("table_mac_learning_key, begin EXTRACT_INT32_BITS");
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
@@ -66,11 +72,11 @@ void apply_table_mac_learning(packet_descriptor_t *pd, lookup_table_t **tables)/
 {// sugar@69
     debug("  :::: EXECUTING TABLE mac_learning\n");// sugar@70
     uint8_t *key[8];// sugar@71
-    // debug("enter table_mac_learning_key function.\n");
+    debug("enter table_mac_learning_key function.\n");
     table_mac_learning_key(pd, (uint8_t *) key);// sugar@72
-    // debug("begin to do exact lookup on mac_learning table\n");
+    debug("begin to do exact lookup on mac_learning table\n");
     uint8_t *value = exact_lookup(tables[TABLE_mac_learning], (uint8_t *) key);// sugar@73
-    // debug("finish doing exact lookup on mac_learning table\n");
+    debug("finish doing exact lookup on mac_learning table\n");
     struct mac_learning_action *res = (struct mac_learning_action *) value;// sugar@74
     int index;
     (void) index;// sugar@75
