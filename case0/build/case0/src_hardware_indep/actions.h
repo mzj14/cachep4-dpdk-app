@@ -29,6 +29,7 @@ struct action_set_nhop_with_vlan_params {// sugar@33
 struct action_forwarding_params {// sugar@33
     FIELD(port, 9);// sugar@35
 };// sugar@36
+// FIXME: The origin C code contains a duplicate action_set_multicast_params declaration
 struct action_set_multicast_params {// sugar@33
     FIELD(grp, 16);// sugar@35
 };// sugar@36

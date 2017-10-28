@@ -101,11 +101,20 @@
 
 // Extracts a field to the given uint32_t variable (no byteorder conversion) [MAX 4 BYTES]
 #define EXTRACT_INT32_BITS(pd, field, dst) { \
-    if(field_desc(pd, field).bytecount == 1) \
-        dst = FIELD_MASKED_BYTES(pd, field) >> (8 - FIELD_BITCOUNT(pd, field)); \
-    else if(field_desc(pd, field).bytecount == 2) \
+    if(field_desc(pd, field).bytecount == 1) { \
+        debug("I am in the bytecount == 1 condition.\n"); \
+        dst = FIELD_MASKED_BYTES(pd, field) >> (8 - FIELD_BITCOUNT(pd, field)); }\
+    else if(field_desc(pd, field).bytecount == 2) { \
+        debug("I am in the bytecount == 2 condition.\n"); \
+        debug("FIELD_BYTES = %x.\n", FIELD_BYTES(pd, field)); \
+        debug("BITS_MASK1 = %x.\n", BITS_MASK1(pd, field)); \
+        debug("BITS_MASK3 = %x.\n", BITS_MASK3(pd, field)); \
+        debug("bitwidth = %d.\n", field_desc(pd, field).bitwidth); \
+        debug("res1 = %x.\n", FIELD_BYTES(pd, field) & BITS_MASK1(pd, field)); \
+        debug("res2 = %x.\n", (FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (16 - field_desc(pd, field).bitwidth)); \
         dst = (FIELD_BYTES(pd, field) & BITS_MASK1(pd, field)) | \
              ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (16 - field_desc(pd, field).bitwidth)); \
+        debug("dst = %x.\n", dst); }\
     else \
         dst = (FIELD_BYTES(pd, field) & BITS_MASK1(pd, field)) | \
              ((FIELD_BYTES(pd, field) & BITS_MASK2(pd, field)) >> field_desc(pd, field).bitoffset) | \

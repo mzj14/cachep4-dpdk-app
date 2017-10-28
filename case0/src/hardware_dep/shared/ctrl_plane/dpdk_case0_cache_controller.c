@@ -21,27 +21,27 @@
 controller c;
 
 void fill_mac_learning_table(uint8_t smac[6], uint16_t vid) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_field_match_exact *exact1, *exact2; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "mac_learning");
 
-    exact1 = add_p4_field_match_exact(te, 2048);
+    exact1 = add_p4_field_match_exact(te, 4096);
     strcpy(exact1->header.name, "ethernet.src_mac");
     memcpy(exact1->bitmap, smac, 6);
     exact1->length = 6 * 8 + 0;
 
-    exact2 = add_p4_field_match_exact(te, 2048);
+    exact2 = add_p4_field_match_exact(te, 4096);
     strcpy(exact2->header.name, "vlan.vid");
     memcpy(exact2->bitmap, &vid, 2);
     exact2->length = 2 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "nop");
 
     netconv_p4_header(h);
@@ -50,41 +50,41 @@ void fill_mac_learning_table(uint8_t smac[6], uint16_t vid) {
     netconv_p4_field_match_exact(exact2);
     netconv_p4_action(a);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 
 }
 
 void fill_routable_table(uint8_t smac[6], uint8_t dmac[6], uint16_t vid, uint8_t lan) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap;
     struct p4_field_match_exact *exact1, *exact2, *exact3; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "routable");
 
-    exact1 = add_p4_field_match_exact(te, 2048);
+    exact1 = add_p4_field_match_exact(te, 4096);
     strcpy(exact1->header.name, "ethernet.src_mac");
     memcpy(exact1->bitmap, smac, 6);
     exact1->length = 6 * 8 + 0;
 
-    exact2 = add_p4_field_match_exact(te, 2048);
+    exact2 = add_p4_field_match_exact(te, 4096);
     strcpy(exact2->header.name, "ethernet.dst_mac");
     memcpy(exact2->bitmap, dmac, 6);
     exact2->length = 6 * 8 + 0;
 
-    exact3 = add_p4_field_match_exact(te, 2048);
+    exact3 = add_p4_field_match_exact(te, 4096);
     strcpy(exact3->header.name, "vlan.vid");
     memcpy(exact3->bitmap, &vid, 2);
     exact3->length = 2 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "ucast");
 
-    ap = add_p4_action_parameter(h, a, 2048);
+    ap = add_p4_action_parameter(h, a, 4096);
     strcpy(ap->name, "lan");
     memcpy(ap->bitmap, &lan, 1);
     ap->length = 1 * 8 + 0;
@@ -97,35 +97,35 @@ void fill_routable_table(uint8_t smac[6], uint8_t dmac[6], uint16_t vid, uint8_t
     netconv_p4_action(a);
     netconv_p4_action_parameter(ap);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void fill_unicast_routing_table(uint8_t dip[4], uint8_t smac[6], uint8_t dmac[6]) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap1, *ap2;
     struct p4_field_match_exact *exact; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "unicast_routing");
 
-    exact = add_p4_field_match_exact(te, 2048);
+    exact = add_p4_field_match_exact(te, 4096);
     strcpy(exact->header.name, "ip.dst_addr");
     memcpy(exact->bitmap, dip, 4);
     exact->length = 4 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "set_nhop");
 
-    ap1 = add_p4_action_parameter(h, a, 2048);
+    ap1 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap1->name, "src_mac");
     memcpy(ap1->bitmap, smac, 6);
     ap1->length = 6 * 8 + 0;
 
-    ap2 = add_p4_action_parameter(h, a, 2048);
+    ap2 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap2->name, "dst_mac");
     memcpy(ap2->bitmap, dmac, 6);
     ap2->length = 6 * 8 + 0;
@@ -137,35 +137,35 @@ void fill_unicast_routing_table(uint8_t dip[4], uint8_t smac[6], uint8_t dmac[6]
     netconv_p4_action_parameter(ap1);
     netconv_p4_action_parameter(ap2);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint16_t port) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap;
     struct p4_field_match_exact *exact1, *exact2; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "switching");
 
-    exact1 = add_p4_field_match_exact(te, 2048);
+    exact1 = add_p4_field_match_exact(te, 4096);
     strcpy(exact1->header.name, "ethernet.dst_mac");
     memcpy(exact1->bitmap, dmac, 6);
     exact1->length = 6 * 8 + 0;
 
-    exact2 = add_p4_field_match_exact(te, 2048);
+    exact2 = add_p4_field_match_exact(te, 4096);
     strcpy(exact2->header.name, "vlan.vid");
     memcpy(exact2->bitmap, &vid, 2);
     exact2->length = 2 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "forwarding");
 
-    ap = add_p4_action_parameter(h, a, 2048);
+    ap = add_p4_action_parameter(h, a, 4096);
     strcpy(ap->name, "port");
     memcpy(ap->bitmap, &port, 2);
     ap->length = 2 * 8 + 0;
@@ -177,76 +177,109 @@ void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint16_t port) {
     netconv_p4_action(a);
     netconv_p4_action_parameter(ap);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void fill_cache_table(uint16_t iport, uint8_t smac_1[6], uint8_t dmac_1[6], uint8_t dip[4], uint16_t vid_1,
                        uint16_t eport, uint8_t smac_2[6], uint8_t dmac_2[6], uint16_t vid_2, uint16_t grp) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap1, *ap2, *ap3, *ap4, *ap5;
     struct p4_field_match_exact *exact1, *exact2, *exact3, *exact4, *exact5; // TODO: replace to lpm
 
-    printf("enter fill_cache_table function.\n");
+    // printf("enter fill_cache_table function.\n");
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "cache");
 
-    exact1 = add_p4_field_match_exact(te, 2048);
+    // printf("you know 1.\n");
+
+    exact1 = add_p4_field_match_exact(te, 4096);
     strcpy(exact1->header.name, "standard_metadata.ingress_port");
     memcpy(exact1->bitmap, &iport, 2);
     exact1->length = 2 * 8 + 0;
 
-    exact2 = add_p4_field_match_exact(te, 2048);
+    // printf("you know 2.\n");
+
+    exact2 = add_p4_field_match_exact(te, 4096);
     strcpy(exact2->header.name, "ethernet.src_mac");
     memcpy(exact2->bitmap, smac_1, 6);
     exact2->length = 6 * 8 + 0;
 
-    exact3 = add_p4_field_match_exact(te, 2048);
+    // printf("you know 3.\n");
+
+    exact3 = add_p4_field_match_exact(te, 4096);
     strcpy(exact3->header.name, "ethernet.dst_mac");
     memcpy(exact3->bitmap, dmac_1, 6);
     exact3->length = 6 * 8 + 0;
 
-    exact4 = add_p4_field_match_exact(te, 2048);
+    // printf("you know 4.\n");
+
+    exact4 = add_p4_field_match_exact(te, 4096);
     strcpy(exact4->header.name, "ip.dst_addr");
     memcpy(exact4->bitmap, dip, 4);
     exact4->length = 4 * 8 + 0;
 
-    exact5 = add_p4_field_match_exact(te, 2048);
+    // printf("you know 5.\n");
+
+
+    exact5 = add_p4_field_match_exact(te, 4096);
+    // printf("you know 5.1\n");
     strcpy(exact5->header.name, "vlan.vid");
+    // printf("you know 5.2\n");
     memcpy(exact5->bitmap, &vid_1, 2);
+    // printf("you know 5.3\n");
     exact5->length = 2 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    // printf("you know 6.\n");
+
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "cache_action");
 
-    ap1 = add_p4_action_parameter(h, a, 2048);
+    // printf("you know 7.\n");
+
+    ap1 = add_p4_action_parameter(h, a, 4096);
+    // printf("you know 7.1\n");
     strcpy(ap1->name, "port");
+    // printf("you know 7.2\n");
     memcpy(ap1->bitmap, &eport, 2);
+    // printf("you know 7.3");
     ap1->length = 2 * 8 + 0;
 
-    ap2 = add_p4_action_parameter(h, a, 2048);
+    // printf("you know 8.\n");
+
+    ap2 = add_p4_action_parameter(h, a, 4096);
+    // printf("you know 8.1\n");
     strcpy(ap2->name, "src_mac");
+    // printf("you know 8.2\n");
     memcpy(ap2->bitmap, smac_2, 6);
     ap2->length = 6 * 8 + 0;
 
-    ap3 = add_p4_action_parameter(h, a, 2048);
+    // printf("you know 9.\n");
+
+    ap3 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap3->name, "dst_mac");
     memcpy(ap3->bitmap, dmac_2, 6);
     ap3->length = 6 * 8 + 0;
 
-    ap4 = add_p4_action_parameter(h, a, 2048);
+    // printf("you know 10.\n");
+
+    ap4 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap4->name, "vid");
     memcpy(ap4->bitmap, &vid_2, 2);
     ap4->length = 2 * 8 + 0;
 
-    ap5 = add_p4_action_parameter(h, a, 2048);
+    // printf("you know 11.\n");
+
+    ap5 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap5->name, "grp");
     memcpy(ap5->bitmap, &grp, 2);
     ap5->length = 2 * 8 + 0;
+
+    // printf("you know 1.\n");
 
     netconv_p4_header(h);
     netconv_p4_add_table_entry(te);
@@ -262,7 +295,9 @@ void fill_cache_table(uint16_t iport, uint8_t smac_1[6], uint8_t dmac_1[6], uint
     netconv_p4_action_parameter(ap4);
     netconv_p4_action_parameter(ap5);
 
-    send_p4_msg(c, buffer, 2048);
+    printf("begin to send p4 msg for cache table.\n");
+
+    send_p4_msg(c, buffer, 4096);
 }
 
 void dhf(void *b) {

@@ -13,7 +13,9 @@ extern void table_switching_key(packet_descriptor_t *pd, uint8_t *key); // defin
 extern void table_multicast_routing_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_igmp_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 
+// FIXME: Since the reverse buffer length should be equal to the maximum key length.
 uint8_t reverse_buffer[14];// sugar@35
+
 void// sugar@39
 mac_learning_add(// sugar@40
         uint8_t field_instance_ethernet_src_mac[6],// sugar@43
@@ -104,7 +106,8 @@ igmp_add(// sugar@40
         uint8_t field_instance_standard_metadata_ingress_port[2],// sugar@43
         struct igmp_action action)// sugar@49
 {// sugar@50
-    uint8_t key[7];// sugar@51
+    // FIXME: In the origin C code, the key length is 7, which leads to a compiler warning and potential memcpy overflow.
+    uint8_t key[8];// sugar@51
     memcpy(key + 0, field_instance_ip_dst_addr, 4);// sugar@56
     memcpy(key + 4, field_instance_vlan_vid, 2);// sugar@56
     memcpy(key + 6, field_instance_standard_metadata_ingress_port, 2);// sugar@56

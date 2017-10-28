@@ -22,31 +22,31 @@ controller c;
 
 void fill_ipv4_fib_lpm_table(uint8_t ip[4], uint8_t port, uint8_t mac[6])
 {
-        char buffer[2048]; /* TODO: ugly */
+        char buffer[4096]; /* TODO: ugly */
         struct p4_header* h;
         struct p4_add_table_entry* te;
         struct p4_action* a;
         struct p4_action_parameter* ap,* ap2;
         struct p4_field_match_exact* exact; // TODO: replace to lpm
 
-        h = create_p4_header(buffer, 0, 2048);
-        te = create_p4_add_table_entry(buffer,0,2048);
+        h = create_p4_header(buffer, 0, 4096);
+        te = create_p4_add_table_entry(buffer,0,4096);
         strcpy(te->table_name, "ipv4_fib_lpm");
 
-        exact = add_p4_field_match_exact(te, 2048);
+        exact = add_p4_field_match_exact(te, 4096);
         strcpy(exact->header.name, "ipv4.dstAddr");
         memcpy(exact->bitmap, ip, 4);
         exact->length = 4*8+0;
 
-        a = add_p4_action(h, 2048);
+        a = add_p4_action(h, 4096);
         strcpy(a->description.name, "fib_hit_nexthop");
 
-        ap = add_p4_action_parameter(h, a, 2048);
+        ap = add_p4_action_parameter(h, a, 4096);
         strcpy(ap->name, "dmac");
         memcpy(ap->bitmap, mac, 6);
         ap->length = 6*8+0;
 
-        ap2 = add_p4_action_parameter(h, a, 2048);
+        ap2 = add_p4_action_parameter(h, a, 4096);
         strcpy(ap2->name, "port");
         ap2->bitmap[0] = port;
         ap2->bitmap[1] = 0;
@@ -59,31 +59,31 @@ void fill_ipv4_fib_lpm_table(uint8_t ip[4], uint8_t port, uint8_t mac[6])
         netconv_p4_action_parameter(ap);
         netconv_p4_action_parameter(ap2);
 
-        send_p4_msg(c, buffer, 2048);
+        send_p4_msg(c, buffer, 4096);
 
 }
 
 void fill_sendout_table(uint8_t port, uint8_t smac[6]) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header* h;
     struct p4_add_table_entry* te;
     struct p4_action* a;
     struct p4_action_parameter* ap;
     struct p4_field_match_exact* exact; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer,0,2048);
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer,0,4096);
     strcpy(te->table_name, "sendout");
 
-    exact = add_p4_field_match_exact(te, 2048);
+    exact = add_p4_field_match_exact(te, 4096);
     strcpy(exact->header.name, "standard_metadata.egress_port");
     memcpy(exact->bitmap, &port, 1);
     exact->length = 1*8+0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "rewrite_src_mac");
 
-    ap = add_p4_action_parameter(h, a, 2048);
+    ap = add_p4_action_parameter(h, a, 4096);
     strcpy(ap->name, "smac");
     memcpy(ap->bitmap, smac, 6);
     ap->length = 6*8+0;
@@ -94,7 +94,7 @@ void fill_sendout_table(uint8_t port, uint8_t smac[6]) {
     netconv_p4_action(a);
     netconv_p4_action_parameter(ap);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void mac_learn_digest(void* b) {
@@ -127,26 +127,26 @@ void test_learn_ip(void* b) {
 
     printf("test_learn_ip\n");
 
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header* h;
     struct p4_add_table_entry* te;
     struct p4_action* a;
     struct p4_action_parameter *ap1, *ap2, *ap3;
     struct p4_field_match_lpm* lpm;
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer,0,2048);
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer,0,4096);
     strcpy(te->table_name, "table1");
-    lpm = add_p4_field_match_lpm(te, 2048);
+    lpm = add_p4_field_match_lpm(te, 4096);
     strcpy(lpm->header.name, "field1");
     memcpy(lpm->bitmap, ip, 4);
     lpm->prefix_length = pr;
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "korte");
-    ap1 = add_p4_action_parameter(h, a, 2048);
+    ap1 = add_p4_action_parameter(h, a, 4096);
     memcpy(ap1->bitmap, &i1, 4);
-    ap2 = add_p4_action_parameter(h, a, 2048);
+    ap2 = add_p4_action_parameter(h, a, 4096);
     memcpy(ap2->bitmap, &i2, 4);
-    ap3 = add_p4_action_parameter(h, a, 2048);
+    ap3 = add_p4_action_parameter(h, a, 4096);
     memcpy(ap3->bitmap, &i3, 4);
     netconv_p4_header(h);
     netconv_p4_add_table_entry(te);
@@ -155,7 +155,7 @@ void test_learn_ip(void* b) {
     netconv_p4_action_parameter(ap1);
     netconv_p4_action_parameter(ap2);
     netconv_p4_action_parameter(ap3);
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void dhf(void* b) {

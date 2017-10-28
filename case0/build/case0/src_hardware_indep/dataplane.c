@@ -14,6 +14,7 @@ void apply_table_switching(packet_descriptor_t *pd, lookup_table_t **tables);// 
 void apply_table_multicast_routing(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 
+// FIXME: In the key construction function, the offset of key does not strictly equals to the actual header byte width.
 uint8_t reverse_buffer[14];// sugar@34
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     // debug("table_mac_learning_key, begin EXTRACT_BYTEBUF");
@@ -56,7 +57,7 @@ void table_igmp_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
@@ -274,7 +275,7 @@ void apply_table_multicast_routing(packet_descriptor_t *pd, lookup_table_t **tab
 void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
 {// sugar@69
     debug("  :::: EXECUTING TABLE igmp\n");// sugar@70
-    uint8_t *key[7];// sugar@71
+    uint8_t *key[8];// sugar@71
     table_igmp_key(pd, (uint8_t *) key);// sugar@72
     uint8_t *value = exact_lookup(tables[TABLE_igmp], (uint8_t *) key);// sugar@73
     struct igmp_action *res = (struct igmp_action *) value;// sugar@74

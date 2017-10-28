@@ -2,11 +2,19 @@ Create and configure controller...
 Launching controller's main loop...
 New device connected...
 Initialize switch
+enter fill_mac_learning_table function.
 start to send p4 message.
+enter fill_mac_learning_table function.
 start to send p4 message.
+enter fill_routable_table function.
 start to send p4 message.
+enter fill_routable_table function.
 start to send p4 message.
+enter fill_unicast_routing_table function.
 start to send p4 message.
+enter fill_unicast_routing_table function.
 start to send p4 message.
+enter fill_switching_table function.
 start to send p4 message.
+enter fill_switching_table function.
 start to send p4 message.

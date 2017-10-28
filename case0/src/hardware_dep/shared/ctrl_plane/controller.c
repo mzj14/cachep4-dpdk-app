@@ -26,7 +26,7 @@
 #include "threadpool.h"
 
 typedef struct msg_buf_st {
-    char data[2048]; /* todo */
+    char data[4096]; /* todo */
     int length;
 } msg_buf_t;
 
@@ -205,7 +205,7 @@ void execute_controller(controller c) {
                         ct->init();
                 } else {
                     mem_cell = (msg_buf_t *) malloc(sizeof(msg_buf_t));
-                    mem_cell->length = 2048;
+                    mem_cell->length = 4096;
                     if ((rv = read_p4_msg(i, mem_cell->data, mem_cell->length)) > 0) {
                         fifo_add_msg(&(ct->input_queue), (void *) mem_cell);
                     } else if (rv == 0) {
@@ -218,15 +218,13 @@ void execute_controller(controller c) {
             }
         }
     }
-
-
 }
 
 int send_p4_msg(controller c, char *buffer, int length) {
     printf("start to send p4 message.\n");
     controller_t *ct = (controller_t *) c;
     msg_buf_t *mem_cell;
-    if (length > 2048)
+    if (length > 4096)
         return 0;
 
     mem_cell = (msg_buf_t *) malloc(sizeof(msg_buf_t));

@@ -27,7 +27,7 @@
 #include "fifo.h"
 #include <sys/select.h>
 
-#define P4_BG_MEM_CELL_SIZE 2048
+#define P4_BG_MEM_CELL_SIZE 4096
 #define P4_BG_QUEUE_SIZE 1024
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))

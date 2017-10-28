@@ -21,27 +21,30 @@
 controller c;
 
 void fill_mac_learning_table(uint8_t smac[6], uint16_t vid) {
-    char buffer[2048]; /* TODO: ugly */
+    // FIXME: The buffer size is changed to 4096 bytes to meet the demand for complex cache table match and action.
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_field_match_exact *exact1, *exact2; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    printf("enter fill_mac_learning_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "mac_learning");
 
-    exact1 = add_p4_field_match_exact(te, 2048);
+    exact1 = add_p4_field_match_exact(te, 4096);
     strcpy(exact1->header.name, "ethernet.src_mac");
     memcpy(exact1->bitmap, smac, 6);
     exact1->length = 6 * 8 + 0;
 
-    exact2 = add_p4_field_match_exact(te, 2048);
+    exact2 = add_p4_field_match_exact(te, 4096);
     strcpy(exact2->header.name, "vlan.vid");
     memcpy(exact2->bitmap, &vid, 2);
     exact2->length = 2 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "nop");
 
     netconv_p4_header(h);
@@ -50,41 +53,43 @@ void fill_mac_learning_table(uint8_t smac[6], uint16_t vid) {
     netconv_p4_field_match_exact(exact2);
     netconv_p4_action(a);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 
 }
 
 void fill_routable_table(uint8_t smac[6], uint8_t dmac[6], uint16_t vid, uint8_t lan) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap;
     struct p4_field_match_exact *exact1, *exact2, *exact3; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    printf("enter fill_routable_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "routable");
 
-    exact1 = add_p4_field_match_exact(te, 2048);
+    exact1 = add_p4_field_match_exact(te, 4096);
     strcpy(exact1->header.name, "ethernet.src_mac");
     memcpy(exact1->bitmap, smac, 6);
     exact1->length = 6 * 8 + 0;
 
-    exact2 = add_p4_field_match_exact(te, 2048);
+    exact2 = add_p4_field_match_exact(te, 4096);
     strcpy(exact2->header.name, "ethernet.dst_mac");
     memcpy(exact2->bitmap, dmac, 6);
     exact2->length = 6 * 8 + 0;
 
-    exact3 = add_p4_field_match_exact(te, 2048);
+    exact3 = add_p4_field_match_exact(te, 4096);
     strcpy(exact3->header.name, "vlan.vid");
     memcpy(exact3->bitmap, &vid, 2);
     exact3->length = 2 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "ucast");
 
-    ap = add_p4_action_parameter(h, a, 2048);
+    ap = add_p4_action_parameter(h, a, 4096);
     strcpy(ap->name, "lan");
     memcpy(ap->bitmap, &lan, 1);
     ap->length = 1 * 8 + 0;
@@ -97,35 +102,37 @@ void fill_routable_table(uint8_t smac[6], uint8_t dmac[6], uint16_t vid, uint8_t
     netconv_p4_action(a);
     netconv_p4_action_parameter(ap);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void fill_unicast_routing_table(uint8_t dip[4], uint8_t smac[6], uint8_t dmac[6]) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap1, *ap2;
     struct p4_field_match_exact *exact; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    printf("enter fill_unicast_routing_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "unicast_routing");
 
-    exact = add_p4_field_match_exact(te, 2048);
+    exact = add_p4_field_match_exact(te, 4096);
     strcpy(exact->header.name, "ip.dst_addr");
     memcpy(exact->bitmap, dip, 4);
     exact->length = 4 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "set_nhop");
 
-    ap1 = add_p4_action_parameter(h, a, 2048);
+    ap1 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap1->name, "src_mac");
     memcpy(ap1->bitmap, smac, 6);
     ap1->length = 6 * 8 + 0;
 
-    ap2 = add_p4_action_parameter(h, a, 2048);
+    ap2 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap2->name, "dst_mac");
     memcpy(ap2->bitmap, dmac, 6);
     ap2->length = 6 * 8 + 0;
@@ -137,35 +144,37 @@ void fill_unicast_routing_table(uint8_t dip[4], uint8_t smac[6], uint8_t dmac[6]
     netconv_p4_action_parameter(ap1);
     netconv_p4_action_parameter(ap2);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint16_t port) {
-    char buffer[2048]; /* TODO: ugly */
+    char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap;
     struct p4_field_match_exact *exact1, *exact2; // TODO: replace to lpm
 
-    h = create_p4_header(buffer, 0, 2048);
-    te = create_p4_add_table_entry(buffer, 0, 2048);
+    printf("enter fill_switching_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "switching");
 
-    exact1 = add_p4_field_match_exact(te, 2048);
+    exact1 = add_p4_field_match_exact(te, 4096);
     strcpy(exact1->header.name, "ethernet.dst_mac");
     memcpy(exact1->bitmap, dmac, 6);
     exact1->length = 6 * 8 + 0;
 
-    exact2 = add_p4_field_match_exact(te, 2048);
+    exact2 = add_p4_field_match_exact(te, 4096);
     strcpy(exact2->header.name, "vlan.vid");
     memcpy(exact2->bitmap, &vid, 2);
     exact2->length = 2 * 8 + 0;
 
-    a = add_p4_action(h, 2048);
+    a = add_p4_action(h, 4096);
     strcpy(a->description.name, "forwarding");
 
-    ap = add_p4_action_parameter(h, a, 2048);
+    ap = add_p4_action_parameter(h, a, 4096);
     strcpy(ap->name, "port");
     memcpy(ap->bitmap, &port, 2);
     ap->length = 2 * 8 + 0;
@@ -177,7 +186,7 @@ void fill_switching_table(uint8_t dmac[4], uint16_t vid, uint16_t port) {
     netconv_p4_action(a);
     netconv_p4_action_parameter(ap);
 
-    send_p4_msg(c, buffer, 2048);
+    send_p4_msg(c, buffer, 4096);
 }
 
 void dhf(void *b) {

@@ -88,7 +88,10 @@ static void parse_state_parse_tcp(packet_descriptor_t *pd, uint8_t *buf, lookup_
 static void parse_state_parse_udp(packet_descriptor_t *pd, uint8_t *buf, lookup_table_t **tables);// sugar@94
 
 static inline void build_key_start(packet_descriptor_t *pd, uint8_t *buf, uint8_t *key) {// sugar@100
-    EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@109
+    debug("in the build_key_start function.\n");
+    EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key);// sugar@109
+    debug("key[0] = %x\n", key[0]);
+    debug("key[1] = %x\n", key[1]);
     key += sizeof(uint32_t);// sugar@110
 }// sugar@119
 static inline void build_key_parse_vlan(packet_descriptor_t *pd, uint8_t *buf, uint8_t *key) {// sugar@100
@@ -101,16 +104,20 @@ static inline void build_key_parse_ip(packet_descriptor_t *pd, uint8_t *buf, uin
 }// sugar@119
 static void parse_state_start(packet_descriptor_t *pd, uint8_t *buf, lookup_table_t **tables)// sugar@122
 {// sugar@123
+    debug("enter the parse start function.\n");
     uint32_t value32;// sugar@124
     (void) value32;// sugar@125
     extract_header_ethernet(buf, pd);// sugar@130
     buf += pd->headers[header_instance_ethernet].length;// sugar@131
+    // debug("pd->headers[header_instance_ethernet].length = %d\n", pd->headers[header_instance_ethernet].length);
     uint8_t key[2];// sugar@157
     build_key_start(pd, buf, key);// sugar@158
     uint8_t case_value_0[2] = {// sugar@171
             8,// sugar@173
             0,// sugar@173
     };// sugar@174
+    debug("key[0] = %x\n", key[0]);
+    debug("key[1] = %x\n", key[1]);
     if (memcmp(key, case_value_0, 2) == 0)// sugar@175
         return parse_state_parse_ip(pd, buf, tables);// sugar@21
 // sugar@176

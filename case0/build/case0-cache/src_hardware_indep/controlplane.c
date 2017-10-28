@@ -14,7 +14,7 @@ extern void table_switching_key(packet_descriptor_t *pd, uint8_t *key); // defin
 extern void table_multicast_routing_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_igmp_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 
-uint8_t reverse_buffer[19];// sugar@35
+uint8_t reverse_buffer[20];// sugar@35
 void// sugar@39
 cache_add(// sugar@40
         uint8_t field_instance_standard_metadata_ingress_port[2],// sugar@43
@@ -24,12 +24,13 @@ cache_add(// sugar@40
         uint8_t field_instance_vlan_vid[2],// sugar@43
         struct cache_action action)// sugar@49
 {// sugar@50
-    uint8_t key[19];// sugar@51
+    uint8_t key[20];// sugar@51
     memcpy(key + 0, field_instance_standard_metadata_ingress_port, 2);// sugar@56
     memcpy(key + 2, field_instance_ethernet_src_mac, 6);// sugar@56
     memcpy(key + 8, field_instance_ethernet_dst_mac, 6);// sugar@56
     memcpy(key + 14, field_instance_ip_dst_addr, 4);// sugar@56
     memcpy(key + 18, field_instance_vlan_vid, 2);// sugar@56
+    debug("enter cache add function.\n");
     exact_add_promote(TABLE_cache, (uint8_t *) key, (uint8_t * ) & action);// sugar@74
 }// sugar@75
 
@@ -128,7 +129,7 @@ igmp_add(// sugar@40
         uint8_t field_instance_standard_metadata_ingress_port[2],// sugar@43
         struct igmp_action action)// sugar@49
 {// sugar@50
-    uint8_t key[7];// sugar@51
+    uint8_t key[8];// sugar@51
     memcpy(key + 0, field_instance_ip_dst_addr, 4);// sugar@56
     memcpy(key + 4, field_instance_vlan_vid, 2);// sugar@56
     memcpy(key + 6, field_instance_standard_metadata_ingress_port, 2);// sugar@56

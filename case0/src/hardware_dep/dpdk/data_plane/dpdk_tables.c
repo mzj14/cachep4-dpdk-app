@@ -272,6 +272,21 @@ exact_lookup(lookup_table_t *t, uint8_t *key) {
     extended_table_t *ext = (extended_table_t *) t->table;
     int ret = rte_hash_lookup(ext->rte_table, key);
     debug("exact_lookup is %d.\n", ret);
+    if (strcmp(t->name, "cache") == 0) {
+        debug("it is cache table lookup.\n");
+        for (int i = 0; i < 20; i++)
+            debug("%dth element of key is %x.\n", i, *(key + i));
+    }
+    if (strcmp(t->name, "mac_learning") == 0) {
+        debug("it is mac_learning table lookup.\n");
+        for (int i = 0; i < 8; i++)
+            debug("%dth element of key is %x.\n", i, *(key + i));
+    }
+    if (strcmp(t->name, "routable") == 0) {
+        debug("it is routable table lookup.\n");
+        for (int i = 0; i < 20; i++)
+            debug("%dth element of key is %x.\n", i, *(key + i));
+    }
     return (ret < 0) ? t->default_val : ext->content[ret % 256];
 }
 

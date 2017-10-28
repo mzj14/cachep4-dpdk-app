@@ -15,67 +15,81 @@ void apply_table_switching(packet_descriptor_t *pd, lookup_table_t **tables);// 
 void apply_table_multicast_routing(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 
-uint8_t reverse_buffer[19];// sugar@34
+uint8_t reverse_buffer[20];// sugar@34
 void table_cache_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
+    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key);// sugar@49
+    // key += sizeof(uint32_t);// sugar@50
+    debug("key[0] = %x.\n", *key);
+    debug("key[1] = %x.\n", *(key + 1));
+    key += sizeof(uint16_t);
+    debug("cache key for field_instance_standard_metadata_ingress_port.\n");
+
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key);// sugar@53
     key += 6;// sugar@54
-    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
+    debug("cache key for field_instance_ethernet_src_mac.\n");
+
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key);// sugar@53
     key += 6;// sugar@54
-    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
+    debug("cache key for field_instance_ethernet_dst_mac.\n");
+
+    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    debug("cache key for field_instance_ip_dst_addr.\n");
+
+    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
+    debug("cache key for field_instance_vlan_vid.\n");
 }// sugar@62
 
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key);// sugar@53
     key += 6;// sugar@54
-    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key);// sugar@53
     key += 6;// sugar@54
-    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key);// sugar@53
     key += 6;// sugar@54
-    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_unicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_switching_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key);// sugar@53
     key += 6;// sugar@54
-    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_multicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_igmp_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void apply_table_cache(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
 {// sugar@69
     debug("  :::: EXECUTING TABLE cache\n");// sugar@70
-    uint8_t *key[19];// sugar@71
+    uint8_t *key[20];// sugar@71
+    debug("enter table_cache_key function.\n");
     table_cache_key(pd, (uint8_t *) key);// sugar@72
+    debug("begin to do exact_lookup on cache table.\n");
     uint8_t *value = exact_lookup(tables[TABLE_cache], (uint8_t *) key);// sugar@73
     struct cache_action *res = (struct cache_action *) value;// sugar@74
     int index;
@@ -311,7 +325,7 @@ void apply_table_multicast_routing(packet_descriptor_t *pd, lookup_table_t **tab
 void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
 {// sugar@69
     debug("  :::: EXECUTING TABLE igmp\n");// sugar@70
-    uint8_t *key[7];// sugar@71
+    uint8_t *key[8];// sugar@71
     table_igmp_key(pd, (uint8_t *) key);// sugar@72
     uint8_t *value = exact_lookup(tables[TABLE_igmp], (uint8_t *) key);// sugar@73
     struct igmp_action *res = (struct igmp_action *) value;// sugar@74
@@ -361,8 +375,10 @@ void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     packet_desc->headers[header_instance_icmp].pointer = NULL;// sugar@235
     packet_desc->headers[header_instance_udp].pointer = NULL;// sugar@235
     // packet_desc->headers[header_instance_vlan].pointer = NULL;// sugar@235
+
     memset(packet_desc->headers[header_instance_vlan].pointer, 0,
            header_info(header_instance_vlan).bytewidth * sizeof(uint8_t));// sugar@233
+
     memset(packet_desc->headers[header_instance_intrinsic_metadata].pointer, 0,
            header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t));// sugar@233
     memset(packet_desc->headers[header_instance_route_metadata].pointer, 0,
@@ -400,6 +416,7 @@ void init_headers(packet_descriptor_t *packet_desc) {// sugar@237
             header_instance_vlan).bytewidth,// sugar@241
             .pointer = malloc(header_info(header_instance_vlan).bytewidth * sizeof(uint8_t)),// sugar@242
             .var_width_field_bitwidth = 0};// sugar@243
+
     packet_desc->headers[header_instance_intrinsic_metadata] = (header_descriptor_t) {.type = header_instance_intrinsic_metadata, .length = header_info(
             header_instance_intrinsic_metadata).bytewidth,// sugar@241
             .pointer = malloc(header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t)),// sugar@242

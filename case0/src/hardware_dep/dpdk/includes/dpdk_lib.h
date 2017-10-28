@@ -71,7 +71,7 @@ extern int numa_on;
 #define RTE_LOGTYPE_L2FWD RTE_LOGTYPE_USER1 // rte_log.h
 #define RTE_LOGTYPE_P4_FWD RTE_LOGTYPE_USER1 // rte_log.h
 
-#define MBUF_SIZE (2048 + sizeof(struct rte_mbuf) + RTE_PKTMBUF_HEADROOM)
+#define MBUF_SIZE (4096 + sizeof(struct rte_mbuf) + RTE_PKTMBUF_HEADROOM)
 // TODO is the longer version better?
 /*
 #define NB_MBUF RTE_MAX	(																	\
