@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include "ternary_naive.h"
+#include "dpdk_lib.h"// sugar@22
 
 ternary_table *
 naive_ternary_create(uint8_t keylen, uint8_t max_size) {
@@ -42,21 +43,30 @@ naive_ternary_add(ternary_table *t, uint8_t *key, uint8_t *mask, uint8_t *value)
 
 uint8_t *
 naive_ternary_lookup(ternary_table *t, uint8_t *key) {
+    debug("enter the naive_ternary_lookup.\n");
     int i, j, match = 1;
     ternary_entry *e;
     ternary_entry *res = NULL;
     for (i = 0; i < t->size; i++) {
+        debug("focus on ternary entry %d.\n", i);
         e = t->entries[i];
         // if(e->priority >= min_priority) continue;
         match = 1;
         for (j = 0; j < t->keylen; j++) {
+            debug("e->key[%d] = %x.\n", j, e->key[j]);
+            debug("e->mask[%d] = %x.\n", j, e->mask[j]);
+            debug("key[%d] = %x.\n", j, key[j]);
             if (e->key[j] != (key[j] & e->mask[j])) {
                 match = 0;
                 break;
             }
         }
-        if (match) res = e;
+        if (match) {
+            res = e;
+            break;
+        }
     }
+    debug("match = %d.\n", match);
     return match ? res->value : NULL;
 }
 

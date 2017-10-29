@@ -189,7 +189,7 @@ void fill_switching_table(uint8_t dmac[8], uint16_t vid, uint16_t port) {
     send_p4_msg(c, buffer, 4096);
 }
 
-void fill_get_acl_features_table(uint8_t sip[4], uint8_t sip_mask[4], uint8_t dip[6], uint8_t dip_mask[4],
+void fill_get_acl_features_table(uint8_t sip[4], uint8_t sip_mask[4], uint8_t dip[4], uint8_t dip_mask[4],
                                  uint8_t e_mac, uint8_t e_vlan, uint8_t e_ipv4, uint8_t e_icmp,
                                  uint8_t e_tcp, uint8_t e_udp) {
     char buffer[4096]; /* TODO: ugly */

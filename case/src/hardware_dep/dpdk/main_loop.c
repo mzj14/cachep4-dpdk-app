@@ -442,18 +442,21 @@ int launch_dpdk() {
 
     /* Needed for L2 multicasting - e.g. acting as a hub
         cloning headers and sometimes packet data*/
+    /*
     header_pool = rte_pktmbuf_pool_create("header_pool", NB_HDR_MBUF, 32,
                                           0, HDR_MBUF_DATA_SIZE, rte_socket_id());
 
-    if (header_pool == NULL)
+    if (header_pool == NULL) {
+        debug("header_pool is NULL");
         rte_exit(EXIT_FAILURE, "Cannot init header mbuf pool\n");
+    }
 
     clone_pool = rte_pktmbuf_pool_create("clone_pool", NB_CLONE_MBUF, 32,
                                          0, 0, rte_socket_id());
 
     if (clone_pool == NULL)
         rte_exit(EXIT_FAILURE, "Cannot init clone mbuf pool\n");
-
+    */
     rte_eal_mp_remote_launch(launch_one_lcore, NULL, CALL_MASTER);
 
     unsigned lcore_id;

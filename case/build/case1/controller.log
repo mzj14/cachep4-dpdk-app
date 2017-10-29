@@ -1,0 +1,44 @@
+Create and configure controller...
+Launching controller's main loop...
+New device connected...
+Initialize switch
+enter fill_mac_learning_table function.
+start to send p4 message.
+enter fill_mac_learning_table function.
+start to send p4 message.
+enter fill_routable_table function.
+start to send p4 message.
+enter fill_routable_table function.
+start to send p4 message.
+enter fill_unicast_routing_table function.
+start to send p4 message.
+enter fill_unicast_routing_table function.
+start to send p4 message.
+enter fill_switching_table function.
+start to send p4 message.
+enter fill_switching_table function.
+start to send p4 message.
+enter fill_get_acl_feature_table function.
+start to send p4 message.
+enter fill_get_acl_feature_table function.
+start to send p4 message.
+enter fill_mac_acl_table function.
+start to send p4 message.
+enter fill_mac_acl_table function.
+start to send p4 message.
+enter fill_ipv4_acl_table function.
+start to send p4 message.
+enter fill_ipv4_acl_table function.
+start to send p4 message.
+enter fill_tcp_acl_table function.
+start to send p4 message.
+enter fill_udp_acl_table function.
+start to send p4 message.
+Generate set_default_action message for table mac_acl
+start to send p4 message.
+Generate set_default_action message for table ipv4_acl
+start to send p4 message.
+Generate set_default_action message for table udp_acl
+start to send p4 message.
+Generate set_default_action message for table tcp_acl
+start to send p4 message.

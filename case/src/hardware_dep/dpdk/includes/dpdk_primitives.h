@@ -115,10 +115,21 @@
         dst = (FIELD_BYTES(pd, field) & BITS_MASK1(pd, field)) | \
              ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (16 - field_desc(pd, field).bitwidth)); \
         debug("dst = %x.\n", dst); }\
-    else \
+    else { \
+        debug("I am in the bytecount == 4 condition.\n"); \
+        debug("FIELD_BYTES = %x.\n", FIELD_BYTES(pd, field)); \
+        debug("BITS_MASK1 = %x.\n", BITS_MASK1(pd, field)); \
+        debug("BITS_MASK2 = %x.\n", BITS_MASK2(pd, field)); \
+        debug("BITS_MASK3 = %x.\n", BITS_MASK3(pd, field)); \
+        debug("bitwidth = %d.\n", field_desc(pd, field).bitwidth); \
+        debug("bitoffset = %d.\n", field_desc(pd, field).bitoffset); \
+        debug("bytecount = %d.\n", field_desc(pd, field).bytecount); \
+        debug("res1 = %x.\n", FIELD_BYTES(pd, field) & BITS_MASK1(pd, field)); \
+        debug("res2 = %x.\n", (FIELD_BYTES(pd, field) & BITS_MASK2(pd, field)) >> field_desc(pd, field).bitoffset); \
+        debug("res3 = %x.\n", (FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)); \
         dst = (FIELD_BYTES(pd, field) & BITS_MASK1(pd, field)) | \
              ((FIELD_BYTES(pd, field) & BITS_MASK2(pd, field)) >> field_desc(pd, field).bitoffset) | \
-             ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)); \
+             ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)); } \
 }
 
 

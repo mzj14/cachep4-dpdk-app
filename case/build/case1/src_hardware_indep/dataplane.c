@@ -55,16 +55,25 @@ void table_udp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 }// sugar@62
 
 void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
+    debug("enter the table_get_acl_features_key function.\n");
+    EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key);// sugar@49
+    debug("key[0] = %x.\n", *key);
+    debug("key[1] = %x.\n", *(key + 1));
+    debug("key[2] = %x.\n", *(key + 2));
+    debug("key[3] = %x.\n", *(key + 3));
     key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key);// sugar@49
+    debug("key[4] = %x.\n", *key);
+    debug("key[5] = %x.\n", *(key + 1));
+    debug("key[6] = %x.\n", *(key + 2));
+    debug("key[7] = %x.\n", *(key + 3));
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
-    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key);// sugar@53
     key += 6;// sugar@54
-    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key);// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
@@ -928,6 +937,8 @@ uint16_t csum16_add(uint16_t num1, uint16_t num2) {// sugar@125
     return (uint16_t) tmp_num;// sugar@130
 }// sugar@131
 
+// FIXME: In the original C code, headers failed to be allocated and initiated.
+
 void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     memset(packet_desc->headers[header_instance_standard_metadata].pointer, 0,
            header_info(header_instance_standard_metadata).bytewidth * sizeof(uint8_t));// sugar@233
@@ -937,7 +948,9 @@ void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     packet_desc->headers[header_instance_arp].pointer = NULL;// sugar@235
     packet_desc->headers[header_instance_icmp].pointer = NULL;// sugar@235
     packet_desc->headers[header_instance_udp].pointer = NULL;// sugar@235
-    packet_desc->headers[header_instance_vlan].pointer = NULL;// sugar@235
+    // packet_desc->headers[header_instance_vlan].pointer = NULL;// sugar@235
+    memset(packet_desc->headers[header_instance_vlan].pointer, 0,
+           header_info(header_instance_vlan).bytewidth * sizeof(uint8_t));// sugar@233
     memset(packet_desc->headers[header_instance_acl_metadata].pointer, 0,
            header_info(header_instance_acl_metadata).bytewidth * sizeof(uint8_t));// sugar@233
     memset(packet_desc->headers[header_instance_intrinsic_metadata].pointer, 0,
@@ -945,6 +958,8 @@ void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     memset(packet_desc->headers[header_instance_route_metadata].pointer, 0,
            header_info(header_instance_route_metadata).bytewidth * sizeof(uint8_t));// sugar@233
 }// sugar@236
+
+
 void init_headers(packet_descriptor_t *packet_desc) {// sugar@237
     packet_desc->headers[header_instance_standard_metadata] = (header_descriptor_t) {.type = header_instance_standard_metadata, .length = header_info(
             header_instance_standard_metadata).bytewidth,// sugar@241
@@ -968,9 +983,17 @@ void init_headers(packet_descriptor_t *packet_desc) {// sugar@237
     packet_desc->headers[header_instance_udp] = (header_descriptor_t) {.type = header_instance_udp, .length = header_info(
             header_instance_udp).bytewidth, .pointer = NULL,// sugar@245
             .var_width_field_bitwidth = 0};// sugar@246
+    /*
     packet_desc->headers[header_instance_vlan] = (header_descriptor_t) {.type = header_instance_vlan, .length = header_info(
             header_instance_vlan).bytewidth, .pointer = NULL,// sugar@245
             .var_width_field_bitwidth = 0};// sugar@246
+    */
+
+    packet_desc->headers[header_instance_vlan] = (header_descriptor_t) {.type = header_instance_vlan, .length = header_info(
+            header_instance_vlan).bytewidth,// sugar@241
+            .pointer = malloc(header_info(header_instance_vlan).bytewidth * sizeof(uint8_t)),// sugar@242
+            .var_width_field_bitwidth = 0};// sugar@243
+
     packet_desc->headers[header_instance_acl_metadata] = (header_descriptor_t) {.type = header_instance_acl_metadata, .length = header_info(
             header_instance_acl_metadata).bytewidth,// sugar@241
             .pointer = malloc(header_info(header_instance_acl_metadata).bytewidth * sizeof(uint8_t)),// sugar@242
