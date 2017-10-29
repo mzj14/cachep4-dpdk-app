@@ -145,6 +145,7 @@ get_acl_features_setdefault(struct get_acl_features_action action)// sugar@88
 void// sugar@40
 cache_add(// sugar@41
         uint8_t field_instance_standard_metadata_ingress_port[2],// sugar@44
+        uint8_t field_instance_standard_metadata_ingress_port_mask[2],// sugar@47
         uint8_t field_instance_ethernet_src_mac[6],// sugar@44
         uint8_t field_instance_ethernet_src_mac_mask[6],// sugar@47
         uint8_t field_instance_ethernet_dst_mac[6],// sugar@44
@@ -170,30 +171,31 @@ cache_add(// sugar@41
         struct cache_action action)// sugar@51
 {// sugar@52
     uint8_t key[34];// sugar@53
-    uint8_t mask[32];// sugar@55
+    uint8_t mask[34];// sugar@55
     memcpy(key + 0, field_instance_standard_metadata_ingress_port, 2);// sugar@61
+    memcpy(mask + 0, field_instance_standard_metadata_ingress_port_mask, 2);// sugar@63
     memcpy(key + 2, field_instance_ethernet_src_mac, 6);// sugar@61
-    memcpy(mask + 0, field_instance_ethernet_src_mac_mask, 6);// sugar@63
+    memcpy(mask + 2, field_instance_ethernet_src_mac_mask, 6);// sugar@63
     memcpy(key + 8, field_instance_ethernet_dst_mac, 6);// sugar@61
-    memcpy(mask + 6, field_instance_ethernet_dst_mac_mask, 6);// sugar@63
+    memcpy(mask + 8, field_instance_ethernet_dst_mac_mask, 6);// sugar@63
     memcpy(key + 14, field_instance_ethernet_eth_type, 2);// sugar@61
-    memcpy(mask + 12, field_instance_ethernet_eth_type_mask, 2);// sugar@63
+    memcpy(mask + 14, field_instance_ethernet_eth_type_mask, 2);// sugar@63
     memcpy(key + 16, field_instance_ip_src_addr, 4);// sugar@61
-    memcpy(mask + 14, field_instance_ip_src_addr_mask, 4);// sugar@63
+    memcpy(mask + 16, field_instance_ip_src_addr_mask, 4);// sugar@63
     memcpy(key + 20, field_instance_ip_dst_addr, 4);// sugar@61
-    memcpy(mask + 18, field_instance_ip_dst_addr_mask, 4);// sugar@63
+    memcpy(mask + 20, field_instance_ip_dst_addr_mask, 4);// sugar@63
     memcpy(key + 24, field_instance_ip_proto, 1);// sugar@61
-    memcpy(mask + 22, field_instance_ip_proto_mask, 1);// sugar@63
+    memcpy(mask + 24, field_instance_ip_proto_mask, 1);// sugar@63
     memcpy(key + 25, field_instance_tcp_src_port, 2);// sugar@61
-    memcpy(mask + 23, field_instance_tcp_src_port_mask, 2);// sugar@63
+    memcpy(mask + 25, field_instance_tcp_src_port_mask, 2);// sugar@63
     memcpy(key + 27, field_instance_tcp_dst_port, 2);// sugar@61
-    memcpy(mask + 25, field_instance_tcp_dst_port_mask, 2);// sugar@63
+    memcpy(mask + 27, field_instance_tcp_dst_port_mask, 2);// sugar@63
     memcpy(key + 29, field_instance_udp_src_port, 2);// sugar@61
-    memcpy(mask + 27, field_instance_udp_src_port_mask, 2);// sugar@63
+    memcpy(mask + 29, field_instance_udp_src_port_mask, 2);// sugar@63
     memcpy(key + 31, field_instance_udp_dst_port, 2);// sugar@61
-    memcpy(mask + 29, field_instance_udp_dst_port_mask, 2);// sugar@63
+    memcpy(mask + 31, field_instance_udp_dst_port_mask, 2);// sugar@63
     memcpy(key + 33, field_instance_tcp_flags, 1);// sugar@61
-    memcpy(mask + 31, field_instance_tcp_flags_mask, 1);// sugar@63
+    memcpy(mask + 33, field_instance_tcp_flags_mask, 1);// sugar@63
     ternary_add_promote(TABLE_cache, (uint8_t *) key, (uint8_t *) mask, (uint8_t * ) & action);// sugar@84
 }// sugar@85
 
@@ -291,7 +293,6 @@ multicast_routing_setdefault(struct multicast_routing_action action)// sugar@88
 {// sugar@89
     table_setdefault_promote(TABLE_multicast_routing, (uint8_t * ) & action);// sugar@90
 }// sugar@91
-// FIXME: Perhaps the compiler computer length of key with lpm match type in a wrong way.
 void// sugar@40
 igmp_add(// sugar@41
         uint8_t field_instance_ip_dst_addr[4],// sugar@44
@@ -661,7 +662,9 @@ get_acl_features_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
 void// sugar@95
 cache_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
     uint8_t *field_instance_standard_metadata_ingress_port = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[0])->bitmap);// sugar@100
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->bitmap);// sugar@105
+    uint8_t *field_instance_standard_metadata_ingress_port_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->mask);// sugar@106
     uint8_t *field_instance_ethernet_src_mac = (uint8_t * )(
             ((struct p4_field_match_ternary *) ctrl_m->field_matches[1])->bitmap);// sugar@105
     uint8_t *field_instance_ethernet_src_mac_mask = (uint8_t * )(
@@ -713,6 +716,7 @@ cache_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
         debug("Adding new entry to cache with action cache_block\n");// sugar@115
         cache_add(// sugar@116
                 field_instance_standard_metadata_ingress_port,// sugar@119
+                field_instance_standard_metadata_ingress_port_mask,// sugar@123
                 field_instance_ethernet_src_mac,// sugar@119
                 field_instance_ethernet_src_mac_mask,// sugar@123
                 field_instance_ethernet_dst_mac,// sugar@119
@@ -754,6 +758,7 @@ cache_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
         debug("Adding new entry to cache with action cache_action\n");// sugar@115
         cache_add(// sugar@116
                 field_instance_standard_metadata_ingress_port,// sugar@119
+                field_instance_standard_metadata_ingress_port_mask,// sugar@123
                 field_instance_ethernet_src_mac,// sugar@119
                 field_instance_ethernet_src_mac_mask,// sugar@123
                 field_instance_ethernet_dst_mac,// sugar@119

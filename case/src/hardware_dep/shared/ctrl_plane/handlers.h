@@ -16,8 +16,9 @@
 
 #include "messages.h"
 
+// FIXME: max number of action parameters and field matches should be increased for cache tables
 #define P4_MAX_NUMBER_OF_ACTION_PARAMETERS 10
-#define P4_MAX_NUMBER_OF_FIELD_MATCHES 10
+#define P4_MAX_NUMBER_OF_FIELD_MATCHES 15
 
 struct p4_ctrl_msg {
     uint8_t type;

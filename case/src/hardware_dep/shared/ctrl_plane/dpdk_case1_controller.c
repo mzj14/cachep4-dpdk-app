@@ -369,8 +369,8 @@ void fill_ipv4_acl_table(uint8_t sip[4], uint8_t sip_mask[4], uint8_t dip[4], ui
     send_p4_msg(c, buffer, 4096);
 }
 
-void fill_tcp_acl_table(uint16_t sport, uint8_t sport_mask[2], uint16_t dport, uint8_t dport_mask[2],
-                         uint8_t tcp_flags, uint8_t tcp_flags_mask, uint16_t reason) {
+void fill_tcp_acl_table(uint8_t sport[2], uint8_t sport_mask[2], uint8_t dport[2], uint8_t dport_mask[2],
+                        uint8_t tcp_flags, uint8_t tcp_flags_mask, uint16_t reason) {
     char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
@@ -386,13 +386,13 @@ void fill_tcp_acl_table(uint16_t sport, uint8_t sport_mask[2], uint16_t dport, u
 
     ternary1 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary1->header.name, "tcp.src_port");
-    memcpy(ternary1->bitmap, &sport, 2);
+    memcpy(ternary1->bitmap, sport, 2);
     memcpy(ternary1->mask, sport_mask, 2);
     ternary1->length = 2 * 8 + 0;
 
     ternary2 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary2->header.name, "tcp.dst_port");
-    memcpy(ternary2->bitmap, &dport, 2);
+    memcpy(ternary2->bitmap, dport, 2);
     memcpy(ternary2->mask, dport_mask, 2);
     ternary2->length = 2 * 8 + 0;
 
@@ -421,7 +421,7 @@ void fill_tcp_acl_table(uint16_t sport, uint8_t sport_mask[2], uint16_t dport, u
     send_p4_msg(c, buffer, 4096);
 }
 
-void fill_udp_acl_table(uint16_t sport, uint8_t sport_mask[2], uint16_t dport, uint8_t dport_mask[2], uint16_t reason) {
+void fill_udp_acl_table(uint8_t sport[2], uint8_t sport_mask[2], uint8_t dport[2], uint8_t dport_mask[2], uint16_t reason) {
     char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
     struct p4_add_table_entry *te;
@@ -437,13 +437,13 @@ void fill_udp_acl_table(uint16_t sport, uint8_t sport_mask[2], uint16_t dport, u
 
     ternary1 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary1->header.name, "udp.src_port");
-    memcpy(ternary1->bitmap, &sport, 2);
+    memcpy(ternary1->bitmap, sport, 2);
     memcpy(ternary1->mask, sport_mask, 2);
     ternary1->length = 2 * 8 + 0;
 
     ternary2 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary2->header.name, "udp.dst_port");
-    memcpy(ternary2->bitmap, &dport, 2);
+    memcpy(ternary2->bitmap, dport, 2);
     memcpy(ternary2->mask, dport_mask, 2);
     ternary2->length = 2 * 8 + 0;
 
@@ -575,6 +575,7 @@ void init_simple() {
     uint8_t mask_3[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
     uint8_t eth_type[2] = {0x08, 0x00};
+    uint8_t port_num[2] = {0x1f, 0x40};
 
     fill_mac_learning_table(mac_2, 0);
     fill_mac_learning_table(mac_4, 0);
@@ -597,9 +598,9 @@ void init_simple() {
     fill_ipv4_acl_table(ip_1, mask_2, ip_2, mask_2, 0, 0, 1);
     fill_ipv4_acl_table(ip_2, mask_2, ip_1, mask_2, 0, 0, 1);
 
-    fill_tcp_acl_table(8000, mask_1, 8000, mask_1, 0, 0, 1);
+    fill_tcp_acl_table(port_num, mask_1, port_num, mask_1, 0, 0, 1);
 
-    fill_udp_acl_table(8000, mask_1, 8000, mask_1, 1);
+    fill_udp_acl_table(port_num, mask_1, port_num, mask_1, 1);
 
     set_default_action_mac_acl();
     set_default_action_ipv4_acl();

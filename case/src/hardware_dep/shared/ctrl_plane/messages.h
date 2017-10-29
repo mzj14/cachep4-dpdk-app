@@ -170,7 +170,8 @@ struct p4_field_match_header {
     uint8_t type; /* p4_field_match_type */
 };
 
-#define MAX_FIELD_LENGTH 256
+// FIXME: The max field length should be adjusted according to specific applications
+#define MAX_FIELD_LENGTH 8
 
 struct p4_field_match_lpm {
     struct p4_field_match_header header;

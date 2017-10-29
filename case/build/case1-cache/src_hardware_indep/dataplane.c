@@ -64,29 +64,29 @@ void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key) {// sugar
 
 void table_cache_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
 }// sugar@62
 
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -990,96 +990,110 @@ uint16_t csum16_add(uint16_t num1, uint16_t num2) {// sugar@125
 
 void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     memset(packet_desc->headers[header_instance_standard_metadata].pointer, 0,
-           header_info(header_instance_standard_metadata).bytewidth * sizeof(uint8_t));// sugar@233
-    packet_desc->headers[header_instance_ethernet].pointer = NULL;// sugar@235
-    packet_desc->headers[header_instance_ip].pointer = NULL;// sugar@235
-    packet_desc->headers[header_instance_tcp].pointer = NULL;// sugar@235
-    packet_desc->headers[header_instance_arp].pointer = NULL;// sugar@235
-    packet_desc->headers[header_instance_icmp].pointer = NULL;// sugar@235
-    packet_desc->headers[header_instance_udp].pointer = NULL;// sugar@235
-    packet_desc->headers[header_instance_vlan].pointer = NULL;// sugar@235
+           header_info(header_instance_standard_metadata).bytewidth * sizeof(uint8_t));// sugar@232
+    memset(packet_desc->headers[header_instance_ethernet].pointer, 0,
+           header_info(header_instance_ethernet).bytewidth * sizeof(uint8_t));// sugar@232
+    memset(packet_desc->headers[header_instance_ip].pointer, 0,
+           header_info(header_instance_ip).bytewidth * sizeof(uint8_t));// sugar@232
+    memset(packet_desc->headers[header_instance_tcp].pointer, 0,
+           header_info(header_instance_tcp).bytewidth * sizeof(uint8_t));// sugar@232
+    memset(packet_desc->headers[header_instance_arp].pointer, 0,
+           header_info(header_instance_arp).bytewidth * sizeof(uint8_t));// sugar@232
+    memset(packet_desc->headers[header_instance_icmp].pointer, 0,
+           header_info(header_instance_icmp).bytewidth * sizeof(uint8_t));// sugar@232
+    memset(packet_desc->headers[header_instance_udp].pointer, 0,
+           header_info(header_instance_udp).bytewidth * sizeof(uint8_t));// sugar@232
+    memset(packet_desc->headers[header_instance_vlan].pointer, 0,
+           header_info(header_instance_vlan).bytewidth * sizeof(uint8_t));// sugar@232
     memset(packet_desc->headers[header_instance_acl_metadata].pointer, 0,
-           header_info(header_instance_acl_metadata).bytewidth * sizeof(uint8_t));// sugar@233
+           header_info(header_instance_acl_metadata).bytewidth * sizeof(uint8_t));// sugar@232
     memset(packet_desc->headers[header_instance_intrinsic_metadata].pointer, 0,
-           header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t));// sugar@233
+           header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t));// sugar@232
     memset(packet_desc->headers[header_instance_route_metadata].pointer, 0,
-           header_info(header_instance_route_metadata).bytewidth * sizeof(uint8_t));// sugar@233
-}// sugar@236
-void init_headers(packet_descriptor_t *packet_desc) {// sugar@237
+           header_info(header_instance_route_metadata).bytewidth * sizeof(uint8_t));// sugar@232
+}// sugar@233
+void init_headers(packet_descriptor_t *packet_desc) {// sugar@235
     packet_desc->headers[header_instance_standard_metadata] = (header_descriptor_t) {.type = header_instance_standard_metadata, .length = header_info(
-            header_instance_standard_metadata).bytewidth,// sugar@241
-            .pointer = malloc(header_info(header_instance_standard_metadata).bytewidth * sizeof(uint8_t)),// sugar@242
-            .var_width_field_bitwidth = 0};// sugar@243
+            header_instance_standard_metadata).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_standard_metadata).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_ethernet] = (header_descriptor_t) {.type = header_instance_ethernet, .length = header_info(
-            header_instance_ethernet).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
+            header_instance_ethernet).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_ethernet).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_ip] = (header_descriptor_t) {.type = header_instance_ip, .length = header_info(
-            header_instance_ip).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
+            header_instance_ip).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_ip).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_tcp] = (header_descriptor_t) {.type = header_instance_tcp, .length = header_info(
-            header_instance_tcp).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
+            header_instance_tcp).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_tcp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_arp] = (header_descriptor_t) {.type = header_instance_arp, .length = header_info(
-            header_instance_arp).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
+            header_instance_arp).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_arp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_icmp] = (header_descriptor_t) {.type = header_instance_icmp, .length = header_info(
-            header_instance_icmp).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
+            header_instance_icmp).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_icmp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_udp] = (header_descriptor_t) {.type = header_instance_udp, .length = header_info(
-            header_instance_udp).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
+            header_instance_udp).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_udp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_vlan] = (header_descriptor_t) {.type = header_instance_vlan, .length = header_info(
-            header_instance_vlan).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
+            header_instance_vlan).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_vlan).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_acl_metadata] = (header_descriptor_t) {.type = header_instance_acl_metadata, .length = header_info(
-            header_instance_acl_metadata).bytewidth,// sugar@241
-            .pointer = malloc(header_info(header_instance_acl_metadata).bytewidth * sizeof(uint8_t)),// sugar@242
-            .var_width_field_bitwidth = 0};// sugar@243
+            header_instance_acl_metadata).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_acl_metadata).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_intrinsic_metadata] = (header_descriptor_t) {.type = header_instance_intrinsic_metadata, .length = header_info(
-            header_instance_intrinsic_metadata).bytewidth,// sugar@241
-            .pointer = malloc(header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t)),// sugar@242
-            .var_width_field_bitwidth = 0};// sugar@243
+            header_instance_intrinsic_metadata).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_route_metadata] = (header_descriptor_t) {.type = header_instance_route_metadata, .length = header_info(
-            header_instance_route_metadata).bytewidth,// sugar@241
-            .pointer = malloc(header_info(header_instance_route_metadata).bytewidth * sizeof(uint8_t)),// sugar@242
-            .var_width_field_bitwidth = 0};// sugar@243
-}// sugar@247
+            header_instance_route_metadata).bytewidth,// sugar@238
+            .pointer = malloc(header_info(header_instance_route_metadata).bytewidth * sizeof(uint8_t)),// sugar@239
+            .var_width_field_bitwidth = 0};// sugar@240
+}// sugar@241
 
 
-void init_keyless_tables() {// sugar@255
-}// sugar@263
+void init_keyless_tables() {// sugar@249
+}// sugar@257
 
-void init_dataplane(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@265
-    init_headers(pd);// sugar@266
-    reset_headers(pd);// sugar@267
-    init_keyless_tables();// sugar@268
-    pd->dropped = 0;// sugar@269
-}// sugar@270
+void init_dataplane(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@259
+    init_headers(pd);// sugar@260
+    reset_headers(pd);// sugar@261
+    init_keyless_tables();// sugar@262
+    pd->dropped = 0;// sugar@263
+}// sugar@264
 
-void update_packet(packet_descriptor_t *pd) {// sugar@273
-    uint32_t value32, res32;// sugar@274
-    (void) value32, (void) res32;// sugar@275
-    if (pd->fields.attr_field_instance_vlan_vid == MODIFIED) {// sugar@280
-        value32 = pd->fields.field_instance_vlan_vid;// sugar@281
-        MODIFY_INT32_INT32_AUTO(pd, field_instance_vlan_vid, value32)// sugar@282
-    }// sugar@283
+void update_packet(packet_descriptor_t *pd) {// sugar@267
+    uint32_t value32, res32;// sugar@268
+    (void) value32, (void) res32;// sugar@269
+    if (pd->fields.attr_field_instance_vlan_vid == MODIFIED) {// sugar@274
+        value32 = pd->fields.field_instance_vlan_vid;// sugar@275
+        MODIFY_INT32_INT32_AUTO(pd, field_instance_vlan_vid, value32)// sugar@276
+    }// sugar@277
 
-}// sugar@296
-
-
-int verify_packet(packet_descriptor_t *pd) {// sugar@300
-    uint32_t value32;// sugar@301
-    return 0;// sugar@317
-}// sugar@318
+}// sugar@290
 
 
-void handle_packet(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@322
-{// sugar@323
-    int value32;// sugar@324
-    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, value32)// sugar@325
+int verify_packet(packet_descriptor_t *pd) {// sugar@294
+    uint32_t value32;// sugar@295
+    return 0;// sugar@311
+}// sugar@312
+
+
+void handle_packet(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@316
+{// sugar@317
+    int value32;// sugar@318
+    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, value32)// sugar@319
     debug("### HANDLING PACKET ARRIVING AT PORT %"
     PRIu32
-    "...\n", value32);// sugar@326
-    parse_packet(pd, tables);// sugar@327
-    update_packet(pd);// sugar@328
-}// sugar@329
+    "...\n", value32);// sugar@320
+    parse_packet(pd, tables);// sugar@321
+    update_packet(pd);// sugar@322
+}// sugar@323

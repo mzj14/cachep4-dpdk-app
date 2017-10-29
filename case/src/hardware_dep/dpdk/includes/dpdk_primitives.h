@@ -129,9 +129,9 @@
         debug("res3 = %x.\n", (FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)); \
         dst = (FIELD_BYTES(pd, field) & BITS_MASK1(pd, field)) | \
              ((FIELD_BYTES(pd, field) & BITS_MASK2(pd, field)) >> field_desc(pd, field).bitoffset) | \
-             ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)); } \
+             ((FIELD_BYTES(pd, field) & BITS_MASK3(pd, field)) >> (field_desc(pd, field).bytecount * 8 - field_desc(pd, field).bitwidth)); \
+        debug("dst = %x.\n", dst); } \
 }
-
 
 // Extracts a field to the given uint32_t variable with byte conversion (always) [MAX 4 BYTES]
 #define EXTRACT_INT32_NTOH(pd, field, dst) { \

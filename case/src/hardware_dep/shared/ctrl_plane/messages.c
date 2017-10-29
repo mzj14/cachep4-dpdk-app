@@ -211,8 +211,10 @@ inline struct p4_field_match_valid *unpack_p4_field_match_valid(char *buffer, ui
 struct p4_field_match_ternary *
 add_p4_field_match_ternary(struct p4_add_table_entry *add_table_entry, uint16_t maxlength) {
     struct p4_field_match_ternary *field_match_ternary;
-    if (add_table_entry->header.length + sizeof(struct p4_field_match_ternary) > maxlength)
+    if (add_table_entry->header.length + sizeof(struct p4_field_match_ternary) > maxlength) {
+        printf("It is buffer overflow~\n");
         return 0; /* buffer overflow */
+    }
     field_match_ternary = (struct p4_field_match_ternary *) (((char *) add_table_entry) +
                                                              add_table_entry->header.length);
     add_table_entry->header.length += sizeof(struct p4_field_match_ternary);
