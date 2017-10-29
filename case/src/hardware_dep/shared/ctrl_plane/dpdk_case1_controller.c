@@ -199,19 +199,19 @@ void fill_get_acl_features_table(uint8_t sip[4], uint8_t sip_mask[4], uint8_t di
     struct p4_action_parameter *ap1, *ap2, *ap3, *ap4, *ap5, *ap6;
     struct p4_field_match_ternary *ternary1, *ternary2; // TODO: replace to lpm
 
-    printf("enter fill_switching_table function.\n");
+    printf("enter fill_get_acl_feature_table function.\n");
 
     h = create_p4_header(buffer, 0, 4096);
     te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "get_acl_features");
 
-    ternary1 = add_p4_field_match_exact(te, 4096);
+    ternary1 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary1->header.name, "ip.src_addr");
     memcpy(ternary1->bitmap, sip, 4);
     memcpy(ternary1->mask, sip_mask, 4);
     ternary1->length = 4 * 8 + 0;
 
-    ternary2 = add_p4_field_match_exact(te, 4096);
+    ternary2 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary2->header.name, "ip.dst_addr");
     memcpy(ternary2->bitmap, dip, 4);
     memcpy(ternary2->mask, dip_mask, 4);
@@ -261,6 +261,206 @@ void fill_get_acl_features_table(uint8_t sip[4], uint8_t sip_mask[4], uint8_t di
     netconv_p4_action_parameter(ap4);
     netconv_p4_action_parameter(ap5);
     netconv_p4_action_parameter(ap6);
+
+    send_p4_msg(c, buffer, 4096);
+}
+
+void fill_mac_acl_table(uint8_t smac[6], uint8_t smac_mask[6], uint8_t dmac[6], uint8_t dmac_mask[6],
+                        uint8_t eth_type[2], uint8_t eth_type_mask[2], uint16_t reason) {
+    char buffer[4096]; /* TODO: ugly */
+    struct p4_header *h;
+    struct p4_add_table_entry *te;
+    struct p4_action *a;
+    struct p4_action_parameter *ap;
+    struct p4_field_match_ternary *ternary1, *ternary2, *ternary3; // TODO: replace to lpm
+
+    printf("enter fill_mac_acl_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
+    strcpy(te->table_name, "mac_acl");
+
+    ternary1 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary1->header.name, "ethernet.src_mac");
+    memcpy(ternary1->bitmap, smac, 6);
+    memcpy(ternary1->mask, smac_mask, 6);
+    ternary1->length = 6 * 8 + 0;
+
+    ternary2 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary2->header.name, "ethernet.dst_mac");
+    memcpy(ternary2->bitmap, dmac, 6);
+    memcpy(ternary2->mask, dmac_mask, 6);
+    ternary2->length = 6 * 8 + 0;
+
+    ternary3 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary3->header.name, "ethernet.eth_type");
+    memcpy(ternary3->bitmap, eth_type, 2);
+    memcpy(ternary3->mask, eth_type_mask, 2);
+    ternary3->length = 2 * 8 + 0;
+
+    a = add_p4_action(h, 4096);
+    strcpy(a->description.name, "acl_permit");
+
+    ap = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap->name, "reason");
+    memcpy(ap->bitmap, &reason, 2);
+    ap->length = 2 * 8 + 0;
+
+    netconv_p4_header(h);
+    netconv_p4_add_table_entry(te);
+    netconv_p4_field_match_ternary(ternary1);
+    netconv_p4_field_match_ternary(ternary2);
+    netconv_p4_field_match_ternary(ternary3);
+    netconv_p4_action(a);
+    netconv_p4_action_parameter(ap);
+
+    send_p4_msg(c, buffer, 4096);
+}
+
+void fill_ipv4_acl_table(uint8_t sip[4], uint8_t sip_mask[4], uint8_t dip[4], uint8_t dip_mask[4],
+                         uint8_t ip_proto, uint8_t ip_proto_mask, uint16_t reason) {
+    char buffer[4096]; /* TODO: ugly */
+    struct p4_header *h;
+    struct p4_add_table_entry *te;
+    struct p4_action *a;
+    struct p4_action_parameter *ap;
+    struct p4_field_match_ternary *ternary1, *ternary2, *ternary3; // TODO: replace to lpm
+
+    printf("enter fill_ipv4_acl_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
+    strcpy(te->table_name, "ipv4_acl");
+
+    ternary1 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary1->header.name, "ip.src_addr");
+    memcpy(ternary1->bitmap, sip, 4);
+    memcpy(ternary1->mask, sip_mask, 4);
+    ternary1->length = 4 * 8 + 0;
+
+    ternary2 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary2->header.name, "ip.dst_addr");
+    memcpy(ternary2->bitmap, dip, 4);
+    memcpy(ternary2->mask, dip_mask, 4);
+    ternary2->length = 4 * 8 + 0;
+
+    ternary3 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary3->header.name, "ip.proto");
+    memcpy(ternary3->bitmap, &ip_proto, 1);
+    memcpy(ternary3->mask, &ip_proto_mask, 1);
+    ternary3->length = 1 * 8 + 0;
+
+    a = add_p4_action(h, 4096);
+    strcpy(a->description.name, "acl_permit");
+
+    ap = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap->name, "reason");
+    memcpy(ap->bitmap, &reason, 2);
+    ap->length = 2 * 8 + 0;
+
+    netconv_p4_header(h);
+    netconv_p4_add_table_entry(te);
+    netconv_p4_field_match_ternary(ternary1);
+    netconv_p4_field_match_ternary(ternary2);
+    netconv_p4_field_match_ternary(ternary3);
+    netconv_p4_action(a);
+    netconv_p4_action_parameter(ap);
+
+    send_p4_msg(c, buffer, 4096);
+}
+
+void fill_tcp_acl_table(uint16_t sport, uint8_t sport_mask[2], uint16_t dport, uint8_t dport_mask[2],
+                         uint8_t tcp_flags, uint8_t tcp_flags_mask, uint16_t reason) {
+    char buffer[4096]; /* TODO: ugly */
+    struct p4_header *h;
+    struct p4_add_table_entry *te;
+    struct p4_action *a;
+    struct p4_action_parameter *ap;
+    struct p4_field_match_ternary *ternary1, *ternary2, *ternary3; // TODO: replace to lpm
+
+    printf("enter fill_tcp_acl_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
+    strcpy(te->table_name, "tcp_acl");
+
+    ternary1 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary1->header.name, "tcp.src_port");
+    memcpy(ternary1->bitmap, &sport, 2);
+    memcpy(ternary1->mask, sport_mask, 2);
+    ternary1->length = 2 * 8 + 0;
+
+    ternary2 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary2->header.name, "tcp.dst_port");
+    memcpy(ternary2->bitmap, &dport, 2);
+    memcpy(ternary2->mask, dport_mask, 2);
+    ternary2->length = 2 * 8 + 0;
+
+    ternary3 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary3->header.name, "tcp.flags");
+    memcpy(ternary3->bitmap, &tcp_flags, 1);
+    memcpy(ternary3->mask, &tcp_flags_mask, 1);
+    ternary3->length = 1 * 8 + 0;
+
+    a = add_p4_action(h, 4096);
+    strcpy(a->description.name, "acl_permit");
+
+    ap = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap->name, "reason");
+    memcpy(ap->bitmap, &reason, 2);
+    ap->length = 2 * 8 + 0;
+
+    netconv_p4_header(h);
+    netconv_p4_add_table_entry(te);
+    netconv_p4_field_match_ternary(ternary1);
+    netconv_p4_field_match_ternary(ternary2);
+    netconv_p4_field_match_ternary(ternary3);
+    netconv_p4_action(a);
+    netconv_p4_action_parameter(ap);
+
+    send_p4_msg(c, buffer, 4096);
+}
+
+void fill_udp_acl_table(uint16_t sport, uint8_t sport_mask[2], uint16_t dport, uint8_t dport_mask[2], uint16_t reason) {
+    char buffer[4096]; /* TODO: ugly */
+    struct p4_header *h;
+    struct p4_add_table_entry *te;
+    struct p4_action *a;
+    struct p4_action_parameter *ap;
+    struct p4_field_match_ternary *ternary1, *ternary2; // TODO: replace to lpm
+
+    printf("enter fill_udp_acl_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
+    strcpy(te->table_name, "udp_acl");
+
+    ternary1 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary1->header.name, "udp.src_port");
+    memcpy(ternary1->bitmap, &sport, 2);
+    memcpy(ternary1->mask, sport_mask, 2);
+    ternary1->length = 2 * 8 + 0;
+
+    ternary2 = add_p4_field_match_ternary(te, 4096);
+    strcpy(ternary2->header.name, "udp.dst_port");
+    memcpy(ternary2->bitmap, &dport, 2);
+    memcpy(ternary2->mask, dport_mask, 2);
+    ternary2->length = 2 * 8 + 0;
+
+    a = add_p4_action(h, 4096);
+    strcpy(a->description.name, "acl_permit");
+
+    ap = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap->name, "reason");
+    memcpy(ap->bitmap, &reason, 2);
+    ap->length = 2 * 8 + 0;
+
+    netconv_p4_header(h);
+    netconv_p4_add_table_entry(te);
+    netconv_p4_field_match_ternary(ternary1);
+    netconv_p4_field_match_ternary(ternary2);
+    netconv_p4_action(a);
+    netconv_p4_action_parameter(ap);
 
     send_p4_msg(c, buffer, 4096);
 }
@@ -391,7 +591,6 @@ void init_simple() {
     fill_get_acl_features_table(ip_1, mask_2, ip_2, mask_2, 1, 1, 1, 1, 1, 1);
     fill_get_acl_features_table(ip_2, mask_2, ip_1, mask_2, 1, 1, 1, 1, 1, 1);
 
-    /*
     fill_mac_acl_table(mac_2, mask_3, mac_4, mask_3, eth_type, mask_1, 1);
     fill_mac_acl_table(mac_4, mask_3, mac_2, mask_3, eth_type, mask_1, 1);
 
@@ -399,8 +598,8 @@ void init_simple() {
     fill_ipv4_acl_table(ip_2, mask_2, ip_1, mask_2, 0, 0, 1);
 
     fill_tcp_acl_table(8000, mask_1, 8000, mask_1, 0, 0, 1);
+
     fill_udp_acl_table(8000, mask_1, 8000, mask_1, 1);
-    */
 
     set_default_action_mac_acl();
     set_default_action_ipv4_acl();
