@@ -97,14 +97,20 @@ void table_nat_twice_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
+
 void table_nat_flow_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
+    debug("enter the table_nat_flow_key function.\n");
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
     key += sizeof(uint8_t);// sugar@50
+    // TODO: the field instance should be l4_metadata, not udp
+    //       and the difference between the l4_metadata and the udp_src_port is the big-end and small-end
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
+    debug("key[9] = %x.\n", *(key));
+    debug("key[10] = %x.\n", *(key + 1));
     key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
@@ -617,6 +623,8 @@ void apply_table_udp_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
     }// sugar@120
 }// sugar@121
 
+// FIXME: the if-else relationship within the apply_table function is not robust.
+// FIXME: Judging whether pointer is NULL or not is no longer right to represent "valid" operation.
 void apply_table_get_acl_features(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
 {// sugar@69
     debug("  :::: EXECUTING TABLE get_acl_features\n");// sugar@70
@@ -639,52 +647,58 @@ void apply_table_get_acl_features(packet_descriptor_t *pd, lookup_table_t **tabl
                 break;// sugar@96
         }// sugar@97
     }// sugar@98
-    if (res != NULL) {// sugar@110
-        switch (res->action_id) {// sugar@111
-            case action_acl_feature:// sugar@113
+    // if (res != NULL) {// sugar@110
+        // switch (res->action_id) {// sugar@111
+            // case action_acl_feature:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_mac_acl)) ==
                     (1)) { return apply_table_mac_acl(pd, tables); }
-                else {
+                // else {
                     if (pd->headers[header_instance_ip].pointer != NULL) {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_ipv4_acl)) ==
                             (1)) { return apply_table_ipv4_acl(pd, tables); }
-                        else {
+                        // else {
                             if (pd->headers[header_instance_tcp].pointer != NULL) {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_tcp_acl)) ==
                                     (1)) { return apply_table_tcp_acl(pd, tables); }
-                                else {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                        (0)) { return apply_table_switching(pd, tables); }
-                                    else {}
-                                }
-                            } else {
+                                // else {
+                                    // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+                                        // (0)) { return apply_table_switching(pd, tables); }
+                                    // else {}
+                                // }
+                            } // else {
                                 if (pd->headers[header_instance_udp].pointer != NULL) {
                                     if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                                         (1)) { return apply_table_udp_acl(pd, tables); }
-                                    else {
-                                        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                            (0)) { return apply_table_switching(pd, tables); }
-                                        else {}
-                                    }
-                                } else {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                        (0)) { return apply_table_switching(pd, tables); }
-                                    else {}
-                                }
+                                    // else {
+                                        // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+                                            // (0)) { return apply_table_switching(pd, tables); }
+                                        // else {}
+                                    // }
+                                } // else {
+                                    // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+                                        // (0)) { return apply_table_switching(pd, tables); }
+                                    // else {}
+                                // }
                             }
-                        }
-                    } else {
+                        // }
+                    // }
+                    /*
+                    else {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                             (0)) { return apply_table_switching(pd, tables); }
                         else {}
                     }
-                }// sugar@114
-                break;// sugar@115
-        }// sugar@116
-    } else {// sugar@117
-        debug("    :: IGNORING PACKET.\n");// sugar@118
-        return;// sugar@119
-    }// sugar@120
+                    */
+                // }// // sugar@114
+                // break;// sugar@115
+        // }// sugar@116
+    // } else {// sugar@117
+        // debug("    :: IGNORING PACKET.\n");// sugar@118
+        // return;// sugar@119
+    // }// sugar@120
+    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == 0) {
+        return apply_table_switching(pd, tables);
+    }
 }// sugar@121
 
 void apply_table_nat_src(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
@@ -828,6 +842,7 @@ void apply_table_nat_flow(packet_descriptor_t *pd, lookup_table_t **tables)// su
                 break;// sugar@96
             case action_rewrite_tcp_dst:// sugar@90
                 debug("    :: EXECUTING ACTION rewrite_tcp_dst...\n");// sugar@91
+                debug("I am going to do action rewrite_tcp_dst.\n");
                 action_code_rewrite_tcp_dst(pd, tables, res->rewrite_tcp_dst_params);// sugar@93
                 break;// sugar@96
             case action_rewrite_udp_dst:// sugar@90

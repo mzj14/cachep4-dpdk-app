@@ -76,6 +76,9 @@ switching_add(// sugar@40
     uint8_t key[8];// sugar@51
     memcpy(key + 0, field_instance_ethernet_dst_mac, 6);// sugar@56
     memcpy(key + 6, field_instance_vlan_vid, 2);// sugar@56
+    debug("in the switching add function.\n");
+    debug("key[6] = %x.\n", *(key + 6));
+    debug("key[7] = %x.\n", *(key + 7));
     exact_add_promote(TABLE_switching, (uint8_t *) key, (uint8_t * ) & action);// sugar@74
 }// sugar@75
 

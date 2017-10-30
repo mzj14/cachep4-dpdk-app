@@ -101,6 +101,9 @@ void action_code_rewrite_udp_src(packet_descriptor_t *pd, lookup_table_t **table
     (void) value32;
     (void) res32;
     (void) mask32;// sugar@443
+    debug("in the action_code_rewrite_tcp_dst function.\n");
+    debug("parameters.port[0] = %x.\n", *((uint8_t *)parameters.port));
+    debug("parameters.port[1] = %x.\n", *((uint8_t *)parameters.port + 1));
     MODIFY_INT32_BYTEBUF(pd, field_instance_udp_src_port, parameters.port, 2)// sugar@189
 // sugar@449
     MODIFY_INT32_BYTEBUF(pd, field_instance_ip_src_addr, parameters.addr, 4)// sugar@189
@@ -222,11 +225,13 @@ void action_code_get_tcp_information(packet_descriptor_t *pd, lookup_table_t **t
 // sugar@449
 }// sugar@453
 
+// FIXME: the value here is in
 void action_code_get_udp_information(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@441
     uint32_t value32, res32, mask32;// sugar@442
     (void) value32;
     (void) res32;
     (void) mask32;// sugar@443
+    // FIXME: here is the original value of l4_metadata. It is the key!
     value32 = pd->fields.field_instance_udp_src_port;// sugar@52
     pd->fields.attr_field_instance_udp_src_port = MODIFIED;// sugar@53
 // sugar@166

@@ -19,6 +19,7 @@ void apply_table_switching(packet_descriptor_t *pd, lookup_table_t **tables);// 
 void apply_table_multicast_routing(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 
+// FIXME: When extracting header from packets, there seems to be a disagreement in big-end and small-end.
 uint8_t reverse_buffer[14];// sugar@34
 void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53

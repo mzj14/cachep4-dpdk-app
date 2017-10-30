@@ -465,7 +465,7 @@ void fill_udp_acl_table(uint8_t sport[2], uint8_t sport_mask[2], uint8_t dport[2
     send_p4_msg(c, buffer, 4096);
 }
 // FIXME: the interface of "fill_table" function lacks action_name, needs to be improved.
-void fill_nat_get_l4_information_table_1(uint8_t ip_proto) {
+void fill_nat_get_l4_infomation_table_1(uint8_t ip_proto) {
     // FIXME: The buffer size is changed to 4096 bytes to meet the demand for complex cache table match and action.
     char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
@@ -473,11 +473,11 @@ void fill_nat_get_l4_information_table_1(uint8_t ip_proto) {
     struct p4_action *a;
     struct p4_field_match_exact *exact; // TODO: replace to lpm
 
-    printf("enter fill_nat_get_l4_information_table.\n");
+    printf("enter fill_nat_get_l4_infomation_table.\n");
 
     h = create_p4_header(buffer, 0, 4096);
     te = create_p4_add_table_entry(buffer, 0, 4096);
-    strcpy(te->table_name, "nat_get_l4_information");
+    strcpy(te->table_name, "nat_get_l4_infomation");
 
     exact = add_p4_field_match_exact(te, 4096);
     strcpy(exact->header.name, "ip.proto");
@@ -496,7 +496,7 @@ void fill_nat_get_l4_information_table_1(uint8_t ip_proto) {
 
 }
 
-void fill_nat_get_l4_information_table_2(uint8_t ip_proto) {
+void fill_nat_get_l4_infomation_table_2(uint8_t ip_proto) {
     // FIXME: The buffer size is changed to 4096 bytes to meet the demand for complex cache table match and action.
     char buffer[4096]; /* TODO: ugly */
     struct p4_header *h;
@@ -504,11 +504,11 @@ void fill_nat_get_l4_information_table_2(uint8_t ip_proto) {
     struct p4_action *a;
     struct p4_field_match_exact *exact; // TODO: replace to lpm
 
-    printf("enter fill_nat_get_l4_information_table.\n");
+    printf("enter fill_nat_get_l4_infomation_table.\n");
 
     h = create_p4_header(buffer, 0, 4096);
     te = create_p4_add_table_entry(buffer, 0, 4096);
-    strcpy(te->table_name, "nat_get_l4_information");
+    strcpy(te->table_name, "nat_get_l4_infomation");
 
     exact = add_p4_field_match_exact(te, 4096);
     strcpy(exact->header.name, "ip.proto");
@@ -857,18 +857,18 @@ void set_default_action_nat_flow() {
     send_p4_msg(c, buffer, sizeof(buffer));
 }
 
-void set_default_action_nat_get_l4_information() {
+void set_default_action_nat_get_l4_infomation() {
     char buffer[4096];
     struct p4_header* h;
     struct p4_set_default_action* sda;
     struct p4_action* a;
 
-    printf("Generate set_default_action message for table nat_get_l4_information\n");
+    printf("Generate set_default_action message for table nat_get_l4_infomation\n");
 
     h = create_p4_header(buffer, 0, sizeof(buffer));
 
     sda = create_p4_set_default_action(buffer,0,sizeof(buffer));
-    strcpy(sda->table_name, "nat_get_l4_information");
+    strcpy(sda->table_name, "nat_get_l4_infomation");
 
     a = &(sda->action);
     strcpy(a->description.name, "disable_nat");
@@ -890,10 +890,16 @@ void init_simple() {
     uint8_t mac_3[6] = {0x80, 0x00, 0x00, 0x00, 0x00, 0x11};
     uint8_t mac_4[6] = {0x80, 0x00, 0x00, 0x00, 0x00, 0x12};
 
+    uint8_t mac_1_r[6] = {0x01, 0x00, 0x00, 0x00, 0x00, 0x80};
+    uint8_t mac_2_r[6] = {0x02, 0x00, 0x00, 0x00, 0x00, 0x80};
+    uint8_t mac_3_r[6] = {0x11, 0x00, 0x00, 0x00, 0x00, 0x80};
+    uint8_t mac_4_r[6] = {0x12, 0x00, 0x00, 0x00, 0x00, 0x80};
+
     uint8_t ip_1[4] = {192, 168, 0, 2};
     uint8_t ip_2[4] = {192, 168, 1, 2};
     // uint8_t gw_1[4] = {192, 168, 0, 1};
     uint8_t gw_2[4] = {192, 168, 1, 1};
+    uint8_t gw_2_r[4] = {1, 1, 168, 192};
 
     uint8_t mask_1[2] = {0xFF, 0xFF};
     uint8_t mask_2[4] = {0xFF, 0xFF, 0xFF, 0xFF};
@@ -901,6 +907,7 @@ void init_simple() {
 
     uint8_t eth_type[2] = {0x08, 0x00};
     uint8_t port_num[2] = {0x1f, 0x40};
+    uint8_t port_num_r[2] = {0x40, 0x1f};
 
     fill_mac_learning_table(mac_2, 0);
     fill_mac_learning_table(mac_4, 0);
@@ -908,8 +915,8 @@ void init_simple() {
     fill_routable_table(mac_2, mac_1, 0, 0);
     fill_routable_table(mac_4, mac_3, 0, 0);
 
-    fill_unicast_routing_table(ip_2, mac_3, mac_4);
-    fill_unicast_routing_table(ip_1, mac_1, mac_2);
+    fill_unicast_routing_table(ip_2, mac_3_r, mac_4_r);
+    fill_unicast_routing_table(ip_1, mac_1_r, mac_2_r);
 
     fill_switching_table(mac_2, 0, 0);
     fill_switching_table(mac_4, 0, 1);
@@ -935,16 +942,16 @@ void init_simple() {
     set_default_action_nat_dst();
     set_default_action_nat_twice();
     set_default_action_nat_flow();
-    set_default_action_nat_get_l4_information();
+    set_default_action_nat_get_l4_infomation();
 
-    fill_nat_get_l4_information_table_1(6); // related to tcp
-    fill_nat_get_l4_information_table_2(17); // related to udp
+    fill_nat_get_l4_infomation_table_1(6); // related to tcp
+    fill_nat_get_l4_infomation_table_2(17); // related to udp
 
     // related to tcp
-    fill_nat_flow_table_1(ip_1, mask_2, ip_2, mask_2, 6, 0xFF, port_num, mask_1, port_num, mask_1, gw_2, port_num);
+    fill_nat_flow_table_1(ip_1, mask_2, ip_2, mask_2, 0x06, 0xFF, port_num, mask_1, port_num, mask_1, gw_2_r, port_num_r);
 
     // related to udp
-    fill_nat_flow_table_2(ip_1, mask_2, ip_2, mask_2, 11, 0xFF, port_num, mask_1, port_num, mask_1, gw_2, port_num);
+    fill_nat_flow_table_2(ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF, port_num, mask_1, port_num, mask_1, gw_2_r, port_num_r);
 }
 
 int main() {

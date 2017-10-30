@@ -258,6 +258,8 @@ static const int field_instance_bit_width[FIELD_INSTANCE_COUNT] = {
         4 /* field_instance_route_metadata_lan */
 };
 
+// FIXME: the bit offset of field_instance_nat_metadata_l4_src/dst_port seems calculated wrongly,
+//        as well as other properties such as bit_offset_hrd and field_instance_mask. Strange!
 // sugar@120
 static const int field_instance_bit_offset[FIELD_INSTANCE_COUNT] = {
         0 /* field_instance_standard_metadata_ingress_port */,
@@ -323,8 +325,8 @@ static const int field_instance_bit_offset[FIELD_INSTANCE_COUNT] = {
         0 /* field_instance_acl_metadata_acl_op */,
         4 /* field_instance_acl_metadata_acl_reason */,
         0 /* field_instance_nat_metadata_enable_nat */,
-        1 /* field_instance_nat_metadata_l4_src_port */,
-        1 /* field_instance_nat_metadata_l4_dst_port */,
+        0 /* field_instance_nat_metadata_l4_src_port */,
+        0 /* field_instance_nat_metadata_l4_dst_port */,
         1 /* field_instance_nat_metadata_update_checksum */,
         2 /* field_instance_nat_metadata_update_udp_checksum */,
         3 /* field_instance_nat_metadata_update_tcp_checksum */,
@@ -487,8 +489,8 @@ static const uint32_t field_instance_mask[FIELD_INSTANCE_COUNT] = {
         0xf0 /* field_instance_acl_metadata_acl_op */,
         0xff0f /* field_instance_acl_metadata_acl_reason */,
         0x80 /* field_instance_nat_metadata_enable_nat */,
-        0x80ff7f /* field_instance_nat_metadata_l4_src_port */,
-        0x80ff7f /* field_instance_nat_metadata_l4_dst_port */,
+        0xffff /* field_instance_nat_metadata_l4_src_port */,
+        0xffff /* field_instance_nat_metadata_l4_dst_port */,
         0x40 /* field_instance_nat_metadata_update_checksum */,
         0x20 /* field_instance_nat_metadata_update_udp_checksum */,
         0x10 /* field_instance_nat_metadata_update_tcp_checksum */,

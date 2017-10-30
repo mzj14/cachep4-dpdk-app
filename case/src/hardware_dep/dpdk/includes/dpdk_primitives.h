@@ -79,7 +79,7 @@
 // Modifies a field in the packet by a uint32_t value with byte conversion when necessary [MAX 4 BYTES]
 // assuming `uint32_t res32' is in the scope
 #define MODIFY_INT32_INT32_AUTO(pd, dstfield, value) { \
-    if(field_desc(pd, dstfield).meta) MODIFY_INT32_INT32_BITS(pd, dstfield, value) else MODIFY_INT32_INT32_HTON(pd, dstfield, value) \
+    MODIFY_INT32_INT32_HTON(pd, dstfield, value); \
 }
 
 //TODO: This should be simplified or separated into multiple macros
@@ -103,7 +103,8 @@
 #define EXTRACT_INT32_BITS(pd, field, dst) { \
     if(field_desc(pd, field).bytecount == 1) { \
         debug("I am in the bytecount == 1 condition.\n"); \
-        dst = FIELD_MASKED_BYTES(pd, field) >> (8 - FIELD_BITCOUNT(pd, field)); }\
+        dst = FIELD_MASKED_BYTES(pd, field) >> (8 - FIELD_BITCOUNT(pd, field)); \
+        debug("dst = %x.\n", dst); }\
     else if(field_desc(pd, field).bytecount == 2) { \
         debug("I am in the bytecount == 2 condition.\n"); \
         debug("FIELD_BYTES = %x.\n", FIELD_BYTES(pd, field)); \

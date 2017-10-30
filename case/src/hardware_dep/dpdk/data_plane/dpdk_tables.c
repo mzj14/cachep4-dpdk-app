@@ -287,6 +287,11 @@ exact_lookup(lookup_table_t *t, uint8_t *key) {
         for (int i = 0; i < 20; i++)
             debug("%dth element of key is %x.\n", i, *(key + i));
     }
+    if (strcmp(t->name, "nat_get_l4_infomation") == 0) {
+        debug("it is cache table lookup.\n");
+        for (int i = 0; i < 1; i++)
+            debug("%dth element of key is %x.\n", i, *(key + i));
+    }
     return (ret < 0) ? t->default_val : ext->content[ret % 256];
 }
 
