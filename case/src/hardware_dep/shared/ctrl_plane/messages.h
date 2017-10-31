@@ -143,8 +143,9 @@ struct p4_table_definition {
 };
 
 
-#define MAX_ACTION_PARAMETER_NAME_LENGTH 128
-#define MAX_ACTION_PARAMETER_BITMAP_LENGTH 128
+// FIXME: MAX_ACTION_PARAMETER_NAME_LENGTH should be properly reset.
+#define MAX_ACTION_PARAMETER_NAME_LENGTH 32
+#define MAX_ACTION_PARAMETER_BITMAP_LENGTH 32
 struct p4_action_parameter {
     char name[MAX_ACTION_PARAMETER_NAME_LENGTH];
     uint32_t length; /* TODO: How can we figure this out?????Controller should know this in advance! P4 does not handle it. */

@@ -696,131 +696,159 @@ void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], 
     te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "cache");
 
+    printf("adding ternary 1.\n");
     ternary1 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary1->header.name, "standard_metadata.ingress_port");
     memcpy(ternary1->bitmap, iport, 2);
     memcpy(ternary1->mask, iport_mask, 2);
     ternary1->length = 2 * 8 + 0;
 
+    printf("adding ternary 2.\n");
     ternary2 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary2->header.name, "ethernet.src_mac");
     memcpy(ternary2->bitmap, smac, 6);
     memcpy(ternary2->mask, smac_mask, 6);
     ternary2->length = 6 * 8 + 0;
 
+    printf("adding ternary 3.\n");
     ternary3 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary3->header.name, "ethernet.dst_mac");
     memcpy(ternary3->bitmap, dmac, 6);
     memcpy(ternary3->mask, dmac_mask, 6);
     ternary3->length = 6 * 8 + 0;
 
+    printf("adding ternary 4.\n");
     ternary4 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary4->header.name, "ethernet.eth_type");
     memcpy(ternary4->bitmap, eth_type, 2);
     memcpy(ternary4->mask, eth_type_mask, 2);
     ternary4->length = 2 * 8 + 0;
 
+    printf("adding ternary 5.\n");
     ternary5 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary5->header.name, "ip.src_addr");
     memcpy(ternary5->bitmap, sip, 4);
     memcpy(ternary5->mask, sip_mask, 4);
     ternary5->length = 4 * 8 + 0;
 
+    printf("adding ternary 6.\n");
     ternary6 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary6->header.name, "ip.dst_addr");
     memcpy(ternary6->bitmap, dip, 4);
     memcpy(ternary6->mask, dip_mask, 4);
     ternary6->length = 4 * 8 + 0;
 
+    printf("adding ternary 7.\n");
     ternary7 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary7->header.name, "ip.proto");
     memcpy(ternary7->bitmap, &ip_proto, 1);
     memcpy(ternary7->mask, &ip_proto_mask, 1);
     ternary7->length = 1 * 8 + 0;
 
+    printf("adding ternary 8.\n");
     ternary8 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary8->header.name, "tcp.src_port");
     memcpy(ternary8->bitmap, tcp_sport, 2);
     memcpy(ternary8->mask, tcp_sport_mask, 2);
     ternary8->length = 2 * 8 + 0;
 
+    printf("adding ternary 9.\n");
     ternary9 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary9->header.name, "tcp.dst_port");
     memcpy(ternary9->bitmap, tcp_dport, 2);
     memcpy(ternary9->mask, tcp_dport_mask, 2);
     ternary9->length = 2 * 8 + 0;
 
+    printf("adding ternary 10.\n");
     ternary10 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary10->header.name, "udp.src_port");
     memcpy(ternary10->bitmap, udp_sport, 2);
     memcpy(ternary10->mask, udp_sport_mask, 2);
     ternary10->length = 2 * 8 + 0;
 
+    printf("adding ternary 11.\n");
     ternary11 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary11->header.name, "udp.dst_port");
     memcpy(ternary11->bitmap, udp_dport, 2);
     memcpy(ternary11->mask, udp_dport_mask, 2);
     ternary11->length = 2 * 8 + 0;
 
+    printf("adding ternary 12.\n");
     ternary12 = add_p4_field_match_ternary(te, 4096);
+    printf("adding ternary 12.1\n");
     strcpy(ternary12->header.name, "tcp.flags");
+    printf("adding ternary 12.2\n");
     memcpy(ternary12->bitmap, tcp_flags, 2);
     memcpy(ternary12->mask, tcp_flags_mask, 2);
     ternary12->length = 2 * 8 + 0;
 
     a = add_p4_action(h, 4096);
+    printf("adding middle.\n");
     strcpy(a->description.name, "cache_action");
 
+    printf("adding ap 1.\n");
     ap1 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap1->name, "port");
     memcpy(ap1->bitmap, &port, 2);
     ap1->length = 2 * 8 + 0;
 
+    printf("adding ap 2.\n");
     ap2 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap2->name, "src_mac");
     memcpy(ap2->bitmap, src_mac, 6);
     ap2->length = 6 * 8 + 0;
 
+    printf("adding ap 3.\n");
     ap3 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap3->name, "dst_mac");
     memcpy(ap3->bitmap, dst_mac, 6);
     ap3->length = 6 * 8 + 0;
 
+    printf("adding ap 4.\n");
     ap4 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap4->name, "vid");
     memcpy(ap4->bitmap, &vid, 2);
     ap4->length = 2 * 8 + 0;
 
+    printf("adding ap 5.\n");
     ap5 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap5->name, "grp");
     memcpy(ap5->bitmap, &grp, 2);
     ap5->length = 2 * 8 + 0;
 
+    printf("adding ap 6.\n");
     ap6 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap6->name, "ip_src_addr");
     memcpy(ap6->bitmap, &src_addr, 4);
     ap6->length = 4 * 8 + 0;
 
+    printf("adding ap 7.\n");
     ap7 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap7->name, "ip_dst_addr");
     memcpy(ap7->bitmap, &dst_addr, 4);
     ap7->length = 4 * 8 + 0;
 
+    printf("adding ap 8.\n");
     ap8 = add_p4_action_parameter(h, a, 4096);
+    printf("adding ap 8.1\n");
     strcpy(ap8->name, "tcp_src_port");
+    printf("adding ap 8.2\n");
     memcpy(ap8->bitmap, &tcp_src_port, 2);
     ap8->length = 2 * 8 + 0;
 
+    printf("adding ap 9.\n");
     ap9 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap9->name, "tcp_dst_port");
     memcpy(ap9->bitmap, &tcp_dst_port, 2);
     ap9->length = 2 * 8 + 0;
 
+    printf("adding ap 10.\n");
     ap10 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap10->name, "udp_src_port");
     memcpy(ap10->bitmap, &udp_src_port, 2);
     ap10->length = 2 * 8 + 0;
 
+    printf("adding ap 11.\n");
     ap11 = add_p4_action_parameter(h, a, 4096);
     strcpy(ap11->name, "udp_dst_port");
     memcpy(ap11->bitmap, &udp_dst_port, 2);
@@ -1084,6 +1112,7 @@ void init_simple() {
     uint8_t gw_2[4] = {192, 168, 1, 1};
     uint8_t gw_2_r[4] = {1, 1, 168, 192};
 
+    uint8_t zero_mask_1[2] = {0x00, 0x00};
     uint8_t mask_1[2] = {0xFF, 0xFF};
     uint8_t mask_2[4] = {0xFF, 0xFF, 0xFF, 0xFF};
     uint8_t mask_3[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -1091,6 +1120,12 @@ void init_simple() {
     uint8_t eth_type[2] = {0x08, 0x00};
     uint8_t port_num[2] = {0x1f, 0x40};
     uint8_t port_num_r[2] = {0x40, 0x1f};
+
+    uint8_t port_num_1[2] = {0x00, 0x00};
+    uint8_t port_num_2[2] = {0x00, 0x01};
+
+    uint8_t tcp_flags[2] = {0x00, 0x00};
+    uint8_t tcp_flags_mask[2] = {0x00, 0x00};
 
     fill_mac_learning_table(mac_2, 0);
     fill_mac_learning_table(mac_4, 0);
@@ -1139,8 +1174,10 @@ void init_simple() {
     // related to udp
     fill_nat_flow_table_2(ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF, port_num, mask_1, port_num, mask_1, gw_2_r, port_num_r);
 
-    fill_cache_table(0, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF,
-                     0, 0, 0, 0, port_num, mask_2, port_num, mask_2, 0, 0, 1, mac_3, mac_4, 0, 0,
+
+    // FIXME: Why does adding cache table entry lead to nat_flow table entry adding failure?
+    fill_cache_table(port_num_1, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF,
+                     port_num_1, zero_mask_1, port_num_1, zero_mask_1, port_num, mask_1, port_num, mask_1, tcp_flags, tcp_flags_mask, 1, mac_3, mac_4, 0, 0,
                      0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40);
 }
 
