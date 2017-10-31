@@ -21,6 +21,7 @@ void apply_table_ipsg_permit_special(packet_descriptor_t *pd, lookup_table_t **t
 void apply_table_ipsg(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_storm_control_tbl(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_port_vlan_to_vrf(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
+void apply_table_cache(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_mac_learning(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_routable(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_unicast_routing(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
@@ -28,7 +29,7 @@ void apply_table_switching(packet_descriptor_t *pd, lookup_table_t **tables);// 
 void apply_table_multicast_routing(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 
-uint8_t reverse_buffer[17];// sugar@34
+uint8_t reverse_buffer[34];// sugar@34
 void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
@@ -178,6 +179,33 @@ void table_port_vlan_to_vrf_key(packet_descriptor_t *pd, uint8_t *key) {// sugar
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+}// sugar@62
+
+void table_cache_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
+    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
+    key += 6;// sugar@54
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
+    key += 6;// sugar@54
+    EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
@@ -1190,6 +1218,38 @@ void apply_table_port_vlan_to_vrf(packet_descriptor_t *pd, lookup_table_t **tabl
         debug("    :: IGNORING PACKET.\n");// sugar@118
         return;// sugar@119
     }// sugar@120
+}// sugar@121
+
+void apply_table_cache(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
+{// sugar@69
+    debug("  :::: EXECUTING TABLE cache\n");// sugar@70
+    uint8_t *key[34];// sugar@71
+    table_cache_key(pd, (uint8_t *) key);// sugar@72
+    uint8_t *value = ternary_lookup(tables[TABLE_cache], (uint8_t *) key);// sugar@73
+    struct cache_action *res = (struct cache_action *) value;// sugar@74
+    int index;
+    (void) index;// sugar@75
+    if (res != NULL) {// sugar@78
+        index = *(int *) (value + sizeof(struct cache_action));// sugar@79
+    }// sugar@82
+    if (res == NULL) {// sugar@85
+        debug("    :: NO RESULT, NO DEFAULT ACTION.\n");// sugar@86
+    } else {// sugar@87
+        switch (res->action_id) {// sugar@88
+            case action_cache_block:// sugar@90
+                debug("    :: EXECUTING ACTION cache_block...\n");// sugar@91
+                action_code_cache_block(pd, tables);// sugar@95
+                break;// sugar@96
+            case action_cache_action:// sugar@90
+                debug("    :: EXECUTING ACTION cache_action...\n");// sugar@91
+                action_code_cache_action(pd, tables, res->cache_action_params);// sugar@93
+                break;// sugar@96
+        }// sugar@97
+    }// sugar@98
+    if (res != NULL && index != DEFAULT_ACTION_INDEX) { //Lookup was successful (not with default action)// sugar@102
+    } else {                                           //Lookup failed or returned default action// sugar@105
+        return apply_table_ipsg(pd, tables);// sugar@107
+    }// sugar@108
 }// sugar@121
 
 void apply_table_mac_learning(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68

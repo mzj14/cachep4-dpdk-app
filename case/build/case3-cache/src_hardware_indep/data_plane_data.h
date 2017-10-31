@@ -3,7 +3,7 @@
 
 #include "parser.h"// sugar@17
 
-#define NB_TABLES 20// sugar@19
+#define NB_TABLES 21// sugar@19
 
 enum table_names {// sugar@21
     TABLE_mac_acl,// sugar@23
@@ -20,6 +20,7 @@ enum table_names {// sugar@21
     TABLE_ipsg,// sugar@23
     TABLE_storm_control_tbl,// sugar@23
     TABLE_port_vlan_to_vrf,// sugar@23
+    TABLE_cache,// sugar@23
     TABLE_mac_learning,// sugar@23
     TABLE_routable,// sugar@23
     TABLE_unicast_routing,// sugar@23

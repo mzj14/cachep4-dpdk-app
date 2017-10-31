@@ -23,6 +23,8 @@ enum actions {// sugar@21
     action_ipsg_miss,// sugar@27
     action_set_storm_control_meter,// sugar@27
     action_set_vrf,// sugar@27
+    action_cache_block,// sugar@27
+    action_cache_action,// sugar@27
     action_learning,// sugar@27
     action_ucast,// sugar@27
     action_mcast,// sugar@27
@@ -81,6 +83,19 @@ struct action_set_storm_control_meter_params {// sugar@34
 };// sugar@37
 struct action_set_vrf_params {// sugar@34
     FIELD(vrf, 16);// sugar@36
+};// sugar@37
+struct action_cache_action_params {// sugar@34
+    FIELD(port, 9);// sugar@36
+    FIELD(src_mac, 48);// sugar@36
+    FIELD(dst_mac, 48);// sugar@36
+    FIELD(vid, 12);// sugar@36
+    FIELD(grp, 16);// sugar@36
+    FIELD(ip_src_addr, 32);// sugar@36
+    FIELD(ip_dst_addr, 32);// sugar@36
+    FIELD(tcp_src_port, 16);// sugar@36
+    FIELD(tcp_dst_port, 16);// sugar@36
+    FIELD(udp_src_port, 16);// sugar@36
+    FIELD(udp_dst_port, 16);// sugar@36
 };// sugar@37
 struct action_ucast_params {// sugar@34
     FIELD(lan, 4);// sugar@36
@@ -197,6 +212,12 @@ struct port_vlan_to_vrf_action {// sugar@41
         struct action_set_vrf_params set_vrf_params;// sugar@46
     };// sugar@47
 };// sugar@48
+struct cache_action {// sugar@41
+    int action_id;// sugar@42
+    union {// sugar@43
+        struct action_cache_action_params cache_action_params;// sugar@46
+    };// sugar@47
+};// sugar@48
 struct mac_learning_action {// sugar@41
     int action_id;// sugar@42
     union {// sugar@43
@@ -307,6 +328,10 @@ void action_code_set_storm_control_meter(packet_descriptor_t *pd, lookup_table_t
                                          struct action_set_storm_control_meter_params);// sugar@54
 void apply_table_port_vlan_to_vrf(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@51
 void action_code_set_vrf(packet_descriptor_t *pd, lookup_table_t **tables, struct action_set_vrf_params);// sugar@54
+void apply_table_cache(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@51
+void action_code_cache_block(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@56
+void action_code_cache_action(packet_descriptor_t *pd, lookup_table_t **tables,
+                              struct action_cache_action_params);// sugar@54
 void apply_table_mac_learning(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@51
 void action_code_learning(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@56
 void action_code_nop(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@56

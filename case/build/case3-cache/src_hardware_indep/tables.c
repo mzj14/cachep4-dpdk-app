@@ -130,6 +130,15 @@ lookup_table_t table_config[NB_TABLES] = {// sugar@22
                 .max_size = 255 //1024// sugar@32
         },// sugar@33
         {// sugar@25
+                .name= "cache",// sugar@26
+                .id = TABLE_cache,// sugar@27
+                .type = LOOKUP_TERNARY,// sugar@28
+                .key_size = 34,// sugar@29
+                .val_size = sizeof(struct cache_action),// sugar@30
+                .min_size = 0, //1024,// sugar@31
+                .max_size = 255 //1024// sugar@32
+        },// sugar@33
+        {// sugar@25
                 .name= "mac_learning",// sugar@26
                 .id = TABLE_mac_learning,// sugar@27
                 .type = LOOKUP_EXACT,// sugar@28

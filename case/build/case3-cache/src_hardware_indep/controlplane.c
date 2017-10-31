@@ -20,6 +20,7 @@ extern void table_ipsg_permit_special_key(packet_descriptor_t *pd, uint8_t *key)
 extern void table_ipsg_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_storm_control_tbl_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_port_vlan_to_vrf_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
+extern void table_cache_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_routable_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_unicast_routing_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
@@ -27,7 +28,7 @@ extern void table_switching_key(packet_descriptor_t *pd, uint8_t *key); // defin
 extern void table_multicast_routing_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_igmp_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 
-uint8_t reverse_buffer[17];// sugar@35
+uint8_t reverse_buffer[34];// sugar@35
 void// sugar@40
 mac_acl_add(// sugar@41
         uint8_t field_instance_vrf_metadata_vrf[2],// sugar@44
@@ -397,6 +398,68 @@ void// sugar@87
 port_vlan_to_vrf_setdefault(struct port_vlan_to_vrf_action action)// sugar@88
 {// sugar@89
     table_setdefault_promote(TABLE_port_vlan_to_vrf, (uint8_t * ) & action);// sugar@90
+}// sugar@91
+void// sugar@40
+cache_add(// sugar@41
+        uint8_t field_instance_standard_metadata_ingress_port[2],// sugar@44
+        uint8_t field_instance_standard_metadata_ingress_port_mask[2],// sugar@47
+        uint8_t field_instance_ethernet_src_mac[6],// sugar@44
+        uint8_t field_instance_ethernet_src_mac_mask[6],// sugar@47
+        uint8_t field_instance_ethernet_dst_mac[6],// sugar@44
+        uint8_t field_instance_ethernet_dst_mac_mask[6],// sugar@47
+        uint8_t field_instance_ethernet_eth_type[2],// sugar@44
+        uint8_t field_instance_ethernet_eth_type_mask[2],// sugar@47
+        uint8_t field_instance_ip_src_addr[4],// sugar@44
+        uint8_t field_instance_ip_src_addr_mask[4],// sugar@47
+        uint8_t field_instance_ip_dst_addr[4],// sugar@44
+        uint8_t field_instance_ip_dst_addr_mask[4],// sugar@47
+        uint8_t field_instance_ip_proto[1],// sugar@44
+        uint8_t field_instance_ip_proto_mask[1],// sugar@47
+        uint8_t field_instance_tcp_src_port[2],// sugar@44
+        uint8_t field_instance_tcp_src_port_mask[2],// sugar@47
+        uint8_t field_instance_tcp_dst_port[2],// sugar@44
+        uint8_t field_instance_tcp_dst_port_mask[2],// sugar@47
+        uint8_t field_instance_udp_src_port[2],// sugar@44
+        uint8_t field_instance_udp_src_port_mask[2],// sugar@47
+        uint8_t field_instance_udp_dst_port[2],// sugar@44
+        uint8_t field_instance_udp_dst_port_mask[2],// sugar@47
+        uint8_t field_instance_tcp_flags[1],// sugar@44
+        uint8_t field_instance_tcp_flags_mask[1],// sugar@47
+        struct cache_action action)// sugar@51
+{// sugar@52
+    uint8_t key[34];// sugar@53
+    uint8_t mask[34];// sugar@55
+    memcpy(key + 0, field_instance_standard_metadata_ingress_port, 2);// sugar@61
+    memcpy(mask + 0, field_instance_standard_metadata_ingress_port_mask, 2);// sugar@63
+    memcpy(key + 2, field_instance_ethernet_src_mac, 6);// sugar@61
+    memcpy(mask + 2, field_instance_ethernet_src_mac_mask, 6);// sugar@63
+    memcpy(key + 8, field_instance_ethernet_dst_mac, 6);// sugar@61
+    memcpy(mask + 8, field_instance_ethernet_dst_mac_mask, 6);// sugar@63
+    memcpy(key + 14, field_instance_ethernet_eth_type, 2);// sugar@61
+    memcpy(mask + 14, field_instance_ethernet_eth_type_mask, 2);// sugar@63
+    memcpy(key + 16, field_instance_ip_src_addr, 4);// sugar@61
+    memcpy(mask + 16, field_instance_ip_src_addr_mask, 4);// sugar@63
+    memcpy(key + 20, field_instance_ip_dst_addr, 4);// sugar@61
+    memcpy(mask + 20, field_instance_ip_dst_addr_mask, 4);// sugar@63
+    memcpy(key + 24, field_instance_ip_proto, 1);// sugar@61
+    memcpy(mask + 24, field_instance_ip_proto_mask, 1);// sugar@63
+    memcpy(key + 25, field_instance_tcp_src_port, 2);// sugar@61
+    memcpy(mask + 25, field_instance_tcp_src_port_mask, 2);// sugar@63
+    memcpy(key + 27, field_instance_tcp_dst_port, 2);// sugar@61
+    memcpy(mask + 27, field_instance_tcp_dst_port_mask, 2);// sugar@63
+    memcpy(key + 29, field_instance_udp_src_port, 2);// sugar@61
+    memcpy(mask + 29, field_instance_udp_src_port_mask, 2);// sugar@63
+    memcpy(key + 31, field_instance_udp_dst_port, 2);// sugar@61
+    memcpy(mask + 31, field_instance_udp_dst_port_mask, 2);// sugar@63
+    memcpy(key + 33, field_instance_tcp_flags, 1);// sugar@61
+    memcpy(mask + 33, field_instance_tcp_flags_mask, 1);// sugar@63
+    ternary_add_promote(TABLE_cache, (uint8_t *) key, (uint8_t *) mask, (uint8_t * ) & action);// sugar@84
+}// sugar@85
+
+void// sugar@87
+cache_setdefault(struct cache_action action)// sugar@88
+{// sugar@89
+    table_setdefault_promote(TABLE_cache, (uint8_t * ) & action);// sugar@90
 }// sugar@91
 void// sugar@40
 mac_learning_add(// sugar@41
@@ -1504,6 +1567,150 @@ port_vlan_to_vrf_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
         debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
 }// sugar@127
 void// sugar@95
+cache_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
+    uint8_t *field_instance_standard_metadata_ingress_port = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->bitmap);// sugar@105
+    uint8_t *field_instance_standard_metadata_ingress_port_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->mask);// sugar@106
+    uint8_t *field_instance_ethernet_src_mac = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[1])->bitmap);// sugar@105
+    uint8_t *field_instance_ethernet_src_mac_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[1])->mask);// sugar@106
+    uint8_t *field_instance_ethernet_dst_mac = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[2])->bitmap);// sugar@105
+    uint8_t *field_instance_ethernet_dst_mac_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[2])->mask);// sugar@106
+    uint8_t *field_instance_ethernet_eth_type = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[3])->bitmap);// sugar@105
+    uint8_t *field_instance_ethernet_eth_type_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[3])->mask);// sugar@106
+    uint8_t *field_instance_ip_src_addr = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[4])->bitmap);// sugar@105
+    uint8_t *field_instance_ip_src_addr_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[4])->mask);// sugar@106
+    uint8_t *field_instance_ip_dst_addr = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[5])->bitmap);// sugar@105
+    uint8_t *field_instance_ip_dst_addr_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[5])->mask);// sugar@106
+    uint8_t *field_instance_ip_proto = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[6])->bitmap);// sugar@105
+    uint8_t *field_instance_ip_proto_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[6])->mask);// sugar@106
+    uint8_t *field_instance_tcp_src_port = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[7])->bitmap);// sugar@105
+    uint8_t *field_instance_tcp_src_port_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[7])->mask);// sugar@106
+    uint8_t *field_instance_tcp_dst_port = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[8])->bitmap);// sugar@105
+    uint8_t *field_instance_tcp_dst_port_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[8])->mask);// sugar@106
+    uint8_t *field_instance_udp_src_port = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[9])->bitmap);// sugar@105
+    uint8_t *field_instance_udp_src_port_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[9])->mask);// sugar@106
+    uint8_t *field_instance_udp_dst_port = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[10])->bitmap);// sugar@105
+    uint8_t *field_instance_udp_dst_port_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[10])->mask);// sugar@106
+    uint8_t *field_instance_tcp_flags = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[11])->bitmap);// sugar@105
+    uint8_t *field_instance_tcp_flags_mask = (uint8_t * )(
+            ((struct p4_field_match_ternary *) ctrl_m->field_matches[11])->mask);// sugar@106
+    if (strcmp("cache_block", ctrl_m->action_name) == 0) {// sugar@108
+        struct cache_action action;// sugar@109
+        action.action_id = action_cache_block;// sugar@110
+        debug("Reply from the control plane arrived.\n");// sugar@114
+        debug("Adding new entry to cache with action cache_block\n");// sugar@115
+        cache_add(// sugar@116
+                field_instance_standard_metadata_ingress_port,// sugar@119
+                field_instance_standard_metadata_ingress_port_mask,// sugar@123
+                field_instance_ethernet_src_mac,// sugar@119
+                field_instance_ethernet_src_mac_mask,// sugar@123
+                field_instance_ethernet_dst_mac,// sugar@119
+                field_instance_ethernet_dst_mac_mask,// sugar@123
+                field_instance_ethernet_eth_type,// sugar@119
+                field_instance_ethernet_eth_type_mask,// sugar@123
+                field_instance_ip_src_addr,// sugar@119
+                field_instance_ip_src_addr_mask,// sugar@123
+                field_instance_ip_dst_addr,// sugar@119
+                field_instance_ip_dst_addr_mask,// sugar@123
+                field_instance_ip_proto,// sugar@119
+                field_instance_ip_proto_mask,// sugar@123
+                field_instance_tcp_src_port,// sugar@119
+                field_instance_tcp_src_port_mask,// sugar@123
+                field_instance_tcp_dst_port,// sugar@119
+                field_instance_tcp_dst_port_mask,// sugar@123
+                field_instance_udp_src_port,// sugar@119
+                field_instance_udp_src_port_mask,// sugar@123
+                field_instance_udp_dst_port,// sugar@119
+                field_instance_udp_dst_port_mask,// sugar@123
+                field_instance_tcp_flags,// sugar@119
+                field_instance_tcp_flags_mask,// sugar@123
+                action);// sugar@124
+    } else// sugar@125
+    if (strcmp("cache_action", ctrl_m->action_name) == 0) {// sugar@108
+        struct cache_action action;// sugar@109
+        action.action_id = action_cache_action;// sugar@110
+        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.port, port, 2);// sugar@113
+        uint8_t *src_mac = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.src_mac, src_mac, 6);// sugar@113
+        uint8_t *dst_mac = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.dst_mac, dst_mac, 6);// sugar@113
+        uint8_t *vid = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.vid, vid, 2);// sugar@113
+        uint8_t *grp = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[4])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.grp, grp, 2);// sugar@113
+        uint8_t *ip_src_addr = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[5])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.ip_src_addr, ip_src_addr, 4);// sugar@113
+        uint8_t *ip_dst_addr = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[6])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.ip_dst_addr, ip_dst_addr, 4);// sugar@113
+        uint8_t *tcp_src_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[7])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.tcp_src_port, tcp_src_port, 2);// sugar@113
+        uint8_t *tcp_dst_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[8])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.tcp_dst_port, tcp_dst_port, 2);// sugar@113
+        uint8_t *udp_src_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[9])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.udp_src_port, udp_src_port, 2);// sugar@113
+        uint8_t *udp_dst_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[10])->bitmap;// sugar@112
+        memcpy(action.cache_action_params.udp_dst_port, udp_dst_port, 2);// sugar@113
+        debug("Reply from the control plane arrived.\n");// sugar@114
+        debug("Adding new entry to cache with action cache_action\n");// sugar@115
+        cache_add(// sugar@116
+                field_instance_standard_metadata_ingress_port,// sugar@119
+                field_instance_standard_metadata_ingress_port_mask,// sugar@123
+                field_instance_ethernet_src_mac,// sugar@119
+                field_instance_ethernet_src_mac_mask,// sugar@123
+                field_instance_ethernet_dst_mac,// sugar@119
+                field_instance_ethernet_dst_mac_mask,// sugar@123
+                field_instance_ethernet_eth_type,// sugar@119
+                field_instance_ethernet_eth_type_mask,// sugar@123
+                field_instance_ip_src_addr,// sugar@119
+                field_instance_ip_src_addr_mask,// sugar@123
+                field_instance_ip_dst_addr,// sugar@119
+                field_instance_ip_dst_addr_mask,// sugar@123
+                field_instance_ip_proto,// sugar@119
+                field_instance_ip_proto_mask,// sugar@123
+                field_instance_tcp_src_port,// sugar@119
+                field_instance_tcp_src_port_mask,// sugar@123
+                field_instance_tcp_dst_port,// sugar@119
+                field_instance_tcp_dst_port_mask,// sugar@123
+                field_instance_udp_src_port,// sugar@119
+                field_instance_udp_src_port_mask,// sugar@123
+                field_instance_udp_dst_port,// sugar@119
+                field_instance_udp_dst_port_mask,// sugar@123
+                field_instance_tcp_flags,// sugar@119
+                field_instance_tcp_flags_mask,// sugar@123
+                action);// sugar@124
+    } else// sugar@125
+        debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
+}// sugar@127
+void// sugar@95
 mac_learning_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
     uint8_t *field_instance_ethernet_src_mac = (uint8_t * )(
             ((struct p4_field_match_exact *) ctrl_m->field_matches[0])->bitmap);// sugar@100
@@ -2146,6 +2353,53 @@ port_vlan_to_vrf_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@
         debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
 }// sugar@145
 void// sugar@130
+cache_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
+    debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
+    if (strcmp("cache_block", ctrl_m->action_name) == 0) {// sugar@134
+        struct cache_action action;// sugar@135
+        action.action_id = action_cache_block;// sugar@136
+        debug("Message from the control plane arrived.\n");// sugar@140
+        debug("Set default action for cache with action cache_block\n");// sugar@141
+        cache_setdefault(action);// sugar@142
+    } else// sugar@143
+    if (strcmp("cache_action", ctrl_m->action_name) == 0) {// sugar@134
+        struct cache_action action;// sugar@135
+        action.action_id = action_cache_action;// sugar@136
+        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.port, port, 2);// sugar@139
+        uint8_t *src_mac = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.src_mac, src_mac, 6);// sugar@139
+        uint8_t *dst_mac = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.dst_mac, dst_mac, 6);// sugar@139
+        uint8_t *vid = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.vid, vid, 2);// sugar@139
+        uint8_t *grp = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[4])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.grp, grp, 2);// sugar@139
+        uint8_t *ip_src_addr = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[5])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.ip_src_addr, ip_src_addr, 4);// sugar@139
+        uint8_t *ip_dst_addr = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[6])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.ip_dst_addr, ip_dst_addr, 4);// sugar@139
+        uint8_t *tcp_src_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[7])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.tcp_src_port, tcp_src_port, 2);// sugar@139
+        uint8_t *tcp_dst_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[8])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.tcp_dst_port, tcp_dst_port, 2);// sugar@139
+        uint8_t *udp_src_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[9])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.udp_src_port, udp_src_port, 2);// sugar@139
+        uint8_t *udp_dst_port = (uint8_t * )(
+                (struct p4_action_parameter *) ctrl_m->action_params[10])->bitmap;// sugar@138
+        memcpy(action.cache_action_params.udp_dst_port, udp_dst_port, 2);// sugar@139
+        debug("Message from the control plane arrived.\n");// sugar@140
+        debug("Set default action for cache with action cache_action\n");// sugar@141
+        cache_setdefault(action);// sugar@142
+    } else// sugar@143
+        debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
+}// sugar@145
+void// sugar@130
 mac_learning_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
     debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
     if (strcmp("learning", ctrl_m->action_name) == 0) {// sugar@134
@@ -2301,6 +2555,9 @@ void recv_from_controller(struct p4_ctrl_msg *ctrl_m) {// sugar@148
         if (strcmp("port_vlan_to_vrf", ctrl_m->table_name) == 0)// sugar@152
             port_vlan_to_vrf_add_table_entry(ctrl_m);// sugar@153
         else// sugar@154
+        if (strcmp("cache", ctrl_m->table_name) == 0)// sugar@152
+            cache_add_table_entry(ctrl_m);// sugar@153
+        else// sugar@154
         if (strcmp("mac_learning", ctrl_m->table_name) == 0)// sugar@152
             mac_learning_add_table_entry(ctrl_m);// sugar@153
         else// sugar@154
@@ -2363,6 +2620,9 @@ void recv_from_controller(struct p4_ctrl_msg *ctrl_m) {// sugar@148
         else// sugar@161
         if (strcmp("port_vlan_to_vrf", ctrl_m->table_name) == 0)// sugar@159
             port_vlan_to_vrf_set_default_table_action(ctrl_m);// sugar@160
+        else// sugar@161
+        if (strcmp("cache", ctrl_m->table_name) == 0)// sugar@159
+            cache_set_default_table_action(ctrl_m);// sugar@160
         else// sugar@161
         if (strcmp("mac_learning", ctrl_m->table_name) == 0)// sugar@159
             mac_learning_set_default_table_action(ctrl_m);// sugar@160

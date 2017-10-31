@@ -290,6 +290,66 @@ void action_code_set_vrf(packet_descriptor_t *pd, lookup_table_t **tables,
 // sugar@449
 }// sugar@453
 
+void action_code_cache_action(packet_descriptor_t *pd, lookup_table_t **tables,
+                              struct action_cache_action_params parameters) {// sugar@441
+    uint32_t value32, res32, mask32;// sugar@442
+    (void) value32;
+    (void) res32;
+    (void) mask32;// sugar@443
+    MODIFY_INT32_BYTEBUF(pd, field_instance_standard_metadata_egress_spec, parameters.port, 2)// sugar@189
+// sugar@449
+    if (6 < field_desc(pd, field_instance_ethernet_src_mac).bytewidth) {// sugar@193
+        MODIFY_BYTEBUF_BYTEBUF(pd, field_instance_ethernet_src_mac, parameters.src_mac, 6);                // sugar@194
+    } else {// sugar@195
+        MODIFY_BYTEBUF_BYTEBUF(pd, field_instance_ethernet_src_mac,
+                               parameters.src_mac + (6 - field_desc(pd, field_instance_ethernet_src_mac).bytewidth),
+                               field_desc(pd, field_instance_ethernet_src_mac).bytewidth)// sugar@196
+    }// sugar@197
+// sugar@449
+    if (6 < field_desc(pd, field_instance_ethernet_dst_mac).bytewidth) {// sugar@193
+        MODIFY_BYTEBUF_BYTEBUF(pd, field_instance_ethernet_dst_mac, parameters.dst_mac, 6);                // sugar@194
+    } else {// sugar@195
+        MODIFY_BYTEBUF_BYTEBUF(pd, field_instance_ethernet_dst_mac,
+                               parameters.dst_mac + (6 - field_desc(pd, field_instance_ethernet_dst_mac).bytewidth),
+                               field_desc(pd, field_instance_ethernet_dst_mac).bytewidth)// sugar@196
+    }// sugar@197
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_vlan_vid, parameters.vid, 2)// sugar@189
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_intrinsic_metadata_mcast_grp, parameters.grp, 2)// sugar@189
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_ip_src_addr, parameters.ip_src_addr, 4)// sugar@189
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_ip_dst_addr, parameters.ip_dst_addr, 4)// sugar@189
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_tcp_src_port, parameters.tcp_src_port, 2)// sugar@189
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_tcp_dst_port, parameters.tcp_dst_port, 2)// sugar@189
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_udp_src_port, parameters.udp_src_port, 2)// sugar@189
+// sugar@449
+    MODIFY_INT32_BYTEBUF(pd, field_instance_udp_dst_port, parameters.udp_dst_port, 2)// sugar@189
+// sugar@449
+    value32 = 1;// sugar@146
+    MODIFY_INT32_INT32_AUTO(pd, field_instance_nat_metadata_update_tcp_checksum, value32)// sugar@43
+// sugar@147
+// sugar@449
+    value32 = 1;// sugar@146
+    MODIFY_INT32_INT32_AUTO(pd, field_instance_nat_metadata_update_udp_checksum, value32)// sugar@43
+// sugar@147
+// sugar@449
+}// sugar@453
+
+void action_code_cache_block(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@441
+    uint32_t value32, res32, mask32;// sugar@442
+    (void) value32;
+    (void) res32;
+    (void) mask32;// sugar@443
+    debug("    :: SETTING PACKET TO BE DROPPED\n");// sugar@394
+    pd->dropped = 1;// sugar@395
+// sugar@449
+}// sugar@453
+
 void action_code_learning(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@441
     uint32_t value32, res32, mask32;// sugar@442
     (void) value32;

@@ -155,7 +155,7 @@ static void parse_state_start(packet_descriptor_t *pd, uint8_t *buf, lookup_tabl
 // sugar@176
     {// sugar@25
         if (verify_packet(pd)) p4_pe_checksum(pd);// sugar@26
-        return apply_table_ipsg(pd, tables);// sugar@27
+        return apply_table_cache(pd, tables);// sugar@27
     }// sugar@28
 // sugar@166
 }// sugar@189
@@ -187,7 +187,7 @@ static void parse_state_parse_vlan(packet_descriptor_t *pd, uint8_t *buf, lookup
 // sugar@176
     {// sugar@25
         if (verify_packet(pd)) p4_pe_checksum(pd);// sugar@26
-        return apply_table_ipsg(pd, tables);// sugar@27
+        return apply_table_cache(pd, tables);// sugar@27
     }// sugar@28
 // sugar@166
 }// sugar@189
@@ -200,7 +200,7 @@ static void parse_state_parse_arp(packet_descriptor_t *pd, uint8_t *buf, lookup_
     buf += pd->headers[header_instance_arp].length;// sugar@131
     {// sugar@25
         if (verify_packet(pd)) p4_pe_checksum(pd);// sugar@26
-        return apply_table_ipsg(pd, tables);// sugar@27
+        return apply_table_cache(pd, tables);// sugar@27
     }// sugar@28
 // sugar@154
 }// sugar@189
@@ -239,7 +239,7 @@ static void parse_state_parse_ip(packet_descriptor_t *pd, uint8_t *buf, lookup_t
 // sugar@176
     {// sugar@25
         if (verify_packet(pd)) p4_pe_checksum(pd);// sugar@26
-        return apply_table_ipsg(pd, tables);// sugar@27
+        return apply_table_cache(pd, tables);// sugar@27
     }// sugar@28
 // sugar@166
 }// sugar@189
@@ -252,7 +252,7 @@ static void parse_state_parse_icmp(packet_descriptor_t *pd, uint8_t *buf, lookup
     buf += pd->headers[header_instance_icmp].length;// sugar@131
     {// sugar@25
         if (verify_packet(pd)) p4_pe_checksum(pd);// sugar@26
-        return apply_table_ipsg(pd, tables);// sugar@27
+        return apply_table_cache(pd, tables);// sugar@27
     }// sugar@28
 // sugar@154
 }// sugar@189
@@ -271,7 +271,7 @@ static void parse_state_parse_tcp(packet_descriptor_t *pd, uint8_t *buf, lookup_
     pd->fields.attr_field_instance_tcp_dst_port = 0;// sugar@137
     {// sugar@25
         if (verify_packet(pd)) p4_pe_checksum(pd);// sugar@26
-        return apply_table_ipsg(pd, tables);// sugar@27
+        return apply_table_cache(pd, tables);// sugar@27
     }// sugar@28
 // sugar@154
 }// sugar@189
@@ -290,7 +290,7 @@ static void parse_state_parse_udp(packet_descriptor_t *pd, uint8_t *buf, lookup_
     pd->fields.attr_field_instance_udp_dst_port = 0;// sugar@137
     {// sugar@25
         if (verify_packet(pd)) p4_pe_checksum(pd);// sugar@26
-        return apply_table_ipsg(pd, tables);// sugar@27
+        return apply_table_cache(pd, tables);// sugar@27
     }// sugar@28
 // sugar@154
 }// sugar@189
