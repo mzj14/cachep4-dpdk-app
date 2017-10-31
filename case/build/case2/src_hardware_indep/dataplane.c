@@ -85,14 +85,17 @@ void table_nat_dst_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 }// sugar@62
 
 void table_nat_twice_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
+    debug("in the table_nat_twice_key function.\n");
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
     key += sizeof(uint8_t);// sugar@50
+    debug("field_instance_nat_metadata_l4_src_port = %x.\n", FIELD_BYTES(pd, field_instance_nat_metadata_l4_src_port));
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
+    debug("field_instance_nat_metadata_l4_dst_port = %x.\n", FIELD_BYTES(pd, field_instance_nat_metadata_l4_dst_port));
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
@@ -107,12 +110,12 @@ void table_nat_flow_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
     key += sizeof(uint8_t);// sugar@50
     // TODO: the field instance should be l4_metadata, not udp
-    //       and the difference between the l4_metadata and the udp_src_port is the big-end and small-end
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
+    //       it seems that nat_metadata_l4_src_port has memory pollution
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
     debug("key[9] = %x.\n", *(key));
     debug("key[10] = %x.\n", *(key + 1));
     key += sizeof(uint16_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
@@ -1274,18 +1277,12 @@ uint32_t calculate_ipv4_checksum(packet_descriptor_t *pd) {// sugar@134
 void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     memset(packet_desc->headers[header_instance_standard_metadata].pointer, 0,
            header_info(header_instance_standard_metadata).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_ethernet].pointer, 0,
-           header_info(header_instance_ethernet).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_ip].pointer, 0,
-           header_info(header_instance_ip).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_tcp].pointer, 0,
-           header_info(header_instance_tcp).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_arp].pointer, 0,
-           header_info(header_instance_arp).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_icmp].pointer, 0,
-           header_info(header_instance_icmp).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_udp].pointer, 0,
-           header_info(header_instance_udp).bytewidth * sizeof(uint8_t));// sugar@232
+    packet_desc->headers[header_instance_ethernet].pointer = NULL;
+    packet_desc->headers[header_instance_ip].pointer = NULL;
+    packet_desc->headers[header_instance_tcp].pointer = NULL;
+    packet_desc->headers[header_instance_arp].pointer = NULL;
+    packet_desc->headers[header_instance_icmp].pointer = NULL;
+    packet_desc->headers[header_instance_udp].pointer = NULL;
     memset(packet_desc->headers[header_instance_vlan].pointer, 0,
            header_info(header_instance_vlan).bytewidth * sizeof(uint8_t));// sugar@232
     memset(packet_desc->headers[header_instance_acl_metadata].pointer, 0,
@@ -1304,27 +1301,27 @@ void init_headers(packet_descriptor_t *packet_desc) {// sugar@235
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_ethernet] = (header_descriptor_t) {.type = header_instance_ethernet, .length = header_info(
             header_instance_ethernet).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_ethernet).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_ip] = (header_descriptor_t) {.type = header_instance_ip, .length = header_info(
             header_instance_ip).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_ip).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_tcp] = (header_descriptor_t) {.type = header_instance_tcp, .length = header_info(
             header_instance_tcp).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_tcp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_arp] = (header_descriptor_t) {.type = header_instance_arp, .length = header_info(
             header_instance_arp).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_arp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_icmp] = (header_descriptor_t) {.type = header_instance_icmp, .length = header_info(
             header_instance_icmp).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_icmp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_udp] = (header_descriptor_t) {.type = header_instance_udp, .length = header_info(
             header_instance_udp).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_udp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_vlan] = (header_descriptor_t) {.type = header_instance_vlan, .length = header_info(
             header_instance_vlan).bytewidth,// sugar@238
@@ -1390,6 +1387,7 @@ void update_packet(packet_descriptor_t *pd) {// sugar@267
         value32 = pd->fields.field_instance_vlan_vid;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_vlan_vid, value32)// sugar@276
     }// sugar@277
+
 
     if (pd->headers[header_instance_ip].pointer != NULL)// sugar@285
     {// sugar@286

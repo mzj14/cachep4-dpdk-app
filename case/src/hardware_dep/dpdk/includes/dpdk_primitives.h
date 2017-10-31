@@ -79,7 +79,7 @@
 // Modifies a field in the packet by a uint32_t value with byte conversion when necessary [MAX 4 BYTES]
 // assuming `uint32_t res32' is in the scope
 #define MODIFY_INT32_INT32_AUTO(pd, dstfield, value) { \
-    MODIFY_INT32_INT32_HTON(pd, dstfield, value); \
+    if(field_desc(pd, dstfield).meta) MODIFY_INT32_INT32_BITS(pd, dstfield, value) else MODIFY_INT32_INT32_HTON(pd, dstfield, value); \
 }
 
 //TODO: This should be simplified or separated into multiple macros

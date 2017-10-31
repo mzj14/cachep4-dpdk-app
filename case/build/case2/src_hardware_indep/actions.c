@@ -231,17 +231,22 @@ void action_code_get_udp_information(packet_descriptor_t *pd, lookup_table_t **t
     (void) value32;
     (void) res32;
     (void) mask32;// sugar@443
+    debug("in the action_code_get_udp_information.\n");
     // FIXME: here is the original value of l4_metadata. It is the key!
     value32 = pd->fields.field_instance_udp_src_port;// sugar@52
     pd->fields.attr_field_instance_udp_src_port = MODIFIED;// sugar@53
+    debug("value32 = %x.\n", value32);
 // sugar@166
     MODIFY_INT32_INT32_AUTO(pd, field_instance_nat_metadata_l4_src_port, value32)// sugar@43
+    debug("field_instance_nat_metadata_l4_src_port = %x.\n", FIELD_BYTES(pd, field_instance_nat_metadata_l4_src_port));
 // sugar@167
 // sugar@449
     value32 = pd->fields.field_instance_udp_dst_port;// sugar@52
     pd->fields.attr_field_instance_udp_dst_port = MODIFIED;// sugar@53
+    debug("value32 = %x.\n", value32);
 // sugar@166
     MODIFY_INT32_INT32_AUTO(pd, field_instance_nat_metadata_l4_dst_port, value32)// sugar@43
+    debug("field_instance_nat_metadata_l4_dst_port = %x.\n", FIELD_BYTES(pd, field_instance_nat_metadata_l4_dst_port));
 // sugar@167
 // sugar@449
     value32 = 1;// sugar@146

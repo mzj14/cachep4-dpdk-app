@@ -915,8 +915,8 @@ void init_simple() {
     fill_routable_table(mac_2, mac_1, 0, 0);
     fill_routable_table(mac_4, mac_3, 0, 0);
 
-    fill_unicast_routing_table(ip_2, mac_3_r, mac_4_r);
-    fill_unicast_routing_table(ip_1, mac_1_r, mac_2_r);
+    fill_unicast_routing_table(ip_2, mac_3, mac_4);
+    fill_unicast_routing_table(ip_1, mac_1, mac_2);
 
     fill_switching_table(mac_2, 0, 0);
     fill_switching_table(mac_4, 0, 1);
@@ -938,6 +938,7 @@ void init_simple() {
     set_default_action_ipv4_acl();
     set_default_action_udp_acl();
     set_default_action_tcp_acl();
+
     set_default_action_nat_src();
     set_default_action_nat_dst();
     set_default_action_nat_twice();
@@ -947,6 +948,8 @@ void init_simple() {
     fill_nat_get_l4_infomation_table_1(6); // related to tcp
     fill_nat_get_l4_infomation_table_2(17); // related to udp
 
+    // FIXME: When adding match part of an entry, follow the big-end
+    // FIXME: When adding action parameter of an entry, >4 bytes follow the big-end, <4 bytes follow the small end.
     // related to tcp
     fill_nat_flow_table_1(ip_1, mask_2, ip_2, mask_2, 0x06, 0xFF, port_num, mask_1, port_num, mask_1, gw_2_r, port_num_r);
 
