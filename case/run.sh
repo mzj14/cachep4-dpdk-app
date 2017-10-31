@@ -12,7 +12,7 @@ controller_for_example["case0-cache"]="dpdk_case0_cache_controller"
 controller_for_example["case1"]="dpdk_case2_controller"
 controller_for_example["case1-cache"]="dpdk_case1_cache_controller"
 controller_for_example["case2"]="dpdk_case2_controller"
-controller_for_example["case2-1"]="dpdk_case2_controller"
+controller_for_example["case2-cache"]="dpdk_case2_cache_controller"
 
 print_usage_and_exit() {
     (>&2 echo "Usage: $0 <switch executable> [controller name] [controller params file] -- <options for compiled switch>")
