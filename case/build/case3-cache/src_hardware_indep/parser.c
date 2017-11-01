@@ -128,6 +128,7 @@ static void parse_state_start(packet_descriptor_t *pd, uint8_t *buf, lookup_tabl
 {// sugar@123
     uint32_t value32;// sugar@124
     (void) value32;// sugar@125
+    debug("enter parse_state_start function.\n");
     extract_header_ethernet(buf, pd);// sugar@130
     buf += pd->headers[header_instance_ethernet].length;// sugar@131
     uint8_t key[2];// sugar@157
@@ -280,6 +281,7 @@ static void parse_state_parse_udp(packet_descriptor_t *pd, uint8_t *buf, lookup_
 {// sugar@123
     uint32_t value32;// sugar@124
     (void) value32;// sugar@125
+    debug("begin to parse udp header field.\n");
     extract_header_udp(buf, pd);// sugar@130
     buf += pd->headers[header_instance_udp].length;// sugar@131
     EXTRACT_INT32_AUTO(pd, field_instance_udp_src_port, value32)// sugar@135
@@ -296,5 +298,7 @@ static void parse_state_parse_udp(packet_descriptor_t *pd, uint8_t *buf, lookup_
 }// sugar@189
 
 void parse_packet(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@192
+    debug("begin to parse packet.\n");
     parse_state_start(pd, pd->data, tables);// sugar@193
+    debug("finish parsing packet.\n");
 }// sugar@194

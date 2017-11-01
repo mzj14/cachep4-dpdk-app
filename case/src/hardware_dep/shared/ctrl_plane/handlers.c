@@ -13,7 +13,6 @@
 // limitations under the License.
 #include "handlers.h"
 #include "messages.h"
-#include "dpdk_lib.h"
 #include <stdio.h>
 
 
@@ -87,8 +86,6 @@ int handle_p4_add_table_entry(struct p4_add_table_entry *m, struct p4_ctrl_msg *
     uint16_t offset = 0;
     char *buffer = 0;
     struct p4_action *action;
-
-    debug("enter the handle_p4_add_table_entry function.\n");
 
     ctrl_m->type = m->header.type;
     ctrl_m->xid = m->header.xid;

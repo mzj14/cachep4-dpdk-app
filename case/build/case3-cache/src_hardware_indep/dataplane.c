@@ -184,29 +184,29 @@ void table_port_vlan_to_vrf_key(packet_descriptor_t *pd, uint8_t *key) {// sugar
 
 void table_cache_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -1250,6 +1250,7 @@ void apply_table_cache(packet_descriptor_t *pd, lookup_table_t **tables)// sugar
     } else {                                           //Lookup failed or returned default action// sugar@105
         return apply_table_ipsg(pd, tables);// sugar@107
     }// sugar@108
+    debug("leaving TABLE cache.\n");
 }// sugar@121
 
 void apply_table_mac_learning(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
@@ -1688,48 +1689,62 @@ void init_dataplane(packet_descriptor_t *pd, lookup_table_t **tables) {// sugar@
     pd->dropped = 0;// sugar@263
 }// sugar@264
 
+// FIXME: update_packet may recalculate checksum of header fields which do not exist. But how does case2-cache survive ?
 void update_packet(packet_descriptor_t *pd) {// sugar@267
     uint32_t value32, res32;// sugar@268
     (void) value32, (void) res32;// sugar@269
+    debug("enter the update packet function.\n");
+    debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_ip_src_addr == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_ip_src_addr;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_ip_src_addr, value32)// sugar@276
     }// sugar@277
+    debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_ip_dst_addr == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_ip_dst_addr;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_ip_dst_addr, value32)// sugar@276
     }// sugar@277
+    debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_tcp_src_port == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_tcp_src_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_tcp_src_port, value32)// sugar@276
     }// sugar@277
+    debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_tcp_dst_port == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_tcp_dst_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_tcp_dst_port, value32)// sugar@276
     }// sugar@277
+    debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_udp_src_port == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_udp_src_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_udp_src_port, value32)// sugar@276
     }// sugar@277
+    debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_udp_dst_port == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_udp_dst_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_udp_dst_port, value32)// sugar@276
     }// sugar@277
+    debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_vlan_vid == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_vlan_vid;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_vlan_vid, value32)// sugar@276
     }// sugar@277
 
+    debug("update ip checksum.\n");
     if (pd->headers[header_instance_ip].pointer != NULL)// sugar@285
     {// sugar@286
         value32 = calculate_ipv4_checksum(pd);// sugar@287
         MODIFY_INT32_INT32_BITS(pd, field_instance_ip_checksum, value32);// sugar@288
     }// sugar@289
+    debug("update tcp checksum.\n");
+    /*
     if ((GET_INT32_AUTO(pd, field_instance_nat_metadata_update_tcp_checksum)) == (1))// sugar@283
     {// sugar@286
         value32 = calculate_tcp_checksum(pd);// sugar@287
         MODIFY_INT32_INT32_BITS(pd, field_instance_tcp_checksum, value32);// sugar@288
     }// sugar@289
+    */
+    debug("update udp checksum.\n");
     if ((GET_INT32_AUTO(pd, field_instance_nat_metadata_update_udp_checksum)) == (1))// sugar@283
     {// sugar@286
         value32 = calculate_udp_checksum(pd);// sugar@287

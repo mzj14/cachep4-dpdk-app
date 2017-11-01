@@ -314,28 +314,39 @@ void action_code_cache_action(packet_descriptor_t *pd, lookup_table_t **tables,
                                field_desc(pd, field_instance_ethernet_dst_mac).bytewidth)// sugar@196
     }// sugar@197
 // sugar@449
+    debug("modify field_instance_vlan_vid.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_vlan_vid, parameters.vid, 2)// sugar@189
 // sugar@449
+    debug("modify field_instance_intrinsic_metadata_mcast_grp.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_intrinsic_metadata_mcast_grp, parameters.grp, 2)// sugar@189
 // sugar@449
+    debug("modify field_instance_ip_src_addr.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_ip_src_addr, parameters.ip_src_addr, 4)// sugar@189
 // sugar@449
+    debug("modify field_instance_ip_dst_addr.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_ip_dst_addr, parameters.ip_dst_addr, 4)// sugar@189
 // sugar@449
+    debug("modify field_instance_tcp_src_port.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_tcp_src_port, parameters.tcp_src_port, 2)// sugar@189
 // sugar@449
+    debug("modify field_instance_tcp_dst_port.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_tcp_dst_port, parameters.tcp_dst_port, 2)// sugar@189
 // sugar@449
+    debug("modify field_instance_udp_src_port.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_udp_src_port, parameters.udp_src_port, 2)// sugar@189
 // sugar@449
+    debug("modify field_instance_udp_dst_port.\n");
     MODIFY_INT32_BYTEBUF(pd, field_instance_udp_dst_port, parameters.udp_dst_port, 2)// sugar@189
 // sugar@449
     value32 = 1;// sugar@146
+    debug("modify field_instance_nat_metadata_update_tcp_checksum.\n");
     MODIFY_INT32_INT32_AUTO(pd, field_instance_nat_metadata_update_tcp_checksum, value32)// sugar@43
 // sugar@147
 // sugar@449
     value32 = 1;// sugar@146
+    debug("modify field_instance_nat_metadata_update_udp_checksum.\n");
     MODIFY_INT32_INT32_AUTO(pd, field_instance_nat_metadata_update_udp_checksum, value32)// sugar@43
+    debug("live action_code_cache_action.\n");
 // sugar@147
 // sugar@449
 }// sugar@453
