@@ -13,6 +13,7 @@ controller_for_example["case1"]="dpdk_case2_controller"
 controller_for_example["case1-cache"]="dpdk_case1_cache_controller"
 controller_for_example["case2"]="dpdk_case2_controller"
 controller_for_example["case2-cache"]="dpdk_case2_cache_controller"
+controller_for_example["case3"]="dpdk_case3_controller"
 controller_for_example["case3-cache"]="dpdk_case3_cache_controller"
 
 print_usage_and_exit() {
