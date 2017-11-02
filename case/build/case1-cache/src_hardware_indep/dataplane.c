@@ -50,7 +50,7 @@ void table_tcp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_udp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62

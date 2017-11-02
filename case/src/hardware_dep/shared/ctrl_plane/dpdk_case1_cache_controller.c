@@ -465,15 +465,16 @@ void fill_udp_acl_table(uint8_t sport[2], uint8_t sport_mask[2], uint8_t dport[2
     send_p4_msg(c, buffer, 4096);
 }
 
+/*
 void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], uint8_t smac_mask[6], uint8_t dmac[6], uint8_t dmac_mask[6],
                       uint8_t eth_type[2], uint8_t eth_type_mask[2], uint8_t sip[4], uint8_t sip_mask[4],
                       uint8_t dip[4], uint8_t dip_mask[4], uint8_t ip_proto, uint8_t ip_proto_mask,
                       uint8_t tcp_sport[2], uint8_t tcp_sport_mask[2], uint8_t tcp_dport[2], uint8_t tcp_dport_mask[2],
-                      uint16_t udp_sport, uint16_t udp_sport_mask, uint16_t udp_dport, uint16_t udp_dport_mask,
+                      uint8_t udp_sport[2], uint8_t udp_sport_mask[2], uint8_t udp_dport[2], uint8_t udp_dport_mask[2],
                       uint8_t tcp_flags, uint8_t tcp_flags_mask, uint16_t eport, uint8_t smac_1[6], uint8_t dmac_1[6],
                       uint16_t vid, uint16_t grp) {
 
-    char buffer[4096]; /* TODO: ugly */
+    char buffer[4096];
     struct p4_header *h;
     struct p4_add_table_entry *te;
     struct p4_action *a;
@@ -554,14 +555,14 @@ void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], 
 
     ternary9 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary9->header.name, "udp.src_port");
-    memcpy(ternary9->bitmap, &udp_sport, 2);
-    memcpy(ternary9->mask, &udp_sport_mask, 2);
+    memcpy(ternary9->bitmap, udp_sport, 2);
+    memcpy(ternary9->mask, udp_sport_mask, 2);
     ternary9->length = 2 * 8 + 0;
 
     ternary10 = add_p4_field_match_ternary(te, 4096);
     strcpy(ternary10->header.name, "udp.dst_port");
-    memcpy(ternary10->bitmap, &udp_dport, 2);
-    memcpy(ternary10->mask, &udp_dport_mask, 2);
+    memcpy(ternary10->bitmap, udp_dport, 2);
+    memcpy(ternary10->mask, udp_dport_mask, 2);
     ternary10->length = 2 * 8 + 0;
 
     ternary11 = add_p4_field_match_ternary(te, 4096);
@@ -612,6 +613,70 @@ void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], 
     netconv_p4_field_match_ternary(ternary9);
     netconv_p4_field_match_ternary(ternary10);
     netconv_p4_field_match_ternary(ternary11);
+    netconv_p4_action(a);
+    netconv_p4_action_parameter(ap1);
+    netconv_p4_action_parameter(ap2);
+    netconv_p4_action_parameter(ap3);
+    netconv_p4_action_parameter(ap4);
+    netconv_p4_action_parameter(ap5);
+
+    send_p4_msg(c, buffer, 4096);
+}
+*/
+
+void fill_cache_table(uint8_t iport[2], uint16_t eport, uint8_t smac_1[6], uint8_t dmac_1[6],
+                      uint16_t vid, uint16_t grp) {
+
+    char buffer[4096]; /* TODO: ugly */
+    struct p4_header *h;
+    struct p4_add_table_entry *te;
+    struct p4_action *a;
+    struct p4_action_parameter *ap1, *ap2, *ap3, *ap4, *ap5;
+    // struct p4_field_match_exact *exact;
+    struct p4_field_match_exact *exact0;
+
+    printf("enter fill_cache_table function.\n");
+
+    h = create_p4_header(buffer, 0, 4096);
+    te = create_p4_add_table_entry(buffer, 0, 4096);
+    strcpy(te->table_name, "cache");
+
+    exact0 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact0->header.name, "standard_metadata.ingress_port");
+    memcpy(exact0->bitmap, iport, 2);
+    exact0->length = 2 * 8 + 0;
+
+    a = add_p4_action(h, 4096);
+    strcpy(a->description.name, "cache_action");
+
+    ap1 = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap1->name, "port");
+    memcpy(ap1->bitmap, &eport, 2);
+    ap1->length = 2 * 8 + 0;
+
+    ap2 = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap2->name, "src_mac");
+    memcpy(ap2->bitmap, &smac_1, 6);
+    ap2->length = 6 * 8 + 0;
+
+    ap3 = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap3->name, "dst_mac");
+    memcpy(ap3->bitmap, &dmac_1, 6);
+    ap3->length = 6 * 8 + 0;
+
+    ap4 = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap4->name, "vid");
+    memcpy(ap4->bitmap, &vid, 2);
+    ap4->length = 2 * 8 + 0;
+
+    ap5 = add_p4_action_parameter(h, a, 4096);
+    strcpy(ap5->name, "grp");
+    memcpy(ap5->bitmap, &grp, 2);
+    ap5->length = 2 * 8 + 0;
+
+    netconv_p4_header(h);
+    netconv_p4_add_table_entry(te);
+    netconv_p4_field_match_exact(exact0);
     netconv_p4_action(a);
     netconv_p4_action_parameter(ap1);
     netconv_p4_action_parameter(ap2);
@@ -727,6 +792,7 @@ void init_simple() {
     uint8_t ip_1[4] = {192, 168, 0, 2};
     uint8_t ip_2[4] = {192, 168, 1, 2};
 
+    uint8_t zero_mask_1[2] = {0x00, 0x00};
     uint8_t mask_1[2] = {0xFF, 0xFF};
     uint8_t mask_2[4] = {0xFF, 0xFF, 0xFF, 0xFF};
     uint8_t mask_3[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
@@ -737,6 +803,8 @@ void init_simple() {
 
     uint8_t port_num_1[2] = {0x00, 0x00};
     uint8_t port_num_2[2] = {0x00, 0x01};
+
+    uint8_t zero_port_num[2] = {0x00, 0x00};
 
     fill_mac_learning_table(mac_2, 0);
     fill_mac_learning_table(mac_4, 0);
@@ -768,11 +836,14 @@ void init_simple() {
     set_default_action_udp_acl();
     set_default_action_tcp_acl();
 
-    fill_cache_table(port_num_1, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x06, 0xff,
-                     port_num, mask_1, port_num, mask_1, 0, 0x0000, 0, 0x0000, 0, 0x00, 1, mac_3, mac_4, 0, 0);
+    /*
+    fill_cache_table(port_num_1, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x11, 0xff,
+                     zero_port_num, zero_mask_1, zero_port_num, zero_mask_1, port_num, mask_1, port_num, mask_1, 0, 0x00, 1, mac_3, mac_4, 0, 0); // hit entry
 
-    fill_cache_table(port_num_2, mask_1, mac_4, mask_3, mac_3, mask_3, eth_type, mask_1, ip_2, mask_2, ip_1, mask_2, 0x06, 0xff,
-                     port_num, mask_1, port_num, mask_1, 0, 0x0000, 0, 0x0000, 0, 0x00, 1, mac_1, mac_2, 0, 0);
+    fill_cache_table(port_num_2, mask_1, mac_4, mask_3, mac_3, mask_3, eth_type, mask_1, ip_2, mask_2, ip_1, mask_2, 0x11, 0xff,
+                     zero_port_num, zero_mask_1, zero_port_num, zero_mask_1, port_num, mask_1, port_num, mask_1, 0, 0x00, 1, mac_1, mac_2, 0, 0);
+    */
+    fill_cache_table(port_num_1, 1, mac_3, mac_4, 0, 0); // hit entry
 }
 
 int main() {

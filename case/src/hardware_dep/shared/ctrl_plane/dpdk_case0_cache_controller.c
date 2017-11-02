@@ -313,7 +313,8 @@ void init_simple() {
     uint8_t ip_1[4] = {192, 168, 0, 2};
     uint8_t ip_2[4] = {192, 168, 1, 2};
 
-    fill_cache_table(0, mac_2, mac_1, ip_2, 0, 1, mac_3, mac_4, 0, 0);
+    // fill_cache_table(0, mac_2, mac_1, ip_2, 0, 1, mac_3, mac_4, 0, 0); // hit entry
+    fill_cache_table(1, mac_2, mac_1, ip_2, 0, 1, mac_3, mac_4, 0, 0); // miss entry
     fill_cache_table(1, mac_4, mac_3, ip_1, 0, 0, mac_1, mac_2, 0, 0);
 
     fill_mac_learning_table(mac_2, 0);
