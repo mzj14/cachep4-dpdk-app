@@ -31,7 +31,7 @@ void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar
 uint8_t reverse_buffer[17];// sugar@34
 void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
@@ -42,7 +42,7 @@ void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_ipv4_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
@@ -53,27 +53,27 @@ void table_ipv4_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_tcp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_udp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
@@ -82,54 +82,55 @@ void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key) {// sugar
 
 void table_nat_src_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_nat_dst_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_nat_twice_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
+// FIXME: Again, nat_metadata_l4_src_port has wrong bit operation. Still do not know why.
 void table_nat_flow_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_nat_get_l4_infomation_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -143,20 +144,20 @@ void table_ipsg_permit_special_key(packet_descriptor_t *pd, uint8_t *key) {// su
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_ipsg_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
@@ -165,18 +166,18 @@ void table_ipsg_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_storm_control_tbl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_port_vlan_to_vrf_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
@@ -190,7 +191,7 @@ void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
@@ -201,14 +202,14 @@ void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_unicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_switching_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
@@ -286,8 +287,7 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
-                        }
-                        else {
+                        } else {
                             if (pd->headers[header_instance_udp].pointer != NULL) {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                                     (1)) { return apply_table_udp_acl(pd, tables); }
@@ -296,20 +296,17 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                         (0)) { return apply_table_switching(pd, tables); }
                                     else { return apply_table_storm_control_tbl(pd, tables); }
                                 }
-                            }
-                            else {
+                            } else {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                         return apply_table_switching(pd, tables);
-                    }
-                    else { return apply_table_storm_control_tbl(pd, tables); }
+                    } else { return apply_table_storm_control_tbl(pd, tables); }
                 }// sugar@114
                 break;// sugar@115
             case action_acl_permit:// sugar@113
@@ -325,8 +322,7 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
-                        }
-                        else {
+                        } else {
                             if (pd->headers[header_instance_udp].pointer != NULL) {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                                     (1)) { return apply_table_udp_acl(pd, tables); }
@@ -335,20 +331,17 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                         (0)) { return apply_table_switching(pd, tables); }
                                     else { return apply_table_storm_control_tbl(pd, tables); }
                                 }
-                            }
-                            else {
+                            } else {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                         return apply_table_switching(pd, tables);
-                    }
-                    else { return apply_table_storm_control_tbl(pd, tables); }
+                    } else { return apply_table_storm_control_tbl(pd, tables); }
                 }// sugar@114
                 break;// sugar@115
             case action_acl_drop:// sugar@113
@@ -364,8 +357,7 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
-                        }
-                        else {
+                        } else {
                             if (pd->headers[header_instance_udp].pointer != NULL) {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                                     (1)) { return apply_table_udp_acl(pd, tables); }
@@ -374,20 +366,17 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                         (0)) { return apply_table_switching(pd, tables); }
                                     else { return apply_table_storm_control_tbl(pd, tables); }
                                 }
-                            }
-                            else {
+                            } else {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                         return apply_table_switching(pd, tables);
-                    }
-                    else { return apply_table_storm_control_tbl(pd, tables); }
+                    } else { return apply_table_storm_control_tbl(pd, tables); }
                 }// sugar@114
                 break;// sugar@115
             case action_nop:// sugar@113
@@ -403,8 +392,7 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
-                        }
-                        else {
+                        } else {
                             if (pd->headers[header_instance_udp].pointer != NULL) {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                                     (1)) { return apply_table_udp_acl(pd, tables); }
@@ -413,20 +401,17 @@ void apply_table_mac_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
                                         (0)) { return apply_table_switching(pd, tables); }
                                     else { return apply_table_storm_control_tbl(pd, tables); }
                                 }
-                            }
-                            else {
+                            } else {
                                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                                     (0)) { return apply_table_switching(pd, tables); }
                                 else { return apply_table_storm_control_tbl(pd, tables); }
                             }
                         }
                     }
-                }
-                else {
+                } else {
                     if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                         return apply_table_switching(pd, tables);
-                    }
-                    else { return apply_table_storm_control_tbl(pd, tables); }
+                    } else { return apply_table_storm_control_tbl(pd, tables); }
                 }// sugar@114
                 break;// sugar@115
         }// sugar@116
@@ -481,8 +466,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
                     }
-                }
-                else {
+                } else {
                     if (pd->headers[header_instance_udp].pointer != NULL) {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                             (1)) { return apply_table_udp_acl(pd, tables); }
@@ -491,8 +475,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                                 (0)) { return apply_table_switching(pd, tables); }
                             else { return apply_table_storm_control_tbl(pd, tables); }
                         }
-                    }
-                    else {
+                    } else {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
@@ -508,8 +491,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
                     }
-                }
-                else {
+                } else {
                     if (pd->headers[header_instance_udp].pointer != NULL) {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                             (1)) { return apply_table_udp_acl(pd, tables); }
@@ -518,8 +500,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                                 (0)) { return apply_table_switching(pd, tables); }
                             else { return apply_table_storm_control_tbl(pd, tables); }
                         }
-                    }
-                    else {
+                    } else {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
@@ -535,8 +516,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
                     }
-                }
-                else {
+                } else {
                     if (pd->headers[header_instance_udp].pointer != NULL) {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                             (1)) { return apply_table_udp_acl(pd, tables); }
@@ -545,8 +525,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                                 (0)) { return apply_table_switching(pd, tables); }
                             else { return apply_table_storm_control_tbl(pd, tables); }
                         }
-                    }
-                    else {
+                    } else {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
@@ -562,8 +541,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
                     }
-                }
-                else {
+                } else {
                     if (pd->headers[header_instance_udp].pointer != NULL) {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
                             (1)) { return apply_table_udp_acl(pd, tables); }
@@ -572,8 +550,7 @@ void apply_table_ipv4_acl(packet_descriptor_t *pd, lookup_table_t **tables)// su
                                 (0)) { return apply_table_switching(pd, tables); }
                             else { return apply_table_storm_control_tbl(pd, tables); }
                         }
-                    }
-                    else {
+                    } else {
                         if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
                             (0)) { return apply_table_switching(pd, tables); }
                         else { return apply_table_storm_control_tbl(pd, tables); }
@@ -626,26 +603,22 @@ void apply_table_tcp_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
             case action_acl_permit:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_acl_alert:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_acl_drop:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_nop:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
         }// sugar@116
     } else {// sugar@117
@@ -693,26 +666,22 @@ void apply_table_udp_acl(packet_descriptor_t *pd, lookup_table_t **tables)// sug
             case action_acl_permit:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_acl_alert:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_acl_drop:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_nop:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == (0)) {
                     return apply_table_switching(pd, tables);
-                }
-                else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
+                } else { return apply_table_storm_control_tbl(pd, tables); }// sugar@114
                 break;// sugar@115
         }// sugar@116
     } else {// sugar@117
@@ -743,55 +712,58 @@ void apply_table_get_acl_features(packet_descriptor_t *pd, lookup_table_t **tabl
                 break;// sugar@96
         }// sugar@97
     }// sugar@98
-    if (res != NULL) {// sugar@110
-        switch (res->action_id) {// sugar@111
-            case action_acl_feature:// sugar@113
-                if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_mac_acl)) ==
-                    (1)) { return apply_table_mac_acl(pd, tables); }
-                else {
-                    if (pd->headers[header_instance_ip].pointer != NULL) {
-                        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_ipv4_acl)) ==
-                            (1)) { return apply_table_ipv4_acl(pd, tables); }
-                        else {
-                            if (pd->headers[header_instance_tcp].pointer != NULL) {
-                                if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_tcp_acl)) ==
-                                    (1)) { return apply_table_tcp_acl(pd, tables); }
-                                else {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                        (0)) { return apply_table_switching(pd, tables); }
-                                    else { return apply_table_storm_control_tbl(pd, tables); }
-                                }
-                            }
-                            else {
-                                if (pd->headers[header_instance_udp].pointer != NULL) {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
-                                        (1)) { return apply_table_udp_acl(pd, tables); }
-                                    else {
-                                        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                            (0)) { return apply_table_switching(pd, tables); }
-                                        else { return apply_table_storm_control_tbl(pd, tables); }
-                                    }
-                                }
-                                else {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                        (0)) { return apply_table_switching(pd, tables); }
-                                    else { return apply_table_storm_control_tbl(pd, tables); }
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                            (0)) { return apply_table_switching(pd, tables); }
-                        else { return apply_table_storm_control_tbl(pd, tables); }
-                    }
-                }// sugar@114
-                break;// sugar@115
-        }// sugar@116
-    } else {// sugar@117
-        debug("    :: IGNORING PACKET.\n");// sugar@118
-        return;// sugar@119
-    }// sugar@120
+    // if (res != NULL) {// sugar@110
+    // switch (res->action_id) {// sugar@111
+    // case action_acl_feature:// sugar@113
+    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_mac_acl)) ==
+        (1)) { return apply_table_mac_acl(pd, tables); }
+    // else {
+    if (pd->headers[header_instance_ip].pointer != NULL) {
+        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_ipv4_acl)) ==
+            (1)) { return apply_table_ipv4_acl(pd, tables); }
+        // else {
+        if (pd->headers[header_instance_tcp].pointer != NULL) {
+            if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_tcp_acl)) ==
+                (1)) { return apply_table_tcp_acl(pd, tables); }
+            // else {
+            // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+            // (0)) { return apply_table_switching(pd, tables); }
+            // else {}
+            // }
+        } // else {
+        if (pd->headers[header_instance_udp].pointer != NULL) {
+            if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
+                (1)) { return apply_table_udp_acl(pd, tables); }
+            // else {
+            // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+            // (0)) { return apply_table_switching(pd, tables); }
+            // else {}
+            // }
+        } // else {
+        // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+        // (0)) { return apply_table_switching(pd, tables); }
+        // else {}
+        // }
+    }
+    // }
+    // }
+    /*
+    else {
+        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+            (0)) { return apply_table_switching(pd, tables); }
+        else {}
+    }
+    */
+    // }// // sugar@114
+    // break;// sugar@115
+    // }// sugar@116
+    // } else {// sugar@117
+    // debug("    :: IGNORING PACKET.\n");// sugar@118
+    // return;// sugar@119
+    // }// sugar@120
+    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == 0) {
+        return apply_table_switching(pd, tables);
+    }
 }// sugar@121
 
 void apply_table_nat_src(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
@@ -1016,20 +988,17 @@ void apply_table_nat_get_l4_infomation(packet_descriptor_t *pd, lookup_table_t *
             case action_get_tcp_information:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_nat_metadata_enable_nat)) == (1)) {
                     return apply_table_nat_twice(pd, tables);
-                }
-                else { return apply_table_unicast_routing(pd, tables); }// sugar@114
+                } else { return apply_table_unicast_routing(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_get_udp_information:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_nat_metadata_enable_nat)) == (1)) {
                     return apply_table_nat_twice(pd, tables);
-                }
-                else { return apply_table_unicast_routing(pd, tables); }// sugar@114
+                } else { return apply_table_unicast_routing(pd, tables); }// sugar@114
                 break;// sugar@115
             case action_disable_nat:// sugar@113
                 if ((GET_INT32_AUTO(pd, field_instance_nat_metadata_enable_nat)) == (1)) {
                     return apply_table_nat_twice(pd, tables);
-                }
-                else { return apply_table_unicast_routing(pd, tables); }// sugar@114
+                } else { return apply_table_unicast_routing(pd, tables); }// sugar@114
                 break;// sugar@115
         }// sugar@116
     } else {// sugar@117
@@ -1273,8 +1242,7 @@ void apply_table_routable(packet_descriptor_t *pd, lookup_table_t **tables)// su
                                 (0)) { return apply_table_switching(pd, tables); }
                             else { return apply_table_storm_control_tbl(pd, tables); }
                         }
-                    }
-                    else { return apply_table_storm_control_tbl(pd, tables); }
+                    } else { return apply_table_storm_control_tbl(pd, tables); }
                 }// sugar@114
                 break;// sugar@115
             case action_mcast:// sugar@113
@@ -1289,8 +1257,7 @@ void apply_table_routable(packet_descriptor_t *pd, lookup_table_t **tables)// su
                                 (0)) { return apply_table_switching(pd, tables); }
                             else { return apply_table_storm_control_tbl(pd, tables); }
                         }
-                    }
-                    else { return apply_table_storm_control_tbl(pd, tables); }
+                    } else { return apply_table_storm_control_tbl(pd, tables); }
                 }// sugar@114
                 break;// sugar@115
         }// sugar@116

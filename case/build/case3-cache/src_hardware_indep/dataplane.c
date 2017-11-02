@@ -218,7 +218,7 @@ void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
