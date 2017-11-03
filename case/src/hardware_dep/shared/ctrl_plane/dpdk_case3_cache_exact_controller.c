@@ -927,12 +927,9 @@ void fill_port_vlan_to_vrf_table(uint8_t iport[2], uint8_t vid[2], uint16_t vrf)
     send_p4_msg(c, buffer, 4096);
 }
 
-void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], uint8_t smac_mask[6],
-                      uint8_t dmac[6], uint8_t dmac_mask[6], uint8_t eth_type[2], uint8_t eth_type_mask[2],
-                      uint8_t sip[4], uint8_t sip_mask[4], uint8_t dip[4], uint8_t dip_mask[4], uint8_t ip_proto,
-                      uint8_t ip_proto_mask, uint8_t tcp_sport[2], uint8_t tcp_sport_mask[2], uint8_t tcp_dport[2],
-                      uint8_t tcp_dport_mask[2], uint8_t udp_sport[2], uint8_t udp_sport_mask[2], uint8_t udp_dport[2],
-                      uint8_t udp_dport_mask[2], uint8_t tcp_flags[2], uint8_t tcp_flags_mask[2], uint16_t port,
+void fill_cache_table(uint8_t iport[2], uint8_t smac[6], uint8_t dmac[6], uint8_t eth_type[2], uint8_t sip[4], 
+                      uint8_t dip[4], uint8_t ip_proto, uint8_t tcp_sport[2], uint8_t tcp_dport[2], 
+                      uint8_t udp_sport[2], uint8_t udp_dport[2], uint8_t tcp_flags[2], uint16_t port,
                       uint8_t src_mac[6], uint8_t dst_mac[6], uint16_t vid, uint16_t grp, uint32_t src_addr,
                       uint32_t dst_addr, uint16_t tcp_src_port, uint16_t tcp_dst_port, uint16_t udp_src_port,
                       uint16_t udp_dst_port) {
@@ -941,8 +938,8 @@ void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], 
     struct p4_add_table_entry *te;
     struct p4_action *a;
     struct p4_action_parameter *ap1, *ap2, *ap3, *ap4, *ap5, *ap6, *ap7, *ap8, *ap9, *ap10, *ap11;
-    struct p4_field_match_ternary *ternary1, *ternary2, *ternary3, *ternary4, *ternary5, *ternary6,
-            *ternary7, *ternary8, *ternary9, *ternary10, *ternary11, *ternary12; // TODO: replace to lpm
+    struct p4_field_match_exact *exact1, *exact2, *exact3, *exact4, *exact5, *exact6,
+            *exact7, *exact8, *exact9, *exact10, *exact11, *exact12; // TODO: replace to lpm
 
     printf("enter fill_cache_table function.\n");
 
@@ -950,91 +947,79 @@ void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], 
     te = create_p4_add_table_entry(buffer, 0, 4096);
     strcpy(te->table_name, "cache");
 
-    printf("adding ternary 1.\n");
-    ternary1 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary1->header.name, "standard_metadata.ingress_port");
-    memcpy(ternary1->bitmap, iport, 2);
-    memcpy(ternary1->mask, iport_mask, 2);
-    ternary1->length = 2 * 8 + 0;
+    printf("adding exact 1.\n");
+    exact1 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact1->header.name, "standard_metadata.ingress_port");
+    memcpy(exact1->bitmap, iport, 2);
+    exact1->length = 2 * 8 + 0;
 
-    printf("adding ternary 2.\n");
-    ternary2 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary2->header.name, "ethernet.src_mac");
-    memcpy(ternary2->bitmap, smac, 6);
-    memcpy(ternary2->mask, smac_mask, 6);
-    ternary2->length = 6 * 8 + 0;
+    printf("adding exact 2.\n");
+    exact2 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact2->header.name, "ethernet.src_mac");
+    memcpy(exact2->bitmap, smac, 6);
+    exact2->length = 6 * 8 + 0;
 
-    printf("adding ternary 3.\n");
-    ternary3 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary3->header.name, "ethernet.dst_mac");
-    memcpy(ternary3->bitmap, dmac, 6);
-    memcpy(ternary3->mask, dmac_mask, 6);
-    ternary3->length = 6 * 8 + 0;
+    printf("adding exact 3.\n");
+    exact3 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact3->header.name, "ethernet.dst_mac");
+    memcpy(exact3->bitmap, dmac, 6);
+    exact3->length = 6 * 8 + 0;
 
-    printf("adding ternary 4.\n");
-    ternary4 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary4->header.name, "ethernet.eth_type");
-    memcpy(ternary4->bitmap, eth_type, 2);
-    memcpy(ternary4->mask, eth_type_mask, 2);
-    ternary4->length = 2 * 8 + 0;
+    printf("adding exact 4.\n");
+    exact4 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact4->header.name, "ethernet.eth_type");
+    memcpy(exact4->bitmap, eth_type, 2);
+    exact4->length = 2 * 8 + 0;
 
-    printf("adding ternary 5.\n");
-    ternary5 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary5->header.name, "ip.src_addr");
-    memcpy(ternary5->bitmap, sip, 4);
-    memcpy(ternary5->mask, sip_mask, 4);
-    ternary5->length = 4 * 8 + 0;
+    printf("adding exact 5.\n");
+    exact5 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact5->header.name, "ip.src_addr");
+    memcpy(exact5->bitmap, sip, 4);
+    exact5->length = 4 * 8 + 0;
 
-    printf("adding ternary 6.\n");
-    ternary6 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary6->header.name, "ip.dst_addr");
-    memcpy(ternary6->bitmap, dip, 4);
-    memcpy(ternary6->mask, dip_mask, 4);
-    ternary6->length = 4 * 8 + 0;
+    printf("adding exact 6.\n");
+    exact6 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact6->header.name, "ip.dst_addr");
+    memcpy(exact6->bitmap, dip, 4);
+    exact6->length = 4 * 8 + 0;
 
-    printf("adding ternary 7.\n");
-    ternary7 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary7->header.name, "ip.proto");
-    memcpy(ternary7->bitmap, &ip_proto, 1);
-    memcpy(ternary7->mask, &ip_proto_mask, 1);
-    ternary7->length = 1 * 8 + 0;
+    printf("adding exact 7.\n");
+    exact7 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact7->header.name, "ip.proto");
+    memcpy(exact7->bitmap, &ip_proto, 1);
+    exact7->length = 1 * 8 + 0;
 
-    printf("adding ternary 8.\n");
-    ternary8 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary8->header.name, "tcp.src_port");
-    memcpy(ternary8->bitmap, tcp_sport, 2);
-    memcpy(ternary8->mask, tcp_sport_mask, 2);
-    ternary8->length = 2 * 8 + 0;
+    printf("adding exact 8.\n");
+    exact8 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact8->header.name, "tcp.src_port");
+    memcpy(exact8->bitmap, tcp_sport, 2);
+    exact8->length = 2 * 8 + 0;
 
-    printf("adding ternary 9.\n");
-    ternary9 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary9->header.name, "tcp.dst_port");
-    memcpy(ternary9->bitmap, tcp_dport, 2);
-    memcpy(ternary9->mask, tcp_dport_mask, 2);
-    ternary9->length = 2 * 8 + 0;
+    printf("adding exact 9.\n");
+    exact9 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact9->header.name, "tcp.dst_port");
+    memcpy(exact9->bitmap, tcp_dport, 2);
+    exact9->length = 2 * 8 + 0;
 
-    printf("adding ternary 10.\n");
-    ternary10 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary10->header.name, "udp.src_port");
-    memcpy(ternary10->bitmap, udp_sport, 2);
-    memcpy(ternary10->mask, udp_sport_mask, 2);
-    ternary10->length = 2 * 8 + 0;
+    printf("adding exact 10.\n");
+    exact10 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact10->header.name, "udp.src_port");
+    memcpy(exact10->bitmap, udp_sport, 2);
+    exact10->length = 2 * 8 + 0;
 
-    printf("adding ternary 11.\n");
-    ternary11 = add_p4_field_match_ternary(te, 4096);
-    strcpy(ternary11->header.name, "udp.dst_port");
-    memcpy(ternary11->bitmap, udp_dport, 2);
-    memcpy(ternary11->mask, udp_dport_mask, 2);
-    ternary11->length = 2 * 8 + 0;
+    printf("adding exact 11.\n");
+    exact11 = add_p4_field_match_exact(te, 4096);
+    strcpy(exact11->header.name, "udp.dst_port");
+    memcpy(exact11->bitmap, udp_dport, 2);
+    exact11->length = 2 * 8 + 0;
 
-    printf("adding ternary 12.\n");
-    ternary12 = add_p4_field_match_ternary(te, 4096);
-    printf("adding ternary 12.1\n");
-    strcpy(ternary12->header.name, "tcp.flags");
-    printf("adding ternary 12.2\n");
-    memcpy(ternary12->bitmap, tcp_flags, 2);
-    memcpy(ternary12->mask, tcp_flags_mask, 2);
-    ternary12->length = 2 * 8 + 0;
+    printf("adding exact 12.\n");
+    exact12 = add_p4_field_match_exact(te, 4096);
+    printf("adding exact 12.1\n");
+    strcpy(exact12->header.name, "tcp.flags");
+    printf("adding exact 12.2\n");
+    memcpy(exact12->bitmap, tcp_flags, 2);
+    exact12->length = 2 * 8 + 0;
 
     a = add_p4_action(h, 4096);
     printf("adding middle.\n");
@@ -1110,18 +1095,18 @@ void fill_cache_table(uint8_t iport[2], uint8_t iport_mask[2], uint8_t smac[6], 
 
     netconv_p4_header(h);
     netconv_p4_add_table_entry(te);
-    netconv_p4_field_match_ternary(ternary1);
-    netconv_p4_field_match_ternary(ternary2);
-    netconv_p4_field_match_ternary(ternary3);
-    netconv_p4_field_match_ternary(ternary4);
-    netconv_p4_field_match_ternary(ternary5);
-    netconv_p4_field_match_ternary(ternary6);
-    netconv_p4_field_match_ternary(ternary7);
-    netconv_p4_field_match_ternary(ternary8);
-    netconv_p4_field_match_ternary(ternary9);
-    netconv_p4_field_match_ternary(ternary10);
-    netconv_p4_field_match_ternary(ternary11);
-    netconv_p4_field_match_ternary(ternary12);
+    netconv_p4_field_match_exact(exact1);
+    netconv_p4_field_match_exact(exact2);
+    netconv_p4_field_match_exact(exact3);
+    netconv_p4_field_match_exact(exact4);
+    netconv_p4_field_match_exact(exact5);
+    netconv_p4_field_match_exact(exact6);
+    netconv_p4_field_match_exact(exact7);
+    netconv_p4_field_match_exact(exact8);
+    netconv_p4_field_match_exact(exact9);
+    netconv_p4_field_match_exact(exact10);
+    netconv_p4_field_match_exact(exact11);
+    netconv_p4_field_match_exact(exact12);
     netconv_p4_action(a);
     netconv_p4_action_parameter(ap1);
     netconv_p4_action_parameter(ap2);
@@ -1486,14 +1471,13 @@ void init_simple() {
     fill_storm_control_tbl_table(zero_port_num, mask_1, zero_mac, zero_mask_3, zero_eth_type, zero_mask_1,
                                  zero_ip, zero_mask_2, 0);
 
+
     /*
-    fill_cache_table(port_num_1, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF,
-                     port_num_1, zero_mask_1, port_num_1, zero_mask_1, port_num, mask_1, port_num, mask_1, tcp_flags, tcp_flags_mask, 1, mac_3, mac_4, 0, 0,
-                     0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40); // hit entry
+    fill_cache_table(port_num_1, mac_2, mac_1, eth_type, ip_1, ip_2, 0x11, port_num_1, port_num_1, port_num, port_num,
+                     tcp_flags, 1, mac_3, mac_4, 0, 0, 0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40); // hit entry
     */
-    fill_cache_table(port_num_2, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF,
-                     port_num_1, zero_mask_1, port_num_1, zero_mask_1, port_num, mask_1, port_num, mask_1, tcp_flags, tcp_flags_mask, 1, mac_3, mac_4, 0, 0,
-                     0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40); // miss entry
+    fill_cache_table(port_num_2, mac_2, mac_1, eth_type, ip_1, ip_2, 0x11, port_num_1, port_num_1, port_num, port_num,
+                     tcp_flags, 1, mac_3, mac_4, 0, 0, 0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40); // miss entry
 }
 
 int main() {

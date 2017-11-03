@@ -42,21 +42,3 @@ Generate set_default_action message for table udp_acl
 start to send p4 message.
 Generate set_default_action message for table tcp_acl
 start to send p4 message.
-Generate set_default_action message for table nat_src
-start to send p4 message.
-Generate set_default_action message for table nat_dst
-start to send p4 message.
-Generate set_default_action message for table nat_twice
-start to send p4 message.
-Generate set_default_action message for table nat_flow
-start to send p4 message.
-Generate set_default_action message for table nat_get_l4_infomation
-start to send p4 message.
-enter fill_nat_get_l4_infomation_table.
-start to send p4 message.
-enter fill_nat_get_l4_infomation_table.
-start to send p4 message.
-enter fill_nat_flow_table_1 function.
-start to send p4 message.
-enter fill_nat_flow_table_1 function.
-start to send p4 message.

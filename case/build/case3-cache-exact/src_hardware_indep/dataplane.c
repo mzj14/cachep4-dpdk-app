@@ -21,6 +21,7 @@ void apply_table_ipsg_permit_special(packet_descriptor_t *pd, lookup_table_t **t
 void apply_table_ipsg(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_storm_control_tbl(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_port_vlan_to_vrf(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
+void apply_table_cache(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_mac_learning(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_routable(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_unicast_routing(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
@@ -28,7 +29,7 @@ void apply_table_switching(packet_descriptor_t *pd, lookup_table_t **tables);// 
 void apply_table_multicast_routing(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar@30
 
-uint8_t reverse_buffer[17];// sugar@34
+uint8_t reverse_buffer[34];// sugar@34
 void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
@@ -37,7 +38,7 @@ void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_ipv4_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -48,18 +49,18 @@ void table_ipv4_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
 }// sugar@62
 
 void table_tcp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint16_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint16_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint8_t);// sugar@50
 }// sugar@62
 
 void table_udp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -68,7 +69,7 @@ void table_udp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -87,8 +88,8 @@ void table_nat_src_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
     key += sizeof(uint8_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_nat_dst_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -98,8 +99,8 @@ void table_nat_dst_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
     key += sizeof(uint8_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_nat_twice_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -111,13 +112,12 @@ void table_nat_twice_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
     key += sizeof(uint8_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
-// FIXME: Again, nat_metadata_l4_src_port has wrong bit operation. Still do not know why.
 void table_nat_flow_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
@@ -135,7 +135,7 @@ void table_nat_flow_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_nat_get_l4_infomation_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
 }// sugar@62
 
 void table_ipsg_permit_special_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -152,7 +152,7 @@ void table_ipsg_permit_special_key(packet_descriptor_t *pd, uint8_t *key) {// su
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_ipsg_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -179,14 +179,41 @@ void table_port_vlan_to_vrf_key(packet_descriptor_t *pd, uint8_t *key) {// sugar
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+}// sugar@62
+
+void table_cache_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
+    EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
+    key += 6;// sugar@54
+    EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
+    key += 6;// sugar@54
+    EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint32_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint8_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint8_t);// sugar@50
 }// sugar@62
 
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -197,7 +224,7 @@ void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_unicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -213,7 +240,7 @@ void table_switching_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_multicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -227,9 +254,9 @@ void table_multicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// suga
 
 void table_igmp_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     key -= 7;// sugar@58
@@ -1161,6 +1188,38 @@ void apply_table_port_vlan_to_vrf(packet_descriptor_t *pd, lookup_table_t **tabl
     }// sugar@120
 }// sugar@121
 
+void apply_table_cache(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
+{// sugar@69
+    debug("  :::: EXECUTING TABLE cache\n");// sugar@70
+    uint8_t *key[34];// sugar@71
+    table_cache_key(pd, (uint8_t *) key);// sugar@72
+    uint8_t *value = exact_lookup(tables[TABLE_cache], (uint8_t *) key);// sugar@73
+    struct cache_action *res = (struct cache_action *) value;// sugar@74
+    int index;
+    (void) index;// sugar@75
+    if (res != NULL) {// sugar@78
+        index = *(int *) (value + sizeof(struct cache_action));// sugar@79
+    }// sugar@82
+    if (res == NULL) {// sugar@85
+        debug("    :: NO RESULT, NO DEFAULT ACTION.\n");// sugar@86
+    } else {// sugar@87
+        switch (res->action_id) {// sugar@88
+            case action_cache_block:// sugar@90
+                debug("    :: EXECUTING ACTION cache_block...\n");// sugar@91
+                action_code_cache_block(pd, tables);// sugar@95
+                break;// sugar@96
+            case action_cache_action:// sugar@90
+                debug("    :: EXECUTING ACTION cache_action...\n");// sugar@91
+                action_code_cache_action(pd, tables, res->cache_action_params);// sugar@93
+                break;// sugar@96
+        }// sugar@97
+    }// sugar@98
+    if (res != NULL && index != DEFAULT_ACTION_INDEX) { //Lookup was successful (not with default action)// sugar@102
+    } else {                                           //Lookup failed or returned default action// sugar@105
+        return apply_table_ipsg(pd, tables);// sugar@107
+    }// sugar@108
+}// sugar@121
+
 void apply_table_mac_learning(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
 {// sugar@69
     debug("  :::: EXECUTING TABLE mac_learning\n");// sugar@70
@@ -1619,7 +1678,6 @@ void update_packet(packet_descriptor_t *pd) {// sugar@267
         value32 = pd->fields.field_instance_udp_dst_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_udp_dst_port, value32)// sugar@276
     }// sugar@277
-
     if (pd->fields.attr_field_instance_vlan_vid == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_vlan_vid;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_vlan_vid, value32)// sugar@276

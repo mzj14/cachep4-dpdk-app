@@ -374,11 +374,9 @@ void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     packet_desc->headers[header_instance_arp].pointer = NULL;// sugar@235
     packet_desc->headers[header_instance_icmp].pointer = NULL;// sugar@235
     packet_desc->headers[header_instance_udp].pointer = NULL;// sugar@235
-    // packet_desc->headers[header_instance_vlan].pointer = NULL;// sugar@235
 
     memset(packet_desc->headers[header_instance_vlan].pointer, 0,
            header_info(header_instance_vlan).bytewidth * sizeof(uint8_t));// sugar@233
-
     memset(packet_desc->headers[header_instance_intrinsic_metadata].pointer, 0,
            header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t));// sugar@233
     memset(packet_desc->headers[header_instance_route_metadata].pointer, 0,
@@ -407,16 +405,10 @@ void init_headers(packet_descriptor_t *packet_desc) {// sugar@237
     packet_desc->headers[header_instance_udp] = (header_descriptor_t) {.type = header_instance_udp, .length = header_info(
             header_instance_udp).bytewidth, .pointer = NULL,// sugar@245
             .var_width_field_bitwidth = 0};// sugar@246
-    /*
-    packet_desc->headers[header_instance_vlan] = (header_descriptor_t) {.type = header_instance_vlan, .length = header_info(
-            header_instance_vlan).bytewidth, .pointer = NULL,// sugar@245
-            .var_width_field_bitwidth = 0};// sugar@246
-    */
     packet_desc->headers[header_instance_vlan] = (header_descriptor_t) {.type = header_instance_vlan, .length = header_info(
             header_instance_vlan).bytewidth,// sugar@241
             .pointer = malloc(header_info(header_instance_vlan).bytewidth * sizeof(uint8_t)),// sugar@242
             .var_width_field_bitwidth = 0};// sugar@243
-
     packet_desc->headers[header_instance_intrinsic_metadata] = (header_descriptor_t) {.type = header_instance_intrinsic_metadata, .length = header_info(
             header_instance_intrinsic_metadata).bytewidth,// sugar@241
             .pointer = malloc(header_info(header_instance_intrinsic_metadata).bytewidth * sizeof(uint8_t)),// sugar@242

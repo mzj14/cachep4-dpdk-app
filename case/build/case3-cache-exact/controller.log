@@ -71,20 +71,20 @@ start to send p4 message.
 enter fill_storm_control_tbl_table function.
 start to send p4 message.
 enter fill_cache_table function.
-adding ternary 1.
-adding ternary 2.
-adding ternary 3.
-adding ternary 4.
-adding ternary 5.
-adding ternary 6.
-adding ternary 7.
-adding ternary 8.
-adding ternary 9.
-adding ternary 10.
-adding ternary 11.
-adding ternary 12.
-adding ternary 12.1
-adding ternary 12.2
+adding exact 1.
+adding exact 2.
+adding exact 3.
+adding exact 4.
+adding exact 5.
+adding exact 6.
+adding exact 7.
+adding exact 8.
+adding exact 9.
+adding exact 10.
+adding exact 11.
+adding exact 12.
+adding exact 12.1
+adding exact 12.2
 adding middle.
 adding ap 1.
 adding ap 2.

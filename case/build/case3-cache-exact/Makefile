@@ -10,7 +10,7 @@ include $(RTE_SDK)/mk/rte.vars.mk
 include $(SRCDIR)/common.mk
 
 # binary name
-APP = case1-cache-1
+APP = case3-cache-exact
 
 include $(SRCDIR)/dpdk_backend.mk
 include $(SRCDIR)/hw_independent.mk

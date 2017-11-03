@@ -32,7 +32,7 @@ void apply_table_igmp(packet_descriptor_t *pd, lookup_table_t **tables);// sugar
 uint8_t reverse_buffer[34];// sugar@34
 void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
@@ -43,7 +43,7 @@ void table_mac_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_ipv4_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
@@ -54,27 +54,27 @@ void table_ipv4_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_tcp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_udp_acl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
@@ -83,59 +83,59 @@ void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key) {// sugar
 
 void table_nat_src_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint8_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_nat_dst_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint8_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_nat_twice_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_nat_flow_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
-    EXTRACT_INT32_BITS(pd, field_instance_nat_metadata_l4_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
+    EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_nat_get_l4_infomation_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
 }// sugar@62
 
 void table_ipsg_permit_special_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -144,20 +144,20 @@ void table_ipsg_permit_special_key(packet_descriptor_t *pd, uint8_t *key) {// su
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_proto, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_src_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_ipsg_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_ip_src_addr, *(uint32_t *) key)// sugar@49
@@ -166,20 +166,20 @@ void table_ipsg_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_storm_control_tbl_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_ethernet_eth_type, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_port_vlan_to_vrf_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_standard_metadata_ingress_port, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_cache_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -206,14 +206,14 @@ void table_cache_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_udp_dst_port, *(uint32_t *) key)// sugar@49
     key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_tcp_flags, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint16_t);// sugar@50
+    key += sizeof(uint8_t);// sugar@50
 }// sugar@62
 
 void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_src_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -229,18 +229,18 @@ void table_routable_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
 
 void table_unicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_INT32_BITS(pd, field_instance_ip_dst_addr, *(uint32_t *) key)// sugar@49
     key += sizeof(uint32_t);// sugar@50
 }// sugar@62
 
 void table_switching_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
     EXTRACT_INT32_BITS(pd, field_instance_vrf_metadata_vrf, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
     EXTRACT_BYTEBUF(pd, field_instance_ethernet_dst_mac, key)// sugar@53
     key += 6;// sugar@54
     EXTRACT_INT32_BITS(pd, field_instance_vlan_vid, *(uint32_t *) key)// sugar@49
-    key += sizeof(uint32_t);// sugar@50
+    key += sizeof(uint16_t);// sugar@50
 }// sugar@62
 
 void table_multicast_routing_key(packet_descriptor_t *pd, uint8_t *key) {// sugar@43
@@ -771,55 +771,58 @@ void apply_table_get_acl_features(packet_descriptor_t *pd, lookup_table_t **tabl
                 break;// sugar@96
         }// sugar@97
     }// sugar@98
-    if (res != NULL) {// sugar@110
-        switch (res->action_id) {// sugar@111
-            case action_acl_feature:// sugar@113
-                if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_mac_acl)) ==
-                    (1)) { return apply_table_mac_acl(pd, tables); }
-                else {
-                    if (pd->headers[header_instance_ip].pointer != NULL) {
-                        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_ipv4_acl)) ==
-                            (1)) { return apply_table_ipv4_acl(pd, tables); }
-                        else {
-                            if (pd->headers[header_instance_tcp].pointer != NULL) {
-                                if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_tcp_acl)) ==
-                                    (1)) { return apply_table_tcp_acl(pd, tables); }
-                                else {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                        (0)) { return apply_table_switching(pd, tables); }
-                                    else { return apply_table_storm_control_tbl(pd, tables); }
-                                }
-                            }
-                            else {
-                                if (pd->headers[header_instance_udp].pointer != NULL) {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
-                                        (1)) { return apply_table_udp_acl(pd, tables); }
-                                    else {
-                                        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                            (0)) { return apply_table_switching(pd, tables); }
-                                        else { return apply_table_storm_control_tbl(pd, tables); }
-                                    }
-                                }
-                                else {
-                                    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                                        (0)) { return apply_table_switching(pd, tables); }
-                                    else { return apply_table_storm_control_tbl(pd, tables); }
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
-                            (0)) { return apply_table_switching(pd, tables); }
-                        else { return apply_table_storm_control_tbl(pd, tables); }
-                    }
-                }// sugar@114
-                break;// sugar@115
-        }// sugar@116
-    } else {// sugar@117
-        debug("    :: IGNORING PACKET.\n");// sugar@118
-        return;// sugar@119
-    }// sugar@120
+    // if (res != NULL) {// sugar@110
+    // switch (res->action_id) {// sugar@111
+    // case action_acl_feature:// sugar@113
+    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_mac_acl)) ==
+        (1)) { return apply_table_mac_acl(pd, tables); }
+    // else {
+    if (pd->headers[header_instance_ip].pointer != NULL) {
+        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_ipv4_acl)) ==
+            (1)) { return apply_table_ipv4_acl(pd, tables); }
+        // else {
+        if (pd->headers[header_instance_tcp].pointer != NULL) {
+            if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_tcp_acl)) ==
+                (1)) { return apply_table_tcp_acl(pd, tables); }
+            // else {
+            // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+            // (0)) { return apply_table_switching(pd, tables); }
+            // else {}
+            // }
+        } // else {
+        if (pd->headers[header_instance_udp].pointer != NULL) {
+            if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_enable_udp_acl)) ==
+                (1)) { return apply_table_udp_acl(pd, tables); }
+            // else {
+            // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+            // (0)) { return apply_table_switching(pd, tables); }
+            // else {}
+            // }
+        } // else {
+        // if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+        // (0)) { return apply_table_switching(pd, tables); }
+        // else {}
+        // }
+    }
+    // }
+    // }
+    /*
+    else {
+        if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) ==
+            (0)) { return apply_table_switching(pd, tables); }
+        else {}
+    }
+    */
+    // }// // sugar@114
+    // break;// sugar@115
+    // }// sugar@116
+    // } else {// sugar@117
+    // debug("    :: IGNORING PACKET.\n");// sugar@118
+    // return;// sugar@119
+    // }// sugar@120
+    if ((GET_INT32_AUTO(pd, field_instance_acl_metadata_acl_op)) == 0) {
+        return apply_table_switching(pd, tables);
+    }
 }// sugar@121
 
 void apply_table_nat_src(packet_descriptor_t *pd, lookup_table_t **tables)// sugar@68
@@ -1586,20 +1589,15 @@ uint32_t calculate_ipv4_checksum(packet_descriptor_t *pd) {// sugar@134
 void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     memset(packet_desc->headers[header_instance_standard_metadata].pointer, 0,
            header_info(header_instance_standard_metadata).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_ethernet].pointer, 0,
-           header_info(header_instance_ethernet).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_ip].pointer, 0,
-           header_info(header_instance_ip).bytewidth * sizeof(uint8_t));// sugar@232
     memset(packet_desc->headers[header_instance_tcp].pointer, 0,
            header_info(header_instance_tcp).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_arp].pointer, 0,
-           header_info(header_instance_arp).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_icmp].pointer, 0,
-           header_info(header_instance_icmp).bytewidth * sizeof(uint8_t));// sugar@232
-    memset(packet_desc->headers[header_instance_udp].pointer, 0,
-           header_info(header_instance_udp).bytewidth * sizeof(uint8_t));// sugar@232
     memset(packet_desc->headers[header_instance_vlan].pointer, 0,
            header_info(header_instance_vlan).bytewidth * sizeof(uint8_t));// sugar@232
+    packet_desc->headers[header_instance_ethernet].pointer = NULL;
+    packet_desc->headers[header_instance_ip].pointer = NULL;
+    packet_desc->headers[header_instance_arp].pointer = NULL;
+    packet_desc->headers[header_instance_icmp].pointer = NULL;
+    packet_desc->headers[header_instance_udp].pointer = NULL;
     memset(packet_desc->headers[header_instance_acl_metadata].pointer, 0,
            header_info(header_instance_acl_metadata).bytewidth * sizeof(uint8_t));// sugar@232
     memset(packet_desc->headers[header_instance_nat_metadata].pointer, 0,
@@ -1622,11 +1620,11 @@ void init_headers(packet_descriptor_t *packet_desc) {// sugar@235
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_ethernet] = (header_descriptor_t) {.type = header_instance_ethernet, .length = header_info(
             header_instance_ethernet).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_ethernet).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_ip] = (header_descriptor_t) {.type = header_instance_ip, .length = header_info(
             header_instance_ip).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_ip).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_tcp] = (header_descriptor_t) {.type = header_instance_tcp, .length = header_info(
             header_instance_tcp).bytewidth,// sugar@238
@@ -1634,15 +1632,15 @@ void init_headers(packet_descriptor_t *packet_desc) {// sugar@235
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_arp] = (header_descriptor_t) {.type = header_instance_arp, .length = header_info(
             header_instance_arp).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_arp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_icmp] = (header_descriptor_t) {.type = header_instance_icmp, .length = header_info(
             header_instance_icmp).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_icmp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_udp] = (header_descriptor_t) {.type = header_instance_udp, .length = header_info(
             header_instance_udp).bytewidth,// sugar@238
-            .pointer = malloc(header_info(header_instance_udp).bytewidth * sizeof(uint8_t)),// sugar@239
+            .pointer = NULL,// sugar@239
             .var_width_field_bitwidth = 0};// sugar@240
     packet_desc->headers[header_instance_vlan] = (header_descriptor_t) {.type = header_instance_vlan, .length = header_info(
             header_instance_vlan).bytewidth,// sugar@238
@@ -1704,6 +1702,7 @@ void update_packet(packet_descriptor_t *pd) {// sugar@267
         value32 = pd->fields.field_instance_ip_dst_addr;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_ip_dst_addr, value32)// sugar@276
     }// sugar@277
+    /*
     debug("update field_instance_ip_src_addr.\n");
     if (pd->fields.attr_field_instance_tcp_src_port == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_tcp_src_port;// sugar@275
@@ -1714,29 +1713,30 @@ void update_packet(packet_descriptor_t *pd) {// sugar@267
         value32 = pd->fields.field_instance_tcp_dst_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_tcp_dst_port, value32)// sugar@276
     }// sugar@277
-    debug("update field_instance_ip_src_addr.\n");
+    */
+
     if (pd->fields.attr_field_instance_udp_src_port == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_udp_src_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_udp_src_port, value32)// sugar@276
     }// sugar@277
-    debug("update field_instance_ip_src_addr.\n");
+
     if (pd->fields.attr_field_instance_udp_dst_port == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_udp_dst_port;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_udp_dst_port, value32)// sugar@276
     }// sugar@277
-    debug("update field_instance_ip_src_addr.\n");
+
     if (pd->fields.attr_field_instance_vlan_vid == MODIFIED) {// sugar@274
         value32 = pd->fields.field_instance_vlan_vid;// sugar@275
         MODIFY_INT32_INT32_AUTO(pd, field_instance_vlan_vid, value32)// sugar@276
     }// sugar@277
 
-    debug("update ip checksum.\n");
+
     if (pd->headers[header_instance_ip].pointer != NULL)// sugar@285
     {// sugar@286
         value32 = calculate_ipv4_checksum(pd);// sugar@287
         MODIFY_INT32_INT32_BITS(pd, field_instance_ip_checksum, value32);// sugar@288
     }// sugar@289
-    debug("update tcp checksum.\n");
+
     /*
     if ((GET_INT32_AUTO(pd, field_instance_nat_metadata_update_tcp_checksum)) == (1))// sugar@283
     {// sugar@286
@@ -1744,7 +1744,7 @@ void update_packet(packet_descriptor_t *pd) {// sugar@267
         MODIFY_INT32_INT32_BITS(pd, field_instance_tcp_checksum, value32);// sugar@288
     }// sugar@289
     */
-    debug("update udp checksum.\n");
+
     if ((GET_INT32_AUTO(pd, field_instance_nat_metadata_update_udp_checksum)) == (1))// sugar@283
     {// sugar@286
         value32 = calculate_udp_checksum(pd);// sugar@287

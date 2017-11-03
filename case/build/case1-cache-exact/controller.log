@@ -42,61 +42,27 @@ Generate set_default_action message for table udp_acl
 start to send p4 message.
 Generate set_default_action message for table tcp_acl
 start to send p4 message.
-Generate set_default_action message for table nat_src
-start to send p4 message.
-Generate set_default_action message for table nat_dst
-start to send p4 message.
-Generate set_default_action message for table nat_twice
-start to send p4 message.
-Generate set_default_action message for table nat_flow
-start to send p4 message.
-Generate set_default_action message for table nat_get_l4_infomation
-start to send p4 message.
-Generate set_default_action message for table ipsg
-start to send p4 message.
-Generate set_default_action message for table ipsg_permit_special.
-start to send p4 message.
-enter fill_nat_get_l4_infomation_table.
-start to send p4 message.
-enter fill_nat_get_l4_infomation_table.
-start to send p4 message.
-enter fill_nat_flow_table_1 function.
-start to send p4 message.
-enter fill_nat_flow_table_2 function.
-start to send p4 message.
-enter fill_port_vlan_to_vrf_table function.
-start to send p4 message.
-enter fill_ipsg_permit_special function.
-start to send p4 message.
-enter fill_storm_control_tbl_table function.
+enter fill_cache_table function.
+adding exact1.
+adding exact2.
+adding exact3.
+adding exact4.
+adding exact5.
+adding exact6.
+adding exact6.1
+adding exact6.2
+adding exact6.3
+adding exact7.
 start to send p4 message.
 enter fill_cache_table function.
-adding ternary 1.
-adding ternary 2.
-adding ternary 3.
-adding ternary 4.
-adding ternary 5.
-adding ternary 6.
-adding ternary 7.
-adding ternary 8.
-adding ternary 9.
-adding ternary 10.
-adding ternary 11.
-adding ternary 12.
-adding ternary 12.1
-adding ternary 12.2
-adding middle.
-adding ap 1.
-adding ap 2.
-adding ap 3.
-adding ap 4.
-adding ap 5.
-adding ap 6.
-adding ap 7.
-adding ap 8.
-adding ap 8.1
-adding ap 8.2
-adding ap 9.
-adding ap 10.
-adding ap 11.
+adding exact1.
+adding exact2.
+adding exact3.
+adding exact4.
+adding exact5.
+adding exact6.
+adding exact6.1
+adding exact6.2
+adding exact6.3
+adding exact7.
 start to send p4 message.

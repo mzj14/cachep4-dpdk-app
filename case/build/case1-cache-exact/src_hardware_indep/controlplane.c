@@ -11,11 +11,6 @@ extern void table_ipv4_acl_key(packet_descriptor_t *pd, uint8_t *key); // define
 extern void table_tcp_acl_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_udp_acl_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_get_acl_features_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
-extern void table_nat_src_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
-extern void table_nat_dst_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
-extern void table_nat_twice_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
-extern void table_nat_flow_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
-extern void table_nat_get_l4_infomation_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_cache_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_mac_learning_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
 extern void table_routable_key(packet_descriptor_t *pd, uint8_t *key); // defined in dataplane.c// sugar@31
@@ -148,170 +143,35 @@ get_acl_features_setdefault(struct get_acl_features_action action)// sugar@88
     table_setdefault_promote(TABLE_get_acl_features, (uint8_t * ) & action);// sugar@90
 }// sugar@91
 void// sugar@40
-nat_src_add(// sugar@41
-        uint8_t field_instance_ip_src_addr[4],// sugar@44
-        uint8_t field_instance_ip_proto[1],// sugar@44
-        uint8_t field_instance_nat_metadata_l4_src_port[2],// sugar@44
-        struct nat_src_action action)// sugar@51
-{// sugar@52
-    uint8_t key[7];// sugar@53
-    memcpy(key + 0, field_instance_ip_src_addr, 4);// sugar@61
-    memcpy(key + 4, field_instance_ip_proto, 1);// sugar@61
-    memcpy(key + 5, field_instance_nat_metadata_l4_src_port, 2);// sugar@61
-    exact_add_promote(TABLE_nat_src, (uint8_t *) key, (uint8_t * ) & action);// sugar@82
-}// sugar@85
-
-void// sugar@87
-nat_src_setdefault(struct nat_src_action action)// sugar@88
-{// sugar@89
-    table_setdefault_promote(TABLE_nat_src, (uint8_t * ) & action);// sugar@90
-}// sugar@91
-void// sugar@40
-nat_dst_add(// sugar@41
-        uint8_t field_instance_ip_dst_addr[4],// sugar@44
-        uint8_t field_instance_ip_proto[1],// sugar@44
-        uint8_t field_instance_nat_metadata_l4_dst_port[2],// sugar@44
-        struct nat_dst_action action)// sugar@51
-{// sugar@52
-    uint8_t key[7];// sugar@53
-    memcpy(key + 0, field_instance_ip_dst_addr, 4);// sugar@61
-    memcpy(key + 4, field_instance_ip_proto, 1);// sugar@61
-    memcpy(key + 5, field_instance_nat_metadata_l4_dst_port, 2);// sugar@61
-    exact_add_promote(TABLE_nat_dst, (uint8_t *) key, (uint8_t * ) & action);// sugar@82
-}// sugar@85
-
-void// sugar@87
-nat_dst_setdefault(struct nat_dst_action action)// sugar@88
-{// sugar@89
-    table_setdefault_promote(TABLE_nat_dst, (uint8_t * ) & action);// sugar@90
-}// sugar@91
-void// sugar@40
-nat_twice_add(// sugar@41
-        uint8_t field_instance_ip_src_addr[4],// sugar@44
-        uint8_t field_instance_ip_dst_addr[4],// sugar@44
-        uint8_t field_instance_ip_proto[1],// sugar@44
-        uint8_t field_instance_nat_metadata_l4_src_port[2],// sugar@44
-        uint8_t field_instance_nat_metadata_l4_dst_port[2],// sugar@44
-        struct nat_twice_action action)// sugar@51
-{// sugar@52
-    uint8_t key[13];// sugar@53
-    memcpy(key + 0, field_instance_ip_src_addr, 4);// sugar@61
-    memcpy(key + 4, field_instance_ip_dst_addr, 4);// sugar@61
-    memcpy(key + 8, field_instance_ip_proto, 1);// sugar@61
-    memcpy(key + 9, field_instance_nat_metadata_l4_src_port, 2);// sugar@61
-    memcpy(key + 11, field_instance_nat_metadata_l4_dst_port, 2);// sugar@61
-    exact_add_promote(TABLE_nat_twice, (uint8_t *) key, (uint8_t * ) & action);// sugar@82
-}// sugar@85
-
-void// sugar@87
-nat_twice_setdefault(struct nat_twice_action action)// sugar@88
-{// sugar@89
-    table_setdefault_promote(TABLE_nat_twice, (uint8_t * ) & action);// sugar@90
-}// sugar@91
-void// sugar@40
-nat_flow_add(// sugar@41
-        uint8_t field_instance_ip_src_addr[4],// sugar@44
-        uint8_t field_instance_ip_src_addr_mask[4],// sugar@47
-        uint8_t field_instance_ip_dst_addr[4],// sugar@44
-        uint8_t field_instance_ip_dst_addr_mask[4],// sugar@47
-        uint8_t field_instance_ip_proto[1],// sugar@44
-        uint8_t field_instance_ip_proto_mask[1],// sugar@47
-        uint8_t field_instance_nat_metadata_l4_src_port[2],// sugar@44
-        uint8_t field_instance_nat_metadata_l4_src_port_mask[2],// sugar@47
-        uint8_t field_instance_nat_metadata_l4_dst_port[2],// sugar@44
-        uint8_t field_instance_nat_metadata_l4_dst_port_mask[2],// sugar@47
-        struct nat_flow_action action)// sugar@51
-{// sugar@52
-    uint8_t key[13];// sugar@53
-    uint8_t mask[13];// sugar@55
-    memcpy(key + 0, field_instance_ip_src_addr, 4);// sugar@61
-    memcpy(mask + 0, field_instance_ip_src_addr_mask, 4);// sugar@63
-    memcpy(key + 4, field_instance_ip_dst_addr, 4);// sugar@61
-    memcpy(mask + 4, field_instance_ip_dst_addr_mask, 4);// sugar@63
-    memcpy(key + 8, field_instance_ip_proto, 1);// sugar@61
-    memcpy(mask + 8, field_instance_ip_proto_mask, 1);// sugar@63
-    memcpy(key + 9, field_instance_nat_metadata_l4_src_port, 2);// sugar@61
-    memcpy(mask + 9, field_instance_nat_metadata_l4_src_port_mask, 2);// sugar@63
-    memcpy(key + 11, field_instance_nat_metadata_l4_dst_port, 2);// sugar@61
-    memcpy(mask + 11, field_instance_nat_metadata_l4_dst_port_mask, 2);// sugar@63
-    ternary_add_promote(TABLE_nat_flow, (uint8_t *) key, (uint8_t *) mask, (uint8_t * ) & action);// sugar@84
-}// sugar@85
-
-void// sugar@87
-nat_flow_setdefault(struct nat_flow_action action)// sugar@88
-{// sugar@89
-    table_setdefault_promote(TABLE_nat_flow, (uint8_t * ) & action);// sugar@90
-}// sugar@91
-void// sugar@40
-nat_get_l4_infomation_add(// sugar@41
-        uint8_t field_instance_ip_proto[1],// sugar@44
-        struct nat_get_l4_infomation_action action)// sugar@51
-{// sugar@52
-    uint8_t key[1];// sugar@53
-    memcpy(key + 0, field_instance_ip_proto, 1);// sugar@61
-    exact_add_promote(TABLE_nat_get_l4_infomation, (uint8_t *) key, (uint8_t * ) & action);// sugar@82
-}// sugar@85
-
-void// sugar@87
-nat_get_l4_infomation_setdefault(struct nat_get_l4_infomation_action action)// sugar@88
-{// sugar@89
-    table_setdefault_promote(TABLE_nat_get_l4_infomation, (uint8_t * ) & action);// sugar@90
-}// sugar@91
-void// sugar@40
 cache_add(// sugar@41
         uint8_t field_instance_standard_metadata_ingress_port[2],// sugar@44
-        uint8_t field_instance_standard_metadata_ingress_port_mask[2],// sugar@47
         uint8_t field_instance_ethernet_src_mac[6],// sugar@44
-        uint8_t field_instance_ethernet_src_mac_mask[6],// sugar@47
         uint8_t field_instance_ethernet_dst_mac[6],// sugar@44
-        uint8_t field_instance_ethernet_dst_mac_mask[6],// sugar@47
         uint8_t field_instance_ethernet_eth_type[2],// sugar@44
-        uint8_t field_instance_ethernet_eth_type_mask[2],// sugar@47
         uint8_t field_instance_ip_src_addr[4],// sugar@44
-        uint8_t field_instance_ip_src_addr_mask[4],// sugar@47
         uint8_t field_instance_ip_dst_addr[4],// sugar@44
-        uint8_t field_instance_ip_dst_addr_mask[4],// sugar@47
         uint8_t field_instance_ip_proto[1],// sugar@44
-        uint8_t field_instance_ip_proto_mask[1],// sugar@47
         uint8_t field_instance_tcp_src_port[2],// sugar@44
-        uint8_t field_instance_tcp_src_port_mask[2],// sugar@47
         uint8_t field_instance_tcp_dst_port[2],// sugar@44
-        uint8_t field_instance_tcp_dst_port_mask[2],// sugar@47
         uint8_t field_instance_udp_src_port[2],// sugar@44
-        uint8_t field_instance_udp_src_port_mask[2],// sugar@47
         uint8_t field_instance_udp_dst_port[2],// sugar@44
-        uint8_t field_instance_udp_dst_port_mask[2],// sugar@47
         uint8_t field_instance_tcp_flags[1],// sugar@44
-        uint8_t field_instance_tcp_flags_mask[1],// sugar@47
         struct cache_action action)// sugar@51
 {// sugar@52
     uint8_t key[34];// sugar@53
-    uint8_t mask[34];// sugar@55
     memcpy(key + 0, field_instance_standard_metadata_ingress_port, 2);// sugar@61
-    memcpy(mask + 0, field_instance_standard_metadata_ingress_port_mask, 2);// sugar@63
     memcpy(key + 2, field_instance_ethernet_src_mac, 6);// sugar@61
-    memcpy(mask + 2, field_instance_ethernet_src_mac_mask, 6);// sugar@63
     memcpy(key + 8, field_instance_ethernet_dst_mac, 6);// sugar@61
-    memcpy(mask + 8, field_instance_ethernet_dst_mac_mask, 6);// sugar@63
     memcpy(key + 14, field_instance_ethernet_eth_type, 2);// sugar@61
-    memcpy(mask + 14, field_instance_ethernet_eth_type_mask, 2);// sugar@63
     memcpy(key + 16, field_instance_ip_src_addr, 4);// sugar@61
-    memcpy(mask + 16, field_instance_ip_src_addr_mask, 4);// sugar@63
     memcpy(key + 20, field_instance_ip_dst_addr, 4);// sugar@61
-    memcpy(mask + 20, field_instance_ip_dst_addr_mask, 4);// sugar@63
     memcpy(key + 24, field_instance_ip_proto, 1);// sugar@61
-    memcpy(mask + 24, field_instance_ip_proto_mask, 1);// sugar@63
     memcpy(key + 25, field_instance_tcp_src_port, 2);// sugar@61
-    memcpy(mask + 25, field_instance_tcp_src_port_mask, 2);// sugar@63
     memcpy(key + 27, field_instance_tcp_dst_port, 2);// sugar@61
-    memcpy(mask + 27, field_instance_tcp_dst_port_mask, 2);// sugar@63
     memcpy(key + 29, field_instance_udp_src_port, 2);// sugar@61
-    memcpy(mask + 29, field_instance_udp_src_port_mask, 2);// sugar@63
     memcpy(key + 31, field_instance_udp_dst_port, 2);// sugar@61
-    memcpy(mask + 31, field_instance_udp_dst_port_mask, 2);// sugar@63
     memcpy(key + 33, field_instance_tcp_flags, 1);// sugar@61
-    memcpy(mask + 33, field_instance_tcp_flags_mask, 1);// sugar@63
-    ternary_add_promote(TABLE_cache, (uint8_t *) key, (uint8_t *) mask, (uint8_t * ) & action);// sugar@84
+    exact_add_promote(TABLE_cache, (uint8_t *) key, (uint8_t * ) & action);// sugar@82
 }// sugar@85
 
 void// sugar@87
@@ -775,441 +635,31 @@ get_acl_features_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
         debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
 }// sugar@127
 void// sugar@95
-nat_src_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
-    uint8_t *field_instance_ip_src_addr = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[0])->bitmap);// sugar@100
-    uint8_t *field_instance_ip_proto = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[1])->bitmap);// sugar@100
-    uint8_t *field_instance_nat_metadata_l4_src_port = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[2])->bitmap);// sugar@100
-    if (strcmp("on_miss", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_src_action action;// sugar@109
-        action.action_id = action_on_miss;// sugar@110
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_src with action on_miss\n");// sugar@115
-        nat_src_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_tcp_src", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_src_action action;// sugar@109
-        action.action_id = action_rewrite_tcp_src;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_src_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_src_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_src with action rewrite_tcp_src\n");// sugar@115
-        nat_src_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_udp_src", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_src_action action;// sugar@109
-        action.action_id = action_rewrite_udp_src;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_src_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_src_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_src with action rewrite_udp_src\n");// sugar@115
-        nat_src_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-        debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
-}// sugar@127
-void// sugar@95
-nat_dst_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
-    uint8_t *field_instance_ip_dst_addr = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[0])->bitmap);// sugar@100
-    uint8_t *field_instance_ip_proto = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[1])->bitmap);// sugar@100
-    uint8_t *field_instance_nat_metadata_l4_dst_port = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[2])->bitmap);// sugar@100
-    if (strcmp("on_miss", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_dst_action action;// sugar@109
-        action.action_id = action_on_miss;// sugar@110
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_dst with action on_miss\n");// sugar@115
-        nat_dst_add(// sugar@116
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_tcp_dst", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_dst_action action;// sugar@109
-        action.action_id = action_rewrite_tcp_dst;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_dst_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_dst_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_dst with action rewrite_tcp_dst\n");// sugar@115
-        nat_dst_add(// sugar@116
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_udp_dst", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_dst_action action;// sugar@109
-        action.action_id = action_rewrite_udp_dst;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_dst_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_dst_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_dst with action rewrite_udp_dst\n");// sugar@115
-        nat_dst_add(// sugar@116
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-        debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
-}// sugar@127
-void// sugar@95
-nat_twice_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
-    uint8_t *field_instance_ip_src_addr = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[0])->bitmap);// sugar@100
-    uint8_t *field_instance_ip_dst_addr = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[1])->bitmap);// sugar@100
-    uint8_t *field_instance_ip_proto = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[2])->bitmap);// sugar@100
-    uint8_t *field_instance_nat_metadata_l4_src_port = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[3])->bitmap);// sugar@100
-    uint8_t *field_instance_nat_metadata_l4_dst_port = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[4])->bitmap);// sugar@100
-    if (strcmp("on_miss", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_twice_action action;// sugar@109
-        action.action_id = action_on_miss;// sugar@110
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_twice with action on_miss\n");// sugar@115
-        nat_twice_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_twice_tcp", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_twice_action action;// sugar@109
-        action.action_id = action_rewrite_twice_tcp;// sugar@110
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.src_addr, src_addr, 4);// sugar@113
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.dst_addr, dst_addr, 4);// sugar@113
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.src_port, src_port, 2);// sugar@113
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.dst_port, dst_port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_twice with action rewrite_twice_tcp\n");// sugar@115
-        nat_twice_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_twice_udp", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_twice_action action;// sugar@109
-        action.action_id = action_rewrite_twice_udp;// sugar@110
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.src_addr, src_addr, 4);// sugar@113
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.dst_addr, dst_addr, 4);// sugar@113
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.src_port, src_port, 2);// sugar@113
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.dst_port, dst_port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_twice with action rewrite_twice_udp\n");// sugar@115
-        nat_twice_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_proto,// sugar@119
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-        debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
-}// sugar@127
-void// sugar@95
-nat_flow_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
-    uint8_t *field_instance_ip_src_addr = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->bitmap);// sugar@105
-    uint8_t *field_instance_ip_src_addr_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->mask);// sugar@106
-    uint8_t *field_instance_ip_dst_addr = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[1])->bitmap);// sugar@105
-    uint8_t *field_instance_ip_dst_addr_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[1])->mask);// sugar@106
-    uint8_t *field_instance_ip_proto = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[2])->bitmap);// sugar@105
-    uint8_t *field_instance_ip_proto_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[2])->mask);// sugar@106
-    uint8_t *field_instance_nat_metadata_l4_src_port = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[3])->bitmap);// sugar@105
-    uint8_t *field_instance_nat_metadata_l4_src_port_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[3])->mask);// sugar@106
-    uint8_t *field_instance_nat_metadata_l4_dst_port = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[4])->bitmap);// sugar@105
-    uint8_t *field_instance_nat_metadata_l4_dst_port_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[4])->mask);// sugar@106
-    if (strcmp("nop", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_flow_action action;// sugar@109
-        action.action_id = action_nop;// sugar@110
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_flow with action nop\n");// sugar@115
-        nat_flow_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
-                field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_src_port_mask,// sugar@123
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port_mask,// sugar@123
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_twice_tcp", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_flow_action action;// sugar@109
-        action.action_id = action_rewrite_twice_tcp;// sugar@110
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.src_addr, src_addr, 4);// sugar@113
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.dst_addr, dst_addr, 4);// sugar@113
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.src_port, src_port, 2);// sugar@113
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_tcp_params.dst_port, dst_port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_flow with action rewrite_twice_tcp\n");// sugar@115
-        nat_flow_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
-                field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_src_port_mask,// sugar@123
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port_mask,// sugar@123
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_twice_udp", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_flow_action action;// sugar@109
-        action.action_id = action_rewrite_twice_udp;// sugar@110
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.src_addr, src_addr, 4);// sugar@113
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.dst_addr, dst_addr, 4);// sugar@113
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.src_port, src_port, 2);// sugar@113
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@112
-        memcpy(action.rewrite_twice_udp_params.dst_port, dst_port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_flow with action rewrite_twice_udp\n");// sugar@115
-        nat_flow_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
-                field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_src_port_mask,// sugar@123
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port_mask,// sugar@123
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_tcp_dst", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_flow_action action;// sugar@109
-        action.action_id = action_rewrite_tcp_dst;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_dst_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_dst_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_flow with action rewrite_tcp_dst\n");// sugar@115
-        nat_flow_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
-                field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_src_port_mask,// sugar@123
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port_mask,// sugar@123
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_udp_dst", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_flow_action action;// sugar@109
-        action.action_id = action_rewrite_udp_dst;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_dst_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_dst_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_flow with action rewrite_udp_dst\n");// sugar@115
-        nat_flow_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
-                field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_src_port_mask,// sugar@123
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port_mask,// sugar@123
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_tcp_src", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_flow_action action;// sugar@109
-        action.action_id = action_rewrite_tcp_src;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_src_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_tcp_src_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_flow with action rewrite_tcp_src\n");// sugar@115
-        nat_flow_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
-                field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_src_port_mask,// sugar@123
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port_mask,// sugar@123
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("rewrite_udp_src", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_flow_action action;// sugar@109
-        action.action_id = action_rewrite_udp_src;// sugar@110
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_src_params.addr, addr, 4);// sugar@113
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@112
-        memcpy(action.rewrite_udp_src_params.port, port, 2);// sugar@113
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_flow with action rewrite_udp_src\n");// sugar@115
-        nat_flow_add(// sugar@116
-                field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
-                field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
-                field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
-                field_instance_nat_metadata_l4_src_port,// sugar@119
-                field_instance_nat_metadata_l4_src_port_mask,// sugar@123
-                field_instance_nat_metadata_l4_dst_port,// sugar@119
-                field_instance_nat_metadata_l4_dst_port_mask,// sugar@123
-                action);// sugar@124
-    } else// sugar@125
-        debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
-}// sugar@127
-void// sugar@95
-nat_get_l4_infomation_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
-    uint8_t *field_instance_ip_proto = (uint8_t * )(
-            ((struct p4_field_match_exact *) ctrl_m->field_matches[0])->bitmap);// sugar@100
-    if (strcmp("get_tcp_information", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_get_l4_infomation_action action;// sugar@109
-        action.action_id = action_get_tcp_information;// sugar@110
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_get_l4_infomation with action get_tcp_information\n");// sugar@115
-        nat_get_l4_infomation_add(// sugar@116
-                field_instance_ip_proto,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("get_udp_information", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_get_l4_infomation_action action;// sugar@109
-        action.action_id = action_get_udp_information;// sugar@110
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_get_l4_infomation with action get_udp_information\n");// sugar@115
-        nat_get_l4_infomation_add(// sugar@116
-                field_instance_ip_proto,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-    if (strcmp("disable_nat", ctrl_m->action_name) == 0) {// sugar@108
-        struct nat_get_l4_infomation_action action;// sugar@109
-        action.action_id = action_disable_nat;// sugar@110
-        debug("Reply from the control plane arrived.\n");// sugar@114
-        debug("Adding new entry to nat_get_l4_infomation with action disable_nat\n");// sugar@115
-        nat_get_l4_infomation_add(// sugar@116
-                field_instance_ip_proto,// sugar@119
-                action);// sugar@124
-    } else// sugar@125
-        debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
-}// sugar@127
-void// sugar@95
 cache_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
     uint8_t *field_instance_standard_metadata_ingress_port = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->bitmap);// sugar@105
-    uint8_t *field_instance_standard_metadata_ingress_port_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[0])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[0])->bitmap);// sugar@100
     uint8_t *field_instance_ethernet_src_mac = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[1])->bitmap);// sugar@105
-    uint8_t *field_instance_ethernet_src_mac_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[1])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[1])->bitmap);// sugar@100
     uint8_t *field_instance_ethernet_dst_mac = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[2])->bitmap);// sugar@105
-    uint8_t *field_instance_ethernet_dst_mac_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[2])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[2])->bitmap);// sugar@100
     uint8_t *field_instance_ethernet_eth_type = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[3])->bitmap);// sugar@105
-    uint8_t *field_instance_ethernet_eth_type_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[3])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[3])->bitmap);// sugar@100
     uint8_t *field_instance_ip_src_addr = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[4])->bitmap);// sugar@105
-    uint8_t *field_instance_ip_src_addr_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[4])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[4])->bitmap);// sugar@100
     uint8_t *field_instance_ip_dst_addr = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[5])->bitmap);// sugar@105
-    uint8_t *field_instance_ip_dst_addr_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[5])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[5])->bitmap);// sugar@100
     uint8_t *field_instance_ip_proto = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[6])->bitmap);// sugar@105
-    uint8_t *field_instance_ip_proto_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[6])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[6])->bitmap);// sugar@100
     uint8_t *field_instance_tcp_src_port = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[7])->bitmap);// sugar@105
-    uint8_t *field_instance_tcp_src_port_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[7])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[7])->bitmap);// sugar@100
     uint8_t *field_instance_tcp_dst_port = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[8])->bitmap);// sugar@105
-    uint8_t *field_instance_tcp_dst_port_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[8])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[8])->bitmap);// sugar@100
     uint8_t *field_instance_udp_src_port = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[9])->bitmap);// sugar@105
-    uint8_t *field_instance_udp_src_port_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[9])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[9])->bitmap);// sugar@100
     uint8_t *field_instance_udp_dst_port = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[10])->bitmap);// sugar@105
-    uint8_t *field_instance_udp_dst_port_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[10])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[10])->bitmap);// sugar@100
     uint8_t *field_instance_tcp_flags = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[11])->bitmap);// sugar@105
-    uint8_t *field_instance_tcp_flags_mask = (uint8_t * )(
-            ((struct p4_field_match_ternary *) ctrl_m->field_matches[11])->mask);// sugar@106
+            ((struct p4_field_match_exact *) ctrl_m->field_matches[11])->bitmap);// sugar@100
     if (strcmp("cache_block", ctrl_m->action_name) == 0) {// sugar@108
         struct cache_action action;// sugar@109
         action.action_id = action_cache_block;// sugar@110
@@ -1217,29 +667,17 @@ cache_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
         debug("Adding new entry to cache with action cache_block\n");// sugar@115
         cache_add(// sugar@116
                 field_instance_standard_metadata_ingress_port,// sugar@119
-                field_instance_standard_metadata_ingress_port_mask,// sugar@123
                 field_instance_ethernet_src_mac,// sugar@119
-                field_instance_ethernet_src_mac_mask,// sugar@123
                 field_instance_ethernet_dst_mac,// sugar@119
-                field_instance_ethernet_dst_mac_mask,// sugar@123
                 field_instance_ethernet_eth_type,// sugar@119
-                field_instance_ethernet_eth_type_mask,// sugar@123
                 field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
                 field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
                 field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
                 field_instance_tcp_src_port,// sugar@119
-                field_instance_tcp_src_port_mask,// sugar@123
                 field_instance_tcp_dst_port,// sugar@119
-                field_instance_tcp_dst_port_mask,// sugar@123
                 field_instance_udp_src_port,// sugar@119
-                field_instance_udp_src_port_mask,// sugar@123
                 field_instance_udp_dst_port,// sugar@119
-                field_instance_udp_dst_port_mask,// sugar@123
                 field_instance_tcp_flags,// sugar@119
-                field_instance_tcp_flags_mask,// sugar@123
                 action);// sugar@124
     } else// sugar@125
     if (strcmp("cache_action", ctrl_m->action_name) == 0) {// sugar@108
@@ -1255,51 +693,21 @@ cache_add_table_entry(struct p4_ctrl_msg *ctrl_m) {// sugar@96
         memcpy(action.cache_action_params.vid, vid, 2);// sugar@113
         uint8_t *grp = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[4])->bitmap;// sugar@112
         memcpy(action.cache_action_params.grp, grp, 2);// sugar@113
-        uint8_t *ip_src_addr = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[5])->bitmap;// sugar@112
-        memcpy(action.cache_action_params.ip_src_addr, ip_src_addr, 4);// sugar@113
-        uint8_t *ip_dst_addr = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[6])->bitmap;// sugar@112
-        memcpy(action.cache_action_params.ip_dst_addr, ip_dst_addr, 4);// sugar@113
-        uint8_t *tcp_src_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[7])->bitmap;// sugar@112
-        memcpy(action.cache_action_params.tcp_src_port, tcp_src_port, 2);// sugar@113
-        uint8_t *tcp_dst_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[8])->bitmap;// sugar@112
-        memcpy(action.cache_action_params.tcp_dst_port, tcp_dst_port, 2);// sugar@113
-        uint8_t *udp_src_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[9])->bitmap;// sugar@112
-        memcpy(action.cache_action_params.udp_src_port, udp_src_port, 2);// sugar@113
-        uint8_t *udp_dst_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[10])->bitmap;// sugar@112
-        memcpy(action.cache_action_params.udp_dst_port, udp_dst_port, 2);// sugar@113
         debug("Reply from the control plane arrived.\n");// sugar@114
         debug("Adding new entry to cache with action cache_action\n");// sugar@115
         cache_add(// sugar@116
                 field_instance_standard_metadata_ingress_port,// sugar@119
-                field_instance_standard_metadata_ingress_port_mask,// sugar@123
                 field_instance_ethernet_src_mac,// sugar@119
-                field_instance_ethernet_src_mac_mask,// sugar@123
                 field_instance_ethernet_dst_mac,// sugar@119
-                field_instance_ethernet_dst_mac_mask,// sugar@123
                 field_instance_ethernet_eth_type,// sugar@119
-                field_instance_ethernet_eth_type_mask,// sugar@123
                 field_instance_ip_src_addr,// sugar@119
-                field_instance_ip_src_addr_mask,// sugar@123
                 field_instance_ip_dst_addr,// sugar@119
-                field_instance_ip_dst_addr_mask,// sugar@123
                 field_instance_ip_proto,// sugar@119
-                field_instance_ip_proto_mask,// sugar@123
                 field_instance_tcp_src_port,// sugar@119
-                field_instance_tcp_src_port_mask,// sugar@123
                 field_instance_tcp_dst_port,// sugar@119
-                field_instance_tcp_dst_port_mask,// sugar@123
                 field_instance_udp_src_port,// sugar@119
-                field_instance_udp_src_port_mask,// sugar@123
                 field_instance_udp_dst_port,// sugar@119
-                field_instance_udp_dst_port_mask,// sugar@123
                 field_instance_tcp_flags,// sugar@119
-                field_instance_tcp_flags_mask,// sugar@123
                 action);// sugar@124
     } else// sugar@125
         debug("Table add entry: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@126
@@ -1648,228 +1056,6 @@ get_acl_features_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@
         debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
 }// sugar@145
 void// sugar@130
-nat_src_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
-    debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
-    if (strcmp("on_miss", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_src_action action;// sugar@135
-        action.action_id = action_on_miss;// sugar@136
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_src with action on_miss\n");// sugar@141
-        nat_src_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_tcp_src", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_src_action action;// sugar@135
-        action.action_id = action_rewrite_tcp_src;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_src_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_src_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_src with action rewrite_tcp_src\n");// sugar@141
-        nat_src_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_udp_src", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_src_action action;// sugar@135
-        action.action_id = action_rewrite_udp_src;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_src_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_src_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_src with action rewrite_udp_src\n");// sugar@141
-        nat_src_setdefault(action);// sugar@142
-    } else// sugar@143
-        debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
-}// sugar@145
-void// sugar@130
-nat_dst_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
-    debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
-    if (strcmp("on_miss", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_dst_action action;// sugar@135
-        action.action_id = action_on_miss;// sugar@136
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_dst with action on_miss\n");// sugar@141
-        nat_dst_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_tcp_dst", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_dst_action action;// sugar@135
-        action.action_id = action_rewrite_tcp_dst;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_dst_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_dst_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_dst with action rewrite_tcp_dst\n");// sugar@141
-        nat_dst_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_udp_dst", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_dst_action action;// sugar@135
-        action.action_id = action_rewrite_udp_dst;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_dst_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_dst_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_dst with action rewrite_udp_dst\n");// sugar@141
-        nat_dst_setdefault(action);// sugar@142
-    } else// sugar@143
-        debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
-}// sugar@145
-void// sugar@130
-nat_twice_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
-    debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
-    if (strcmp("on_miss", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_twice_action action;// sugar@135
-        action.action_id = action_on_miss;// sugar@136
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_twice with action on_miss\n");// sugar@141
-        nat_twice_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_twice_tcp", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_twice_action action;// sugar@135
-        action.action_id = action_rewrite_twice_tcp;// sugar@136
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.src_addr, src_addr, 4);// sugar@139
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.dst_addr, dst_addr, 4);// sugar@139
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.src_port, src_port, 2);// sugar@139
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.dst_port, dst_port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_twice with action rewrite_twice_tcp\n");// sugar@141
-        nat_twice_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_twice_udp", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_twice_action action;// sugar@135
-        action.action_id = action_rewrite_twice_udp;// sugar@136
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.src_addr, src_addr, 4);// sugar@139
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.dst_addr, dst_addr, 4);// sugar@139
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.src_port, src_port, 2);// sugar@139
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.dst_port, dst_port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_twice with action rewrite_twice_udp\n");// sugar@141
-        nat_twice_setdefault(action);// sugar@142
-    } else// sugar@143
-        debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
-}// sugar@145
-void// sugar@130
-nat_flow_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
-    debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
-    if (strcmp("nop", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_flow_action action;// sugar@135
-        action.action_id = action_nop;// sugar@136
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_flow with action nop\n");// sugar@141
-        nat_flow_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_twice_tcp", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_flow_action action;// sugar@135
-        action.action_id = action_rewrite_twice_tcp;// sugar@136
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.src_addr, src_addr, 4);// sugar@139
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.dst_addr, dst_addr, 4);// sugar@139
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.src_port, src_port, 2);// sugar@139
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_tcp_params.dst_port, dst_port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_flow with action rewrite_twice_tcp\n");// sugar@141
-        nat_flow_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_twice_udp", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_flow_action action;// sugar@135
-        action.action_id = action_rewrite_twice_udp;// sugar@136
-        uint8_t *src_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.src_addr, src_addr, 4);// sugar@139
-        uint8_t *dst_addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.dst_addr, dst_addr, 4);// sugar@139
-        uint8_t *src_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[2])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.src_port, src_port, 2);// sugar@139
-        uint8_t *dst_port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[3])->bitmap;// sugar@138
-        memcpy(action.rewrite_twice_udp_params.dst_port, dst_port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_flow with action rewrite_twice_udp\n");// sugar@141
-        nat_flow_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_tcp_dst", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_flow_action action;// sugar@135
-        action.action_id = action_rewrite_tcp_dst;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_dst_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_dst_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_flow with action rewrite_tcp_dst\n");// sugar@141
-        nat_flow_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_udp_dst", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_flow_action action;// sugar@135
-        action.action_id = action_rewrite_udp_dst;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_dst_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_dst_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_flow with action rewrite_udp_dst\n");// sugar@141
-        nat_flow_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_tcp_src", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_flow_action action;// sugar@135
-        action.action_id = action_rewrite_tcp_src;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_src_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_tcp_src_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_flow with action rewrite_tcp_src\n");// sugar@141
-        nat_flow_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("rewrite_udp_src", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_flow_action action;// sugar@135
-        action.action_id = action_rewrite_udp_src;// sugar@136
-        uint8_t *addr = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[0])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_src_params.addr, addr, 4);// sugar@139
-        uint8_t *port = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[1])->bitmap;// sugar@138
-        memcpy(action.rewrite_udp_src_params.port, port, 2);// sugar@139
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_flow with action rewrite_udp_src\n");// sugar@141
-        nat_flow_setdefault(action);// sugar@142
-    } else// sugar@143
-        debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
-}// sugar@145
-void// sugar@130
-nat_get_l4_infomation_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
-    debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
-    if (strcmp("get_tcp_information", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_get_l4_infomation_action action;// sugar@135
-        action.action_id = action_get_tcp_information;// sugar@136
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_get_l4_infomation with action get_tcp_information\n");// sugar@141
-        nat_get_l4_infomation_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("get_udp_information", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_get_l4_infomation_action action;// sugar@135
-        action.action_id = action_get_udp_information;// sugar@136
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_get_l4_infomation with action get_udp_information\n");// sugar@141
-        nat_get_l4_infomation_setdefault(action);// sugar@142
-    } else// sugar@143
-    if (strcmp("disable_nat", ctrl_m->action_name) == 0) {// sugar@134
-        struct nat_get_l4_infomation_action action;// sugar@135
-        action.action_id = action_disable_nat;// sugar@136
-        debug("Message from the control plane arrived.\n");// sugar@140
-        debug("Set default action for nat_get_l4_infomation with action disable_nat\n");// sugar@141
-        nat_get_l4_infomation_setdefault(action);// sugar@142
-    } else// sugar@143
-        debug("Table setdefault: action name mismatch (%s).\n", ctrl_m->action_name);// sugar@144
-}// sugar@145
-void// sugar@130
 cache_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
     debug("Action name: %s\n", ctrl_m->action_name);// sugar@132
     if (strcmp("cache_block", ctrl_m->action_name) == 0) {// sugar@134
@@ -1892,24 +1078,6 @@ cache_set_default_table_action(struct p4_ctrl_msg *ctrl_m) {// sugar@131
         memcpy(action.cache_action_params.vid, vid, 2);// sugar@139
         uint8_t *grp = (uint8_t * )((struct p4_action_parameter *) ctrl_m->action_params[4])->bitmap;// sugar@138
         memcpy(action.cache_action_params.grp, grp, 2);// sugar@139
-        uint8_t *ip_src_addr = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[5])->bitmap;// sugar@138
-        memcpy(action.cache_action_params.ip_src_addr, ip_src_addr, 4);// sugar@139
-        uint8_t *ip_dst_addr = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[6])->bitmap;// sugar@138
-        memcpy(action.cache_action_params.ip_dst_addr, ip_dst_addr, 4);// sugar@139
-        uint8_t *tcp_src_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[7])->bitmap;// sugar@138
-        memcpy(action.cache_action_params.tcp_src_port, tcp_src_port, 2);// sugar@139
-        uint8_t *tcp_dst_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[8])->bitmap;// sugar@138
-        memcpy(action.cache_action_params.tcp_dst_port, tcp_dst_port, 2);// sugar@139
-        uint8_t *udp_src_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[9])->bitmap;// sugar@138
-        memcpy(action.cache_action_params.udp_src_port, udp_src_port, 2);// sugar@139
-        uint8_t *udp_dst_port = (uint8_t * )(
-                (struct p4_action_parameter *) ctrl_m->action_params[10])->bitmap;// sugar@138
-        memcpy(action.cache_action_params.udp_dst_port, udp_dst_port, 2);// sugar@139
         debug("Message from the control plane arrived.\n");// sugar@140
         debug("Set default action for cache with action cache_action\n");// sugar@141
         cache_setdefault(action);// sugar@142
@@ -2045,21 +1213,6 @@ void recv_from_controller(struct p4_ctrl_msg *ctrl_m) {// sugar@148
         if (strcmp("get_acl_features", ctrl_m->table_name) == 0)// sugar@152
             get_acl_features_add_table_entry(ctrl_m);// sugar@153
         else// sugar@154
-        if (strcmp("nat_src", ctrl_m->table_name) == 0)// sugar@152
-            nat_src_add_table_entry(ctrl_m);// sugar@153
-        else// sugar@154
-        if (strcmp("nat_dst", ctrl_m->table_name) == 0)// sugar@152
-            nat_dst_add_table_entry(ctrl_m);// sugar@153
-        else// sugar@154
-        if (strcmp("nat_twice", ctrl_m->table_name) == 0)// sugar@152
-            nat_twice_add_table_entry(ctrl_m);// sugar@153
-        else// sugar@154
-        if (strcmp("nat_flow", ctrl_m->table_name) == 0)// sugar@152
-            nat_flow_add_table_entry(ctrl_m);// sugar@153
-        else// sugar@154
-        if (strcmp("nat_get_l4_infomation", ctrl_m->table_name) == 0)// sugar@152
-            nat_get_l4_infomation_add_table_entry(ctrl_m);// sugar@153
-        else// sugar@154
         if (strcmp("cache", ctrl_m->table_name) == 0)// sugar@152
             cache_add_table_entry(ctrl_m);// sugar@153
         else// sugar@154
@@ -2099,21 +1252,6 @@ void recv_from_controller(struct p4_ctrl_msg *ctrl_m) {// sugar@148
         if (strcmp("get_acl_features", ctrl_m->table_name) == 0)// sugar@159
             get_acl_features_set_default_table_action(ctrl_m);// sugar@160
         else// sugar@161
-        if (strcmp("nat_src", ctrl_m->table_name) == 0)// sugar@159
-            nat_src_set_default_table_action(ctrl_m);// sugar@160
-        else// sugar@161
-        if (strcmp("nat_dst", ctrl_m->table_name) == 0)// sugar@159
-            nat_dst_set_default_table_action(ctrl_m);// sugar@160
-        else// sugar@161
-        if (strcmp("nat_twice", ctrl_m->table_name) == 0)// sugar@159
-            nat_twice_set_default_table_action(ctrl_m);// sugar@160
-        else// sugar@161
-        if (strcmp("nat_flow", ctrl_m->table_name) == 0)// sugar@159
-            nat_flow_set_default_table_action(ctrl_m);// sugar@160
-        else// sugar@161
-        if (strcmp("nat_get_l4_infomation", ctrl_m->table_name) == 0)// sugar@159
-            nat_get_l4_infomation_set_default_table_action(ctrl_m);// sugar@160
-        else// sugar@161
         if (strcmp("cache", ctrl_m->table_name) == 0)// sugar@159
             cache_set_default_table_action(ctrl_m);// sugar@160
         else// sugar@161
@@ -2145,5 +1283,5 @@ void init_control_plane()// sugar@169
     bg = create_backend(3, 1000, "localhost", 11111, recv_from_controller);// sugar@172
     launch_backend(bg);// sugar@173
     /*// sugar@174
- */// sugar@185
+    */// sugar@185
 }// sugar@186

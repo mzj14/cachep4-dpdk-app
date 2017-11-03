@@ -1174,11 +1174,15 @@ void init_simple() {
     // related to udp
     fill_nat_flow_table_2(ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF, port_num, mask_1, port_num, mask_1, gw_2_r, port_num_r);
 
-
-    // FIXME: Why does adding cache table entry lead to nat_flow table entry adding failure?
+    /*
     fill_cache_table(port_num_1, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF,
                      port_num_1, zero_mask_1, port_num_1, zero_mask_1, port_num, mask_1, port_num, mask_1, tcp_flags, tcp_flags_mask, 1, mac_3, mac_4, 0, 0,
-                     0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40);
+                     0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40); // hit entry
+    */
+
+    fill_cache_table(port_num_2, mask_1, mac_2, mask_3, mac_1, mask_3, eth_type, mask_1, ip_1, mask_2, ip_2, mask_2, 0x11, 0xFF,
+                     port_num_1, zero_mask_1, port_num_1, zero_mask_1, port_num, mask_1, port_num, mask_1, tcp_flags, tcp_flags_mask, 1, mac_3, mac_4, 0, 0,
+                     0xc0a80101, 0xc0a80102, 0, 0, 0x1f40, 0x1f40); // miss entry
 }
 
 int main() {

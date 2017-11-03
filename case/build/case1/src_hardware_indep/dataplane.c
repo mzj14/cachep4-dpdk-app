@@ -939,6 +939,9 @@ uint16_t csum16_add(uint16_t num1, uint16_t num2) {// sugar@125
 }// sugar@131
 
 // FIXME: In the original C code, headers failed to be allocated and initiated.
+// and two things need to be considered：
+// 1. Since we may use non-existed packet header field, all packet header field need to be allocated and initiated with zero.
+// 2. However, initiated packet header field may lead to dramatic performance degradation.
 
 void reset_headers(packet_descriptor_t *packet_desc) {// sugar@229
     memset(packet_desc->headers[header_instance_standard_metadata].pointer, 0,

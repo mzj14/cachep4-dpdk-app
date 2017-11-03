@@ -345,7 +345,11 @@ packet_received(packet_descriptor_t *pd, packet *p, unsigned portid, struct lcor
     // printf("enter packet_received function.\n");
     pd->data = rte_pktmbuf_mtod(p, uint8_t * );
     pd->wrapper = p;
-    reset_headers(pd);
+
+    /*************************/
+    reset_headers(pd);//
+    /*************************/
+
     set_metadata_inport(pd, portid);
     handle_packet(pd, conf->state.tables);
     send_packet(pd);
