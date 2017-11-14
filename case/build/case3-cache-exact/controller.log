@@ -100,3 +100,104 @@ adding ap 9.
 adding ap 10.
 adding ap 11.
 start to send p4 message.
+New device connected...
+Initialize switch
+enter fill_mac_learning_table function.
+start to send p4 message.
+enter fill_mac_learning_table function.
+start to send p4 message.
+enter fill_routable_table function.
+start to send p4 message.
+enter fill_routable_table function.
+start to send p4 message.
+enter fill_unicast_routing_table function.
+start to send p4 message.
+enter fill_unicast_routing_table function.
+start to send p4 message.
+enter fill_switching_table function.
+start to send p4 message.
+enter fill_switching_table function.
+start to send p4 message.
+enter fill_get_acl_feature_table function.
+start to send p4 message.
+enter fill_get_acl_feature_table function.
+start to send p4 message.
+enter fill_mac_acl_table function.
+start to send p4 message.
+enter fill_mac_acl_table function.
+start to send p4 message.
+enter fill_ipv4_acl_table function.
+start to send p4 message.
+enter fill_ipv4_acl_table function.
+start to send p4 message.
+enter fill_tcp_acl_table function.
+start to send p4 message.
+enter fill_udp_acl_table function.
+start to send p4 message.
+Generate set_default_action message for table mac_acl
+start to send p4 message.
+Generate set_default_action message for table ipv4_acl
+start to send p4 message.
+Generate set_default_action message for table udp_acl
+start to send p4 message.
+Generate set_default_action message for table tcp_acl
+start to send p4 message.
+Generate set_default_action message for table nat_src
+start to send p4 message.
+Generate set_default_action message for table nat_dst
+start to send p4 message.
+Generate set_default_action message for table nat_twice
+start to send p4 message.
+Generate set_default_action message for table nat_flow
+start to send p4 message.
+Generate set_default_action message for table nat_get_l4_infomation
+start to send p4 message.
+Generate set_default_action message for table ipsg
+start to send p4 message.
+Generate set_default_action message for table ipsg_permit_special.
+start to send p4 message.
+enter fill_nat_get_l4_infomation_table.
+start to send p4 message.
+enter fill_nat_get_l4_infomation_table.
+start to send p4 message.
+enter fill_nat_flow_table_1 function.
+start to send p4 message.
+enter fill_nat_flow_table_2 function.
+start to send p4 message.
+enter fill_port_vlan_to_vrf_table function.
+start to send p4 message.
+enter fill_ipsg_permit_special function.
+start to send p4 message.
+enter fill_storm_control_tbl_table function.
+start to send p4 message.
+enter fill_cache_table function.
+adding exact 1.
+adding exact 2.
+adding exact 3.
+adding exact 4.
+adding exact 5.
+adding exact 6.
+adding exact 7.
+adding exact 8.
+adding exact 9.
+adding exact 10.
+adding exact 11.
+adding exact 12.
+adding exact 12.1
+adding exact 12.2
+adding middle.
+adding ap 1.
+adding ap 2.
+adding ap 3.
+adding ap 4.
+adding ap 5.
+adding ap 6.
+adding ap 7.
+adding ap 8.
+adding ap 8.1
+adding ap 8.2
+adding ap 9.
+adding ap 10.
+adding ap 11.
+start to send p4 message.
+Unknown digest received
