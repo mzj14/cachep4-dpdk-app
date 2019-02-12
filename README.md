@@ -1,2 +1,6 @@
 # cachep4-dpdk-app
-dpdk experiment for cachep4
+
+DPDK Experiment for Cachep4
+
+Thanks for the [open sourced P4-DPDK compiler](https://github.com/P4ELTE/t4p4s).
+
